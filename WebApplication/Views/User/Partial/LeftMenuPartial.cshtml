@@ -1,0 +1,59 @@
+﻿@using WebApplication.Lib.Bll
+@using WebApplication.Lib.Util.Constant
+@{
+    ViewBag.Title = "LeftMenuPartial";
+    Layout = null;
+
+    var user = UserBll.GetUser();
+
+}
+
+<aside>
+    <div class="row b-col-default-indent">
+        <div class="col-md-12">
+            <div class="b-categories-filter">
+                <a href="#">
+                    <h4 class="f-primary-b b-h4-special f-h4-special c-primary">Tài khoản cá nhân</h4>
+                </a>
+                <ul>
+                    @if (user != null)
+                    {
+                        switch (user.RoleId)
+                        {
+                            case RoleEnum.Admin:
+                            case RoleEnum.Manager:
+                                <li class="b-top-nav__2level f-top-nav__2level f-primary">
+                                    <a href="@Url.Action("Index", "Admin")">
+                                        <i class="fa fa-tachometer"></i>Trang Quản Trị
+                                    </a>
+                                </li>
+                                break;
+                            case RoleEnum.SupplierEmployee:
+                            case RoleEnum.SupplierManager:
+                                <li class="b-top-nav__2level f-top-nav__2level f-primary">
+                                    <a href="@Url.Action("Index", "Admin")">
+                                        <i class="fa fa-tachometer"></i>Trang Quản Lý Sản Phẩm
+                                    </a>
+                                </li>
+                                break;
+
+                        }
+                    }
+                    <li>
+                        <a href="@Url.Action("Info", "User")">Thông tin tài khoản</a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("ChangePassword", "User")">Đổi mật khẩu</a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Logout", "Authentication")">Đăng xuất</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+        </div>
+    </div>
+</aside>
+

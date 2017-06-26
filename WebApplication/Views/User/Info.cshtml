@@ -1,0 +1,117 @@
+﻿@using WebApplication.Models.Category;
+@{
+    ViewBag.Title = "Account Info";
+    Layout = "~/Views/Shared/Shop/_ShopLayout.cshtml";
+
+    var categoryModels = (List<CategoryManageList>)ViewBag.Categories;
+    var user = (WebApplication.Models.User.UserModel)ViewBag.User;
+}
+
+@section MenuSection
+{
+    @Html.Partial("../Home/IndexPartialPage/MenuPartial")
+}
+
+@section CategoryColumn
+{
+    @Html.Partial("../Home/IndexPartialPage/CategoryListPartial", categoryModels)
+}
+<link href="~/Content/css/datepicker.css" rel="stylesheet" />
+<script src="~/Content/js/bootstrap-datepicker.js"></script>
+<div id="content" class="col-sm-9">
+    <ul class="breadcrumb">
+        <li><a href="/"><i class="fa fa-home"></i></a></li>
+        <li><a href="#">Tài khoản</a></li>
+        <li><a href="@Url.Action("Info", "Authentication")">Thông tin tài khoản</a></li>
+    </ul>
+    <div class="well">
+        <div class="heading" style="border-bottom: 0px;">
+            <i class="fa fa-edit"></i>
+            <h2>Thông tin tài khoản</h2>
+            <strong>Cập thận thông tin tài khoản của bạn để được hỗ trợ tốt nhất</strong>
+        </div>
+        @if (user != null)
+        {
+            <form action="#" method="post" enctype="multipart/form-data" class="form-horizontal">
+                <fieldset id="account">
+                    <legend>Thông tin tài khoản</legend>
+                    <div class="form-group required">
+                        <label class="col-sm-3 control-label" for="input-email">Địa chỉ E-mail</label>
+                        <div class="col-sm-7">
+                            <span class="form-control">@user.Email</span>
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <label class="col-sm-3 control-label" for="input-firstname">Họ</label>
+                        <div class="col-sm-3">
+                            <input type="text" name="firstname" value="@user.Firstname" placeholder="Họ" id="input-firstname" class="form-control">
+                        </div>
+                        <label class="col-sm-1 control-label" for="input-lastname">Tên</label>
+                        <div class="col-sm-3">
+                            <input type="text" name="lastname" value="@user.Lastname" placeholder="Tên" id="input-lastname" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group required">
+
+                    </div>
+                    <div class="form-group required">
+                        <label class="col-sm-3 control-label" for="input-lastname">Giới tính</label>
+                        @{
+                            var isCheckMale = "";
+                            var isCheckFemale = "";
+
+                            if (user.Gender == 1)
+                            {
+                                isCheckMale = "checked";
+                                isCheckFemale = "";
+                            }
+                            else
+                            {
+                                isCheckMale = "";
+                                isCheckFemale = "checked";
+                            }
+                            
+                            <div class="col-sm-2" style="text-align: right">
+                                <input type="radio" name="input-gender" value="1" @isCheckMale> Nam
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="radio" name="input-gender" value="0" @isCheckFemale> Nữ
+                            </div>
+                        }
+                    </div>
+                    <div class="form-group required">
+                        <label class="col-sm-3 control-label">Ngày sinh</label>
+                        <div class="col-sm-7">
+                            <input type="text" name="input-dob" value="@String.Format("{0:dd-MM-yyyy}", @user.DateOfBirth)" placeholder="Ngày sinh" id="input-dob" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <label class="col-sm-3 control-label" >Số điện thoại</label>
+                        <div class="col-sm-7">
+                            <input type="text" name="input-phone" value="@user.Phone" placeholder="Số điện thoại" id="input-phone" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <label class="col-sm-3 control-label" for="input-lastname">Địa chỉ</label>
+                        <div class="col-sm-7">
+                            <input type="text" name="input-address" value="@user.Address" placeholder="Địa chỉ" id="input-address" class="form-control">
+                        </div>
+                    </div>
+                </fieldset>
+                <div class="buttons">
+                    <div class="col-sm-10">
+                        <div class="pull-right">
+                            <input type="button" value="Tiếp tục" class="btn btn-primary" onclick="UpdateInfo()">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        }
+    </div>
+</div>
+<script>
+    $("#input-dob").datepicker({
+       format: "dd-mm-yyyy"
+    });
+</script>
+<script src="~/Scripts/MainShop/Authentication/AuthenticationController.js"></script>

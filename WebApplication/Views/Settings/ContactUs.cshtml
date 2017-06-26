@@ -1,0 +1,155 @@
+﻿@using WebApplication.Lib.Bll
+@using WebApplication.Lib.Dal.DbContext
+@using WebApplication.Lib.Util.Constant
+
+@model WebApplication.Models.Product.ProductModel
+
+@{
+    ViewBag.Title = "Contact Us";
+    Layout = "~/Views/Shared/AdminCp/_AdminLayout.cshtml";
+
+    bool? isSaveSuccess = null;
+
+    if (ViewBag.IsSaveSuccess != null)
+    {
+        isSaveSuccess = (bool)ViewBag.IsSaveSuccess;
+    }
+
+    var settings = (Dictionary<string, string>)ViewBag.Settings;
+
+    string address;
+    string comments;
+    string commingTime;
+    string email;
+    string fax;
+    string telephone;
+    string viewGoogleMap;
+
+    settings.TryGetValue(SettingsBll.SettingNames.ContactUsAddress, out address);
+    settings.TryGetValue(SettingsBll.SettingNames.ContactUsComments, out comments);
+    settings.TryGetValue(SettingsBll.SettingNames.ContactUsCommingTime, out commingTime);
+    settings.TryGetValue(SettingsBll.SettingNames.ContactUsEmail, out email);
+    settings.TryGetValue(SettingsBll.SettingNames.ContactUsFax, out fax);
+    settings.TryGetValue(SettingsBll.SettingNames.ContactUsTelephone, out telephone);
+    settings.TryGetValue(SettingsBll.SettingNames.ContactUsViewGoogleMap, out viewGoogleMap);
+
+}
+
+@section breadcrumbs
+          {
+    <li><a href="@Url.Action("Index", "Settings" )">@MessageEnum.Breadcrumbs.SettingBreadcrumb.Setting</a></li>
+    <li><span>@MessageEnum.Breadcrumbs.SettingBreadcrumb.ContacUs</span></li>
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">@MessageEnum.Breadcrumbs.SettingBreadcrumb.Index</h4>
+            </div>
+            <div class="panel-body">
+                @Html.Partial("SettingSelectionPartial")
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">@MessageEnum.Breadcrumbs.SettingBreadcrumb.ContacUs</h4>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    @using (Html.BeginForm("ContactUs", "Settings", FormMethod.Post))
+                    {
+                        <div class="col-sm-9">
+                            <fieldset>
+                                <legend id="legendFollowUs"><span>Contact Us</span></legend>
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Địa Chỉ</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="ContactUsAddress" class="form-control" value="@address" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Số điện thoại</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="ContactUsTelephone" class="form-control" value="@telephone" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Số Fax</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="ContactUsFax" class="form-control" value="@fax" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Thời gian mở cửa</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="ContactUsCommingTime" class="form-control" value="@commingTime" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Comments</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="ContactUsComments" class="form-control" value="@comments" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Tọa độ Google Map Url</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="ContactUsViewGoogleMap" class="form-control" value="@viewGoogleMap" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Email gửi liên lạc</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="ContactUsEmail" class="form-control" value="@email" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-8 control-label">&nbsp;</label>
+                                        <div class="col-sm-1">
+                                            <input type="submit" value="Lưu" class="btn btn-default" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section CustomScript
+{
+    <script src="~/Scripts/ckeditor/ckeditor.js"></script>
+    <link rel="stylesheet" href="~/Scripts/ckeditor/samples/toolbarconfigurator/lib/codemirror/neo.css">
+    <script src="~/Scripts/AdminCP/Settings/SettingFooterController.js"></script>
+
+    <script>
+        SettingFooterController.init();
+    </script>
+
+    @if (isSaveSuccess != null)
+    {
+        if (isSaveSuccess.Value)
+        {
+            <script>
+                NotificationUtil.successMessage("Cập nhật thành công.")
+            </script>
+        }
+        else
+        {
+            <script>
+                NotificationUtil.warningMessage(ShopMessage.error.connectionFail);
+            </script>
+        }
+    }
+}

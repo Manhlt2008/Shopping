@@ -1,0 +1,127 @@
+﻿@using WebApplication.Models.APIModel.DealToDay
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/AdminCp/_AdminLayout.cshtml";
+
+    var deals = (DealToDayCommonResponse)ViewBag.DealToDayNewDeals;
+
+    bool? isParseComplete = null;
+
+    if (ViewBag.IsParseComplete != null)
+    {
+        isParseComplete = (bool)ViewBag.IsParseComplete;
+    }
+}
+
+@section Breadcrumbs
+{
+    <li><a href="@Url.Action("Manage", "Product")">Quản lí</a></li>
+    <li><span>Danh sách các Deal</span></li>
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Danh Sách Các Deal Mới</h4>
+            </div>
+
+            <table id="dt_scroll" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Tên Deal</th>
+                        <th>Địa chỉ</th>
+                        <th>Số Lượng</th>
+                        <th>Giá Gốc</th>
+                        <th>Giá</th>
+                        <th>Ngày Bắt Đầu</th>
+                        <th>Ngày Hết Hạn</th>
+                        <th>Avatar</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (deals != null && deals.result != null && deals.result.Any())
+                    {
+                        foreach (var deal in deals.result)
+                        {
+                            <tr>
+                                <td>@deal.dealName</td>
+                                <td>@deal.locationName</td>
+                                <td>
+                                    @if (deal.address.Count == 1)
+                                        {
+                                <span>@deal.address.First().name - @deal.address.First().address</span>
+                                        }
+                                        else if (deal.address.Count > 1)
+                                        {
+                                <ul>
+                                    @foreach (var add in deal.address)
+                                                {
+                                            <li>
+                                                @add.name - @add.address
+                                            </li>
+                                                }
+                                </ul>
+                                        }
+                                </td>
+                                <td>@deal.quantity</td>
+                                <td>@deal.originalPrice</td>
+                                <td>@deal.price</td>
+                                <td>@deal.startDate</td>
+                                <td>@deal.expiredDate</td>
+                                <td>
+                                    <a href="@deal.avatar" target="_blank">
+                                        <img src="@deal.avatar" alt="@deal.dealName" style="width: 50px; height: 50px; object-fit: contain" />
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="@Url.Action("Approve", "DealToDay", new { dealId = deal.dealId })">
+                                        <span class="icon-ok" title="cho phép đăng sản phẩm"></span>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section CustomScript
+{
+    <link href="~/Content/css/datepicker.css" rel="stylesheet" />
+    <script src="~/Content/js/bootstrap-datepicker.js"></script>
+    <script src="~/Content/admincp/js/lib/bootbox/bootbox.min.js"></script>
+    <script src="~/Scripts/AdminCP/Product/product-controller.js" type="text/javascript" language="JavaScript"></script>
+
+    @if (isParseComplete != null)
+    {
+        if (isParseComplete.Value)
+        {
+            <script>
+                NotificationUtil.successMessage("Thêm deal vào danh sách sản phẩm thành công.");
+            </script>
+        }
+        else
+        {
+            <script>
+                NotificationUtil.warningMessage("Lưu sản phẩm thất bại. Vui lòng thử lại sau.");
+            </script>
+        }
+    }
+    <script type="text/javascript">
+        $(document).ready(function () {
+            if ($('#dt_scroll').length) {
+                $('#dt_scroll').dataTable({
+                    //"sScrollX": "100%",
+                    //"sScrollXInner": '150%',
+                    "sPaginationType": "bootstrap",
+                    //"bScrollCollapse": true
+                });
+            }
+        });
+    </script>
+}

@@ -1,0 +1,102 @@
+﻿@using WebApplication.Models.Category
+@using WebApplication.Lib.Bll
+@using WebApplication.Lib.Dal.DbContext
+@using WebApplication.Lib.Util.Constant
+
+@{
+    ViewBag.Title = "Liên hệ";
+    Layout = "~/Views/Shared/Shop/_ShopLayout.cshtml";
+
+    var categoryModels = (List<CategoryManageList>)ViewBag.Categories;
+    var settings = (Dictionary<string, string>)ViewBag.Settings;
+
+    string address;
+    string comments;
+    string commingTime;
+    string email;
+    string fax;
+    string telephone;
+    string viewGoogleMap;
+
+    settings.TryGetValue(SettingsBll.SettingNames.ContactUsAddress, out address);
+    settings.TryGetValue(SettingsBll.SettingNames.ContactUsComments, out comments);
+    settings.TryGetValue(SettingsBll.SettingNames.ContactUsCommingTime, out commingTime);
+    settings.TryGetValue(SettingsBll.SettingNames.ContactUsEmail, out email);
+    settings.TryGetValue(SettingsBll.SettingNames.ContactUsFax, out fax);
+    settings.TryGetValue(SettingsBll.SettingNames.ContactUsTelephone, out telephone);
+    settings.TryGetValue(SettingsBll.SettingNames.ContactUsViewGoogleMap, out viewGoogleMap);
+}
+
+@section MenuSection
+{
+    @Html.Partial("../Home/IndexPartialPage/MenuPartial")
+}
+
+@section CategoryColumn
+{
+    @Html.Partial("../Home/IndexPartialPage/CategoryListPartial", categoryModels)
+}
+
+<div id="content" class="col-sm-9">
+    <ul class="breadcrumb">
+        <li><a href="@Url.Action("Index","Home")"><i class="fa fa-home"></i></a></li>
+        <li><a href="@Url.Action("Index","AboutUs")">Liên Hệ</a></li>
+    </ul>
+    <h1>Liên Hệ</h1>
+    <h3>Thông Tin Liên Lạc</h3>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-3">
+                    <strong>Phụ Nữ News</strong><br>
+                    <address>
+                        @address
+                    </address>
+                    <a href="@viewGoogleMap" target="_blank" class="btn btn-info"><i class="fa fa-map-marker"></i> View Google Map</a>
+                </div>
+                <div class="col-sm-3">
+                    <strong>Telephone</strong><br>
+                    @telephone<br>
+                    <br>
+                    <strong>Fax</strong><br>
+                    @fax
+                </div>
+                <div class="col-sm-3">
+                    <strong>Opening Times</strong><br>
+                    @commingTime<br>
+                    <br>
+                    <strong>Comments</strong><br>
+                    @comments
+                </div>
+            </div>
+        </div>
+    </div>
+    <form action="#" method="post" enctype="multipart/form-data" class="form-horizontal">
+        <fieldset>
+            <h3>Liên Hệ Với Chúng Tôi</h3>
+            <div class="form-group required">
+                <label class="col-sm-2 control-label" for="input-name">Tên Của Bạn</label>
+                <div class="col-sm-10">
+                    <input type="text" name="name" value="" id="input-name" class="form-control" placeholder="Tên của bạn">
+                </div>
+            </div>
+            <div class="form-group required">
+                <label class="col-sm-2 control-label" for="input-email">Địa Chỉ E-mail</label>
+                <div class="col-sm-10">
+                    <input type="text" name="email" value="" id="input-email" class="form-control" placeholder="Địa chỉ E-mail">
+                </div>
+            </div>
+            <div class="form-group required">
+                <label class="col-sm-2 control-label" for="input-enquiry">Nội Dung</label>
+                <div class="col-sm-10">
+                    <textarea name="enquiry" rows="10" id="input-enquiry" class="form-control"></textarea>
+                </div>
+            </div>
+        </fieldset>
+        <div class="buttons">
+            <div class="pull-right">
+                <input class="btn btn-primary" type="submit" value="Gửi">
+            </div>
+        </div>
+    </form>
+</div>

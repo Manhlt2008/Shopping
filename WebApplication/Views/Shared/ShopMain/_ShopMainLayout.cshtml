@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>@ViewBag.Title</title>
+    <link rel="shortcut icon" href="~/Content/favicon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- bxslider -->
+    <link type="text/css" rel='stylesheet' href="~/Content/shop/js/bxslider/jquery.bxslider.css">
+    <!-- End bxslider -->
+    <!-- flexslider -->
+    <link type="text/css" rel='stylesheet' href="~/Content/shop/js/flexslider/flexslider.css">
+    <!-- End flexslider -->
+    <!-- bxslider -->
+    <link type="text/css" rel='stylesheet' href="~/Content/shop/js/radial-progress/style.css">
+    <!-- End bxslider -->
+    <!-- Animate css -->
+    <link type="text/css" rel='stylesheet' href="~/Content/shop/css/animate.css">
+    <!-- End Animate css -->
+    <!-- Bootstrap css -->
+    <link type="text/css" rel='stylesheet' href="~/Content/shop/css/bootstrap.min.css">
+    <link type="text/css" rel='stylesheet' href="~/Content/shop/js/bootstrap-progressbar/bootstrap-progressbar-3.2.0.min.css">
+    <!-- End Bootstrap css -->
+    <!-- Jquery UI css -->
+    <link type="text/css" rel='stylesheet' href="~/Content/shop/js/jqueryui/jquery-ui.css">
+    <link type="text/css" rel='stylesheet' href="~/Content/shop/js/jqueryui/jquery-ui.structure.css">
+    <!-- End Jquery UI css -->
+    <!-- Fancybox -->
+    <link type="text/css" rel='stylesheet' href="~/Content/shop/js/fancybox/jquery.fancybox.css">
+    <!-- End Fancybox -->
+    <link type="text/css" rel='stylesheet' href="~/Content/shop/fonts/fonts.css">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Merriweather:400,300,300italic,400italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>
+    <link type="text/css" data-themecolor="default" rel='stylesheet' href="~/Content/shop/css/main-default.css">
+    <link type="text/css" data-themecolor="default" rel='stylesheet' href="~/Content/shop/css/custom.css">
+    <link type="text/css" rel='stylesheet' href="~/Content/shop/js/rs-plugin/css/settings.css">
+    <link type="text/css" rel='stylesheet' href="~/Content/shop/js/rs-plugin/css/settings-custom.css">
+    <link type="text/css" rel='stylesheet' href="~/Content/shop/js/rs-plugin/videojs/video-js.css">
+    <link href="~/Content/css/my-custome.css" rel="stylesheet" />
+    @RenderSection("ExtendStyleSheet", false)
+</head>
+<body>
+    <div class="mask-l" style="background-color: #fff; width: 100%; height: 100%; position: fixed; top: 0; left:0; z-index: 9999999;"></div> <!--removed by integration-->
+    <header>
+        @Html.Partial("ShopMain/_ShopMain.MenuSection")
+    </header>
+    <div class="j-menu-container"></div>
+    @RenderSection("InnerPageHeader", false)
+    <div class="l-main-container">
+        @RenderBody()
+    </div>
+    @Html.Partial("ShopMain/_ShopMain.FooterSection")
+    <script src="~/Content/shop/js/breakpoints.js"></script>
+    <script src="~/Content/shop/js/jquery/jquery-1.11.1.min.js"></script>
+    <!-- bootstrap -->
+    <script src="~/Content/shop/js/scrollspy.js"></script>
+    <script src="~/Content/shop/js/bootstrap-progressbar/bootstrap-progressbar.js"></script>
+    <script src="~/Content/shop/js/bootstrap.min.js"></script>
+    <!-- end bootstrap -->
+    <script src="~/Content/shop/js/masonry.pkgd.min.js"></script>
+    <script src='~/Content/shop/js/imagesloaded.pkgd.min.js'></script>
+    <!-- bxslider -->
+    <script src="~/Content/shop/js/bxslider/jquery.bxslider.min.js"></script>
+    <!-- end bxslider -->
+    <!-- flexslider -->
+    <script src="~/Content/shop/js/flexslider/jquery.flexslider.js"></script>
+    <!-- end flexslider -->
+   
+    <!-- carousel -->
+    <script src="~/Content/shop/js/jquery.carouFredSel-6.2.1-packed.js"></script>
+    <!-- end carousel -->
+    <script src="~/Content/shop/js/rs-plugin/js/jquery.themepunch.plugins.min.js"></script>
+    <script src="~/Content/shop/js/rs-plugin/js/jquery.themepunch.revolution.min.js"></script>
+
+    <!-- jquery ui -->
+    <script src="~/Content/shop/js/jqueryui/jquery-ui.js"></script>
+    <!-- end jquery ui -->
+    <!-- Modules -->
+    <script src="~/Content/shop/js/modules/sliders.js"></script>
+    <script src="~/Content/shop/js/modules/ui.js"></script>
+    <script src="~/Content/shop/js/modules/retina.js"></script>
+    <script src="~/Content/shop/js/modules/animate-numbers.js"></script>
+    <script src="~/Content/shop/js/modules/parallax-effect.js"></script>
+    <script src="~/Content/shop/js/modules/settings.js"></script>
+    <script src="~/Content/shop/js/modules/color-themes.js"></script>
+    <!-- End Modules -->
+
+    <script src="~/Content/shop/js/j.placeholder.js"></script>
+    <!-- Fancybox -->
+    <script src="~/Content/shop/js/fancybox/jquery.fancybox.pack.js"></script>
+    <script src="~/Content/shop/js/fancybox/jquery.mousewheel.pack.js"></script>
+    <script src="~/Content/shop/js/fancybox/jquery.fancybox.custom.js"></script>
+    <!-- End Fancybox -->
+    <script src="~/Content/shop/js/user.js"></script>
+    <script src="~/Content/shop/js/timeline.js"></script>
+    <script src="~/Content/shop/js/fontawesome-markers.js"></script>
+    <script src="~/Content/shop/js/cookie.js"></script>
+    <script src="~/Content/shop/js/loader.js"></script>
+    <script src="~/Content/shop/js/scrollIt/scrollIt.min.js"></script>
+    <script src="~/Content/shop/js/modules/navigation-slide.js"></script>
+    <script src="http://cdn.jsdelivr.net/jquery.validation/1.15.0/jquery.validate.min.js"></script>
+    <script src="http://cdn.jsdelivr.net/jquery.validation/1.15.0/additional-methods.min.js"></script>
+    <script src="~/Scripts/jQueryImageCenter/jquery.blImageCenter.js"></script>
+    <script src="~/Scripts/Numeral/numeral.min.js"></script>
+    <script src="~/Scripts/common.js"></script>
+    <script src="~/Scripts/MainShop/Authentication/AuthenticationController.js"></script>
+    <script src="~/Scripts/Shop/shop-messages.js"></script>
+    <script src="~/Scripts/autoNumeric/autoNumeric.js"></script>
+    <script src="~/Scripts/Shop/shopping-cart.js"></script>
+    <script src="~/Scripts/MainShop/ShoppingCart/custom-cart-manager.js"></script>
+    @RenderSection("ExtendScript", false)
+    <div id="fb-root"></div>
+    <script>
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.7&appId=1001953203161792";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+    <!-- End of LiveChat code -->
+
+    <script type='text/javascript'>window._sbzq || function (e) { e._sbzq = []; var t = e._sbzq; t.push(["_setAccount", 50104]); var n = e.location.protocol == "https:" ? "https:" : "http:"; var r = document.createElement("script"); r.type = "text/javascript"; r.async = true; r.src = n + "//static.subiz.com/public/js/loader.js"; var i = document.getElementsByTagName("script")[0]; i.parentNode.insertBefore(r, i) }(window);</script>
+
+</body>
+</html>

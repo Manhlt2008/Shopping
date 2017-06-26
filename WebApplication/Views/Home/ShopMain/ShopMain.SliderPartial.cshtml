@@ -1,0 +1,102 @@
+﻿@using WebApplication.Lib.Bll.Lang
+@{
+    var sliders = (List<WebApplication.Models.Slider.SliderModel>)Model;
+    var lang = new LangValue(LangValue.LangEnum.Vi, LangValue.DictionaryEnum.CmsHomeIndex);
+
+}
+
+<div class="b-slidercontainer">
+    <div class="b-slider j-fullscreenslider ">
+        <ul>
+            @foreach (var item in sliders)
+            {
+                <li data-transition="" data-slotamount="7">
+
+                    <div class="tp-bannertimer"></div>
+                    <img data-retina src="@item.Image_Url" alt="@item.Title">
+                    @if (item.Title != null && !item.Title.Trim().Equals(string.Empty))
+                    {
+                        <div class="caption lfr" data-x="350" data-y="50" data-speed="300" data-start="2000">
+                            <div class="b-header-group f-header-group f-header-group--light">
+                                <h2 class="f-primary-l">@item.Title</h2>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="caption lfb" data-x="350" data-y="50" data-speed="300" data-start="2300">
+                        <p class="f-primary-b f-uppercase f-slider-lg_text-medium c-white">@Html.Raw(@item.Description)</p>
+                    </div>
+                </li>
+            }
+            <li data-transition="" data-slotamount="7">
+                <div class="tp-bannertimer"></div>
+                <img data-retina src="~/Content/shop/img/slider/slider_shop_1.jpg">
+                <div class="caption sfb" data-x="30" data-y="bottom" data-speed="700" data-start="1700" data-easing="Power4.easeOut"><img data-retina src="~/Content/shop/img/slider/slider-shop-2-2.png">
+                </div>
+                <div class="caption lfr" data-x="350" data-y="50" data-speed="300" data-start="2000">
+                    <div class="b-header-group f-header-group f-header-group--light">
+                        <h2 class="f-primary-l">Mừng Khai Trương <b>PhuNuMart</b>
+                        </h2>
+                        <h1 class="f-primary-sb" style="color: #e75280">27/09/2016</h1>
+                    </div>
+                </div>
+                <div class="caption lfb" data-x="350" data-y="190" data-speed="300" data-start="2300">
+                    <p class="f-primary-b f-uppercase f-slider-lg_text-medium c-white">Nhiệt liệt khánh thành trang web thương mại điện tử </p>
+                </div>
+                <div class="caption lfb" data-x="350" data-y="210" data-speed="300" data-start="2600">
+                    <p class="f-primary-b f-uppercase f-slider-lg_text-medium c-white">chuyên dành cho phái đẹp.</p>
+                </div>
+                <div class="caption" data-x="350" data-y="250" data-speed="600" data-start="3000">
+                    <p><a class="b-link f-link f-primary-b f-uppercase" href="@Url.Action("Index", "AboutUs")">chi tiết <span><i class="fa fa-chevron-right"></i></span></a>
+                    </p>
+                </div>
+            </li>
+            <li data-transition="" data-slotamount="7">
+                <div class="tp-bannertimer"></div>
+                <img data-retina src="~/Content/shop/img/slider/slider_shop_1.jpg">
+                <div class="caption sfb" data-x="30" data-y="bottom" data-speed="700" data-start="1700" data-easing="Power4.easeOut"><img data-retina src="~/Content/shop/img/cust-slider/slider-shop-2-1.png">
+                </div>
+                <div class="caption lfr" data-x="350" data-y="50" data-speed="300" data-start="2000">
+                    <div class="b-header-group f-header-group f-header-group--light">
+                        <h2 class="f-primary-l" style="color: #e75280">phunumart.vn</h2>
+                        <h1 class="f-primary-sb">Mua Sắm Cho Phái Đẹp</h1>
+                    </div>
+                </div>
+                <div class="caption lfb" data-x="350" data-y="190" data-speed="300" data-start="2300">
+                    <p class="f-primary-b f-uppercase f-slider-lg_text-medium c-white">nơi mua sắm lý tưởng, mặt hàng phong phú</p>
+                </div>
+                <div class="caption lfb" data-x="350" data-y="210" data-speed="300" data-start="2600">
+                    <p class="f-primary-b f-uppercase f-slider-lg_text-medium c-white">đảm bảo uy tín, chất lượng, nhanh chóng và đáng tin cậy </p>
+                </div>
+                <div class="caption" data-x="350" data-y="250" data-speed="600" data-start="3000">
+                    <p><a class="b-link f-link f-primary-b f-uppercase" href="@Url.Action("BestSeller", "Product")">chi tiết <span><i class="fa fa-chevron-right"></i></span></a>
+                    </p>
+                </div>
+            </li>
+            <li data-transition="" data-slotamount="7">
+                <div class="tp-bannertimer"></div>
+                <img data-retina src="~/Content/shop/img/slider/slider_shop_1.jpg">
+                <div class="caption sfb" data-x="30" data-y="bottom" data-speed="700" data-start="1700" data-easing="Power4.easeOut">
+                    <img data-retina src="~/Content/shop/img/slider/slider-shop-3-3.png">
+                </div>
+                <div class="caption lfr" data-x="350" data-y="50" data-speed="300" data-start="2000">
+                    <div class="b-header-group f-header-group f-header-group--light">
+                        <h2 class="f-primary-l">khuyến mãi</h2>
+                        <h1 class="f-primary-sb">hấp dẫn</h1>
+                    </div>
+                </div>
+                <div class="caption lfb" data-x="350" data-y="190" data-speed="300" data-start="2300">
+                    <p class="f-primary-b f-uppercase f-slider-lg_text-medium c-white">Nhiều Ưu Đãi Hấp Dẫn</p>
+                </div>
+                <div class="caption lfb" data-x="350" data-y="210" data-speed="300" data-start="2600">
+                    <p class="f-primary-b f-uppercase f-slider-lg_text-medium c-white">Deal giá rẻ bất ngờ dịp khai trương </p>
+                </div>
+                <div class="caption" data-x="350" data-y="250" data-speed="600" data-start="3000">
+                    <p>
+                        <a class="b-link f-link f-primary-b f-uppercase" href="@Url.Action("Newest", "Product")">chi tiết <span><i class="fa fa-chevron-right"></i></span></a>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,452 @@
+﻿@using System.Globalization
+@using WebApplication.Lib.Bll
+@using WebApplication.Lib.Util.Constant
+@using WebApplication.Models.Product
+@{
+    ViewBag.Title = "View";
+    Layout = "~/Views/Shared/Shop/_ShopLayout.cshtml";
+
+    var product = (ProductViewModel)ViewBag.Product;
+
+    if (product.Reviews == null)
+    {
+        product.Reviews = new List<ProductReviewModel>();
+    }
+
+    product.Reviews = product.Reviews.Where(m => m.Status == StatusEnum.ReviewEnum.Status.Approve).ToList();
+
+    var cul = CultureInfo.GetCultureInfo("vi-VN");
+
+    var user = UserBll.GetUser();
+
+    var relatedProducts = (List<ProductThumbnailModel>)ViewBag.RelatedProduct ?? Enumerable.Empty<ProductThumbnailModel>().ToList();
+    var standInfor = ViewBag.Stand;
+}
+
+@section MenuSection
+{
+    <style>
+        .header .col-sm-9 {
+            width: 100%;
+        }
+
+        #container .col-sm-9 {
+            width: 100%;
+        }
+    </style>
+
+    @Html.Partial("../Home/IndexPartialPage/MenuPartial")
+}
+
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+@*<g:plus action="share"></g:plus>*@
+<div id="content" class="col-sm-12 product_page">
+    <ul class="breadcrumb">
+        <li>
+            <a href="@Url.Action("Index", "Home")">
+                <i class="fa fa-home"></i>
+            </a>
+        </li>
+
+        @if (product.Category.ParentCategory != null)
+        {
+            <li>
+                <a href="@Url.Action("Category", "Product", new {id = product.Category.ParentCategory.Id})">
+                    @product.Category.ParentCategory.Name
+                </a>
+            </li>
+        }
+
+        <li>
+            <a href="@Url.Action("Category", "Product", new {id = product.Category.Id})">
+                @product.Category.Name
+            </a>
+        </li>
+
+        <li>
+            <a href="@Url.Action("View", "Product", new {id = product.Id})">
+                @product.Name
+            </a>
+        </li>
+    </ul>
+
+    <div class="row product-content-columns">
+        <div class="col-sm-4 col-lg-6 product_page-left">
+            <div id="default_gallery" class="product-gallery">
+                <div class="image-thumb">
+                    <ul id="image-additional">
+                        <li>
+                            <a href="#" data-image="@Url.Action("View", "Image", new {id = product.Cover})"
+                               data-zoom-image="@Url.Action("View", "Image", new {id = product.Cover})">
+                                <img src="@Url.Action("View", "Image", new {id = product.Cover})" alt="">
+                            </a>
+                            @*<a href="#" data-image="http://livedemo00.template-help.com/opencart_52995/image/cache/catalog/product-52-800x800.png"
+                                   data-zoom-image="http://livedemo00.template-help.com/opencart_52995/image/cache/catalog/product-52-800x800.png">
+                                    <img src="http://livedemo00.template-help.com/opencart_52995/image/cache/catalog/product-52-800x800.png" alt="">
+                                </a>*@
+                        </li>
+                        @foreach (var imgId in product.Gallery)
+                        {
+                            <li>
+                                <a href="#" data-image="@Url.Action("View", "Image", new {id = imgId})"
+                                   data-zoom-image="@Url.Action("View", "Image", new {id = imgId})">
+                                    <img src="@Url.Action("View", "Image", new {id = imgId})">
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="image">
+                    <img id="gallery_zoom" src="@Url.Action("View", "Image", new {id = product.Cover})"
+                         data-zoom-image="@Url.Action("View", "Image", new {id = product.Cover})"
+                         alt="" />
+                </div>
+            </div>
+        </div>
+        <div class="stand-infor">
+            <span>Thông tin chi tiết gian hàng</span>
+            <div class="content">
+                <div class="row">
+                    <div class="col-letf"><b>Tên gian hàng</b></div>
+                    <div class="col-right">
+                        @standInfor.StandName
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-letf">
+                        <b>Địa chỉ</b>
+                    </div>
+                    <div class="col-right">
+                        @standInfor.Address
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-letf">
+                        <b>Sđt liên hệ</b>
+                    </div>
+                    <div class="col-right">
+                        @standInfor.Phone
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-letf">
+                        <b>Giới thiệu chung</b>
+                    </div>
+                    <div class="col-right">
+                        @standInfor.Description
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-letf">
+                        <b>Hình thức giao dịch</b>
+                    </div>
+                    <div class="col-right">
+                        @standInfor.PayMethod
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8 col-lg-6 product_page-right">
+            <div class="col-sm-6">
+                <div class="general_info product-info">
+                    <h1 class="product-title">
+                        <a href="@Url.Action("View", "Product", new {id = product.Id})">
+                            @product.Name
+                        </a>
+
+                    </h1>
+                    <div class="price-section">
+                        <div class="reward-block" style="padding-bottom: 15px">
+                            <span class="reward">
+                                <strong>
+                                    <a href="@Url.Action("Category", "Product", new {id = product.CategoryId})">@product.Category.Name</a>
+                                </strong>
+                            </span>
+                        </div>
+                        <span class="price-new">
+                            @product.Price.ToString("#,###", cul.NumberFormat) VND
+                        </span>
+                    </div>
+
+
+                    <ul class="list-unstyled product-section">
+                        <li>
+                            Danh Mục: <a href="@product.Category.Id"><i class="fa fa-angle-right "></i>@product.Category.Name</a>
+                        </li>
+                        <li>
+                            @if (product.Quantity > 0)
+                            {
+                                <span>Đang Còn Hàng</span>
+                            }
+                            else
+                            {
+                                <span>Đã Hết Hàng</span>
+                            }
+                        </li>
+                    </ul>
+                    <div class="product-section">
+                        <strong>Phụ Nữ Mart đảm bảo sản phẩm chính hãng</strong>
+                        <p>
+                            @product.ShortDescription
+                        </p>
+
+                        <ul>
+                            <li>
+                                Giao Hàng Tận Nhà - <a href="@Url.Action("Index", "DeliveryInformation")">Chi Tiết</a>
+                            </li>
+                            <li>
+                                30 NGÀY ĐỔI TRẢ
+                            </li>
+                            <li>
+                                Thanh Toán Khi Nhận Hàng
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="general_info product-info">
+                    <div id="product">
+                        <div class="product-options">
+                            <h3>Đặt Mua Sản Phẩm</h3>
+                        </div>
+
+                        <div class="form-group form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label col-sm-4" for="input-quantity">Số lượng</label>
+                                <div class="col-sm-8">
+                                    <input type="number" name="quantity" value="1" size="5" min="@(product.Quantity <= 0 ? 0 : 1)" max="@(product.Quantity <= 0 ? 0 : product.Quantity)" id="input-quantity" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <button class="btn btn-add" id="button-cart" type="button" data-toggle="tooltip" title="" data-original-title="Thêm Vào Giỏ Hàng">Thêm Vào Giỏ Hàng</button>
+                                </div>
+                            </div>
+                            <input type="hidden" name="product_id" id="product_id" value="@product.Id">
+                            <input type="hidden" name="product_name" id="product_name" value="@product.Name">
+                        </div>
+
+                        <div class="product-options">
+                            <h4>Chia Sẻ</h4>
+                        </div>
+                        <div class="product-share">
+                            <div class="addthis_toolbox addthis_default_style">
+                                <div class="atclear">
+                                    <style>
+                                        #share-table td {
+                                            padding-right: 10px;
+                                            vertical-align: middle;
+                                        }
+                                    </style>
+                                    <table id="share-table">
+                                        <tr>
+                                            <td>
+                                                <div id="fb-root"></div>
+                                                <script>
+                                                    (function (d, s, id) {
+                                                        var js, fjs = d.getElementsByTagName(s)[0];
+                                                        if (d.getElementById(id)) return;
+                                                        js = d.createElement(s);
+                                                        js.id = id;
+                                                        js
+                                                            .src =
+                                                            "//connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v2.7&appId=1566175860353082";
+                                                        fjs.parentNode.insertBefore(js, fjs);
+                                                    }(document, 'script', 'facebook-jssdk'));
+                                                </script>
+
+                                                <div class="fb-like" data-href="@Request.Url.AbsoluteUri" data-layout="button_count" data-action="like" data-size="small" data-show-faces="false" data-share="true"></div>
+
+                                            </td>
+                                            <td>
+                                                <script src="https://apis.google.com/js/platform.js" async defer>
+                                                    {
+                                                        lang: 'vi'
+                                                    }
+                                                </script>
+
+                                                <div class="g-plus" data-action="share" data-annotation="none"></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="padding-top: 5px">
+                                                <a href="https://twitter.com/intent/tweet?button_hashtag=phunumart" class="twitter-hashtag-button" data-show-count="false">Tweet</a>
+                                                <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div id="tab-description" class="product-desc product-section">
+        <h3 class="product-section_title">Mô tả</h3>
+        @Html.Raw(product.Description)
+        <div class="clearfix"></div>
+    </div>
+
+    <div id="tab-review" class="product-reviews product-section">
+        <h3 class="product-section_title">Nhận Xét (@((product.Reviews == null) ? 0 : product.Reviews.Count))</h3>
+
+        <div class="alert alert-success" id="submitReviewMessage" style="display: none">
+            <i class="fa fa-check-circle"></i> <span id="submitReviewMessageContent"></span>
+        </div>
+
+        <div id="review">
+            @if (product.Reviews == null || product.Reviews.Count == 0)
+            {
+                <p>Không có nhận xét nào cho sản phẩm này.</p>
+            }
+            else
+            {
+                foreach (var productReviewModel in product.Reviews)
+                {
+                    <div class="row" style="padding-bottom: 30px;">
+                        <div class="col-sm-2">
+                            <a href="#" class="pull-right">
+                                <img class="media-object" src="https://image.freepik.com/free-icon/male-user-shadow_318-34042.jpg"
+                                     alt="@productReviewModel." style="width: 64px; height: 64px;">
+                            </a>
+                        </div>
+                        <div class="col-sm-8">
+                            <h4 class="media-heading">@productReviewModel.User.Firstname @productReviewModel.User.Lastname</h4>
+                            <p>@productReviewModel.ReviewMessage</p>
+
+                            @if (user != null && (user.RoleId == RoleEnum.Admin || user.RoleId == RoleEnum.Manager))
+                            {
+                                <div class="row">
+                                    <div class="pull-right">
+                                        <a href="#" onclick="productManager.deleteReview(@productReviewModel.ReviewId)" title="Delete review" class="btn btn-link btn-sm">
+                                            <span class="li_trash"></span> Xóa
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="clear-fix"></div>
+                }
+
+            }
+        </div>
+
+        <div class="review-form-title">
+            <h3 class="product-section_title close-tab" id="reviews_form_title">Viết review</h3>
+        </div>
+
+        <div class="form-horizontal" id="reviews_form">
+            <div class="form-group required">
+                <label for="txtOrderCode" class="col-sm-2 control-label">Mã Hóa Đơn</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="txtOrderCode" placeholder="Order Code">
+                </div>
+            </div>
+            <div class="form-group required">
+                <label class="control-label col-sm-2" for="input-review">Review của bạn</label>
+                <div class="col-sm-10">
+                    <textarea name="text" rows="5" id="input-review" class="form-control"></textarea>
+                    <div class="help-block">
+                        <span class="text-danger">Lưu ý:</span> Không chấp nhận mã HTML!
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-10">
+                    <div class="pull-right">
+                        <button type="button" id="button-review" data-loading-text="Loading..." class="btn btn-primary">Tiếp tục</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="product-section">
+        @Html.Partial("../Home/IndexPartialPage/ProductThumbnailPartial", new ProductThumbnailModelList(relatedProducts, ProductThumbnailModelList.Empty, ProductThumbnailModelList.RelatedProducts))
+    </div>
+</div>
+
+
+@section ExtendScript
+{
+    <script>
+        jQuery('#reviews_form_title').addClass('close-tab');
+        jQuery('#reviews_form_title')
+            .on("click",
+                function () {
+                    if (jQuery(this).hasClass('close-tab')) {
+                        jQuery(this).removeClass('close').parents('#tab-review').find('#reviews_form').slideToggle();
+                    } else {
+                        jQuery(this).addClass('close-tab').parents('#tab-review').find('#reviews_form').slideToggle();
+                    }
+                });
+    </script>
+
+    <script src="~/Scripts/Shop/Product/product-view-controller.js"></script>
+    <script src="~/Content/view/PgwSlider/pgwslider.min.js"></script>
+    <script>
+
+        var productManager = new ProductViewManager({
+            id: "@product.Id",
+            name: "@product.Name",
+            quantity: "@product.Quantity",
+            url: {
+                deleteUrl: "@Url.Action("DeleteReview", "Review")"
+            }
+        });
+
+        productManager.initEvents();
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('.pgwSlider').pgwSlider({
+                listPosition: 'left',
+                transitionEffect: 'fading',
+                autoSlide: true,
+                selectionMode: 'mouseOver'
+            });
+        });
+    </script>
+
+}
+
+@section StyleSheetSection
+{
+    <link href="~/Content/view/theme/v1/js/maginfic/magnific-popup.css" rel="stylesheet" />
+    <meta name="title" content="@product.Name" />
+    <meta name="description" content="@product.ShortDescription" />
+    <link rel="image_src" href="@Url.Action("View", "Image", new {id = product.Cover})" />
+
+    <script src="~/Scripts/jquery.elevatezoom.js"></script>
+
+    <link rel="stylesheet" href="~/Content/view/PgwSlider/pgwslider.min.css" />
+
+    <script>
+        $("#gallery_zoom").elevateZoom({
+            gallery: 'image-additional',
+            cursor: 'pointer',
+            zoomType: 'inner',
+            galleryActiveClass: 'active',
+            imageCrossfade: true
+        });
+    </script>
+
+    <style>
+        .ps-list {
+            width: 25% !important;
+        }
+    </style>
+}

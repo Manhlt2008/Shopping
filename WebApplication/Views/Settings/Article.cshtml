@@ -1,0 +1,112 @@
+﻿@using WebApplication.Lib.Dal.DbContext
+@using WebApplication.Lib.Util.Constant
+@{
+    ViewBag.Title = "Article";
+    Layout = "~/Views/Shared/AdminCp/_AdminLayout.cshtml";
+
+    var page = (StaticPage)ViewBag.Page;
+    var typeName = (string)ViewBag.Type;
+    bool? isSuccess = null;
+
+    if (ViewBag.IsSuccess != null)
+    {
+        isSuccess = (bool) ViewBag.IsSuccess;
+    }
+}
+
+@section Breadcrumbs
+{
+    <li>
+        <span>Quản Lý Bài Viết</span>
+    </li>
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">@MessageEnum.Breadcrumbs.SettingBreadcrumb.Index</h4>
+            </div>
+            <div class="panel-body">
+                @Html.Partial("SettingSelectionPartial")
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Cập Nhật Trang</h4>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm("Article", "Settings", FormMethod.Post, new { @class = "form-horizontal" }))
+                {
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">Tiêu Đề</div>
+                        <div class="col-sm-8">
+                            <input type="text" name="Title" value="@page.Title" class="form-control" />
+                            <input type="hidden" value="@page.Type" name="Type" />
+                            <input type="hidden" value="@typeName" name="TypeName" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">Nội Dung</div>
+                        <div class="col-sm-8">
+                            <div class="sepH_b">
+                                <textarea name="Content" style="display: none" id="txtContent"></textarea>
+                                <div class="adjoined-bottom">
+                                    <div class="grid-container">
+                                        <div class="grid-width-100">
+                                            <div id="editor">
+                                                @Html.Raw(page.Content)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-default pull-right" onclick="return SettingsArticleController.submitArticleChanges();">Lưu</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section CustomScript
+{
+    <script src="~/Scripts/ckeditor/ckeditor.js"></script>
+    <link rel="stylesheet" href="~/Scripts/ckeditor/samples/toolbarconfigurator/lib/codemirror/neo.css">
+    <script src="~/Scripts/AdminCP/Product/product.js"></script>
+    <script src="~/Scripts/AdminCP/Settings/ArticleController.js"></script>
+
+    <script>
+        if ($('#category_select').length) {
+            $('#category_select')
+                .select2({
+                    allowClear: true,
+                    placeholder: "Select..."
+                });
+        }
+
+        initSample();
+    </script>
+
+    @if (isSuccess != null)
+    {
+        if (isSuccess.Value)
+        {
+            <script>
+                NotificationUtil.successMessage(ShopMessage.settings.article.updateSuccess);
+            </script>
+        }
+        else
+        {
+            <script>
+                NotificationUtil.warningMessage(ShopMessage.error.connectionFail);
+            </script>
+        }
+    }
+}

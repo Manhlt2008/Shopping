@@ -1,0 +1,24 @@
+﻿@using WebApplication.Lib.Util.Constant
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/AdminCp/_AdminLayout.cshtml";
+}
+
+@section Breadcrumbs
+{
+    <li><a href="@Url.Action("Index", "Settings")">@MessageEnum.Breadcrumbs.SettingBreadcrumb.Setting</a></li>
+    <li><span>@MessageEnum.Breadcrumbs.SettingBreadcrumb.Index</span></li>
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">@MessageEnum.Breadcrumbs.SettingBreadcrumb.Index</h4>
+            </div>
+            <div class="panel-body">
+                @Html.Partial("SettingSelectionPartial")
+            </div>
+        </div>
+    </div>
+</div>

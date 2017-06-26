@@ -1,0 +1,94 @@
+﻿@using WebApplication.Models.Category
+@{
+    ViewBag.Title = "ManageAccount";
+    Layout = "~/Views/Shared/AdminCp/_AdminLayout.cshtml";
+
+    var categoryModels = (List<CategoryManageList>)ViewBag.CategoryList;
+    var categoryId = (long?)ViewBag.CategoryId;
+    var cateforyInfo = (CategoryManageList)ViewBag.CategoryInfo;
+}
+
+@section Breadcrumbs
+{
+    <li><a href="@Url.Action("Manage", "Category", new { id = "null" })">Quản lí</a></li>
+    <li><span>Danh sách thể loại</span></li>
+}
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @if (categoryId == null)
+                {
+                    <h4 class="panel-title">Danh sách thể loại</h4>
+                }
+                else if (cateforyInfo != null)
+                {
+                    <h4 class="panel-title">Thể loại con của <b><a href="@Url.Action("Manage", "Category", new {id = (long) categoryId})">@cateforyInfo.Name</a></b></h4>
+                }
+                else
+                {
+                    <h4 class="panel-title">Không có bất kì thể loại con nào</h4>
+                }
+            </div>
+            <div class="panel-body">
+                <div class="sepH_c">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Tên</th>
+                                    <th>Thể loại con</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var category in categoryModels)
+                                {
+                                    <tr>
+                                        <td>
+                                            @if (categoryId == null)
+                                            {
+                                                <a href="@Url.Action("Manage", "Category", new {id = category.Id})" title="@category.Name">@category.Name</a>
+                                            }
+                                            else
+                                            {
+                                                <span>@category.Name</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (category.CategoryManageLists != null && category.CategoryManageLists.Count > 0)
+                                            {
+                                                <ul>
+                                                    @foreach (var child in category.CategoryManageLists)
+                                                    {
+                                                        <li>
+                                                            <a href="@Url.Action("Manage", "Category", new {id = category.Id})" title="@child.Name">@child.Name</a>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            }
+                                        </td>
+                                        <td>
+                                            <a href="@Url.Action("Update", "Category", new {id = category.Id})" title="Edit @category.Name">
+                                                <span class="glyphicon glyphicon-edit"></span>
+                                            </a>
+                                            <a href="@Url.Action("Delete", "Category", new {id = category.Id})" title="Delete @category.Name and sub categories"
+                                               onclick="return txtDelete('@category.Name');">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section CustomScript
+{
+    <script src="~/Scripts/AdminCP/Category/create-form.js"></script>
+}

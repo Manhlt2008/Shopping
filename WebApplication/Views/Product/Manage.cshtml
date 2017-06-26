@@ -1,0 +1,585 @@
+﻿@using System.Globalization
+@using WebApplication
+@using WebApplication.Lib.Bll
+@using WebApplication.Lib.Util.Constant
+@using WebApplication.Models.Category
+@using WebApplication.Models.Product
+@using Supplier = WebApplication.Lib.Dal.DbContext.Supplier
+
+@{
+    ViewBag.Title = "Manage";
+    Layout = "~/Views/Shared/AdminCp/_AdminLayout.cshtml";
+
+    var userModel = UserBll.GetUser();
+
+    var currentcontroller = HttpContext.Current.Request.RequestContext.RouteData.Values["action"].ToString();
+
+    var findAllProductModel = (FindAllProductModel)ViewBag.FindAllProductModel;
+
+    if (findAllProductModel == null)
+    {
+        throw new HttpException(404, "Không tìm thấy sản phẩm");
+    }
+    bool? updateProductStatus = null;
+
+    if (ViewBag.UpdateProductStatus != null)
+    {
+        updateProductStatus = (bool)ViewBag.UpdateProductStatus;
+    }
+    var productThumbnails = findAllProductModel.Products ?? Enumerable.Empty<ProductThumbnailModel>().ToList();
+
+    var supplierProduct = (Supplier)ViewBag.SupplierProduct ?? new Supplier();
+
+    long? supplierId = supplierProduct.Id;
+
+    if (supplierId == 0)
+    {
+        supplierId = null;
+    }
+
+    if (Model != null)
+    {
+        var modelList = (ProductThumbnailModelList)Model;
+
+        if (modelList.ProductThumbnailModels != null)
+        {
+            productThumbnails = modelList.ProductThumbnailModels;
+        }
+    }
+
+    var cul = CultureInfo.GetCultureInfo("vi-VN");
+
+    var pageLimitList = new List<int> { 0, 5, 10, 25, 50, 75, 100, 200, 500 };
+
+    var itemLimit = findAllProductModel.Limit;
+    var itemSort = findAllProductModel.Sort ?? "default";
+    var itemOrder = findAllProductModel.Order;
+    var itemTotalProduct = findAllProductModel.TotalProduct;
+    int totalPage = itemTotalProduct / (itemLimit == 0 ? 1 : itemLimit);
+
+    var categoryId = (int)ViewBag.CategoryId;
+
+    if (totalPage == 0)
+    {
+        totalPage = 1;
+    }
+
+    var itemPage = findAllProductModel.Page;
+
+    var categories = (List<CategoryManageList>)ViewBag.Categories ?? new List<CategoryManageList>();
+
+    var categoryManageList = (CategoryManageList)ViewBag.Category ?? new CategoryManageList
+    {
+        Id = 0,
+        Name = ""
+    };
+    var actionName = ViewBag.ActionName != null ? (string)ViewBag.ActionName : "Manage";
+    var controllerName = ViewBag.ControllerName != null ? (string)ViewBag.ControllerName : "Product";
+    var searchString = ViewBag.SearchString ?? "";
+
+}
+
+@section Breadcrumbs
+{
+
+
+    @if (supplierProduct.Id > 0)
+    {
+        <li><a href="@Url.Action("Manage", "Supplier")">Quản lí Nhà Cung Cấp</a></li>
+        <li><span>Danh sách sản phẩm của @supplierProduct.Name</span></li>
+    }
+    else
+    {
+        <li><a href="@Url.Action("Manage", "Product")">Quản lí</a></li>
+        <li><span>Danh sách sản phẩm</span></li>
+    }
+}
+@section CustomScript
+{
+    <link href="~/Content/css/datepicker.css" rel="stylesheet" />
+    <script src="~/Content/js/bootstrap-datepicker.js"></script>
+    <script src="~/Content/admincp/js/lib/bootbox/bootbox.min.js"></script>
+    <script src="~/Scripts/AdminCP/Product/product-controller.js" type="text/javascript" language="JavaScript"></script>
+    @if (updateProductStatus != null)
+    {
+        if (updateProductStatus.Value)
+        {
+            <script>
+                NotificationUtil.successMessage("Cập nhật trạng thái sản phẩm thành công.");
+            </script>
+        }
+        else
+        {
+            <script>
+                NotificationUtil.warningMessage("Lưu trạng thái sản phẩm thất bại. Vui lòng thử lại sau.");
+            </script>
+        }
+    }
+    <script>
+        $(document).ready(function () {
+            $("#search-name").on('keypress', function (e) {
+                if (e.which === 13) {
+                    $("#search-form").submit();
+                }
+            });
+        });
+    </script>
+}
+
+@if (supplierProduct.Id > 0)
+{
+    <div class="row">
+        <div class="col-sm-12 mbox_table_actions">
+            <div class="btn-group btn-group-lg">
+                <a class="btn btn-info btn-lg" title="Thêm Sản Phẩm Mới" href="@Url.Action("Create", "Product", new {@supplierId = supplierId})" target="_blank">
+                    <span class="li_shop"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Danh sách sản phẩm</h4>
+            </div>
+            <div class="slick_grid">
+                <div class="panel_controls">
+                    <div class="row">
+                        <div class="form-horizontal">
+                            <div class="col-sm-9">
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label">Loại sản phẩm</label>
+                                    <div class="col-sm-7">
+                                        <input type="hidden" id="currentCategory" value="@categoryManageList.Name" />
+                                        <select class="" name="CategoryId" id="category_select">
+                                            <option value="" disabled selected>Select Option</option>
+                                            @foreach (var category in categories)
+                                            {
+                                                <optgroup label="@category.Name">
+                                                    <option value="@Url.Action(actionName, controllerName, new
+                                                              {
+                                                                  catId = category.Id,
+                                                                  order = itemOrder,
+                                                                  limit = itemLimit,
+                                                                  page = itemPage,
+                                                                  supplierId = supplierId,
+                                                                  query=searchString
+                                                              })">
+                                                        @category.Name
+                                                    </option>
+
+                                                    @if (category.CategoryManageLists != null && category.CategoryManageLists.Count > 0)
+                                                    {
+
+                                                        foreach (var item in category.CategoryManageLists)
+                                                        {
+                                                            <option value="@Url.Action(actionName, controllerName, new
+                                                                       {
+                                                                           catId = (int) item.Id,
+                                                                           order = itemOrder,
+                                                                           limit = itemLimit,
+                                                                           page = itemPage,
+                                                                           supplierId = supplierId,
+                                                                           query=searchString
+                                                                       })">
+                                                                ----@item.Name
+                                                            </option>
+                                                        }
+                                                    }
+                                                </optgroup>
+                                            }
+                                        </select>
+                                    </div>
+                                    <label class="col-sm-3 control-label">
+                                        <input type="checkbox" id="chkListAllProducts"
+                                               data-url="@Url.Action(actionName, controllerName, new
+                                                     {
+                                                         catId = 0,
+                                                         order = itemOrder,
+                                                         limit = itemLimit,
+                                                         page = itemPage,
+                                                         supplierId = supplierId,
+                                                         query=searchString
+                                                     })"
+                                               @(categoryId == 0 ? "checked " : string.Empty) /> Tất cả loại sản phẩm
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                @using (Html.BeginForm(actionName, controllerName, FormMethod.Get, new { @id = "search-form" }))
+                                {
+                                    @Html.Hidden("catId", categoryId)
+                                    @Html.Hidden("order", itemOrder)
+                                    @Html.Hidden("limit", itemLimit)
+                                    @Html.Hidden("page", 1)
+                                    @Html.Hidden("supplierId", supplierId)
+                                    <input type="text" class="form-control" placeholder="Tìm Kiếm" id="search-name" name="query" value="@searchString" />
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%">Hình Ảnh</th>
+                            <th>Tên</th>
+                            <th>Mô Tả Ngắn</th>
+                            <th style="width: 10%">Giá</th>
+                            <th style="width: 10%">Số Lượng</th>
+                            <th style="width: 10%"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var productThumbnail in productThumbnails)
+                        {
+                            <tr>
+                                <td>
+                                    <a href="@Url.Action("Update", "Product", new {id = productThumbnail.Id})">
+                                        <img src="@Url.Action("View", "Image", new {id = productThumbnail.Cover})"
+                                             title="@productThumbnail.Name" alt="@productThumbnail.Name"
+                                             style="max-height: 150px; max-width: 150px" />
+                                    </a>
+                                </td>
+                                <td>
+                                    <p>
+                                        <a href="@Url.Action("Update", "Product", new {id = productThumbnail.Id})">
+                                            @productThumbnail.Name
+                                        </a>
+                                    </p>
+                                    <p style="font-style: italic;">@(productThumbnail.UpdatedProduct != null ? productThumbnail.UpdatedProduct.Name : string.Empty)</p>
+                                </td>
+                                <td>
+                                    <p>@Html.Raw(productThumbnail.ShortDescription)</p>
+                                    <p style="font-style: italic;">@Html.Raw((productThumbnail.UpdatedProduct != null ? productThumbnail.UpdatedProduct.ShortDescription : string.Empty))</p>
+                                </td>
+                                <td>
+                                    <p>@productThumbnail.Price.ToString("#,### đ", cul.NumberFormat)</p>
+                                    <p style="font-style: italic;">@(productThumbnail.UpdatedProduct != null ? productThumbnail.UpdatedProduct.Price.ToString("#,### đ", cul.NumberFormat) : string.Empty)</p>
+                                </td>
+                                <td>
+                                    <p>
+                                        <a href="#" onclick="updateQuantityProduct(this)"
+                                           data-id="@productThumbnail.Id"
+                                           data-product-name="@productThumbnail.Name"
+                                           data-product-quantity="@productThumbnail.Quantity">
+                                            @productThumbnail.Quantity
+                                        </a>
+                                    </p>
+                                    <p style="font-style: italic;">@(productThumbnail.UpdatedProduct != null ? productThumbnail.UpdatedProduct.Quantity.ToString() : string.Empty)</p>
+                                </td>
+                                <td>
+                                    <a href="@Url.Action("View", "Product", new {id = productThumbnail.Id})"
+                                       title="View detail of @productThumbnail.Name"
+                                       target="_blank">
+                                        <span class="li_eye"></span>
+                                    </a>
+
+                                    @if (productThumbnail.UpdatedProduct == null)
+                                    {
+                                        <a href="@Url.Action("Update", "Product", new {id = productThumbnail.Id})" title="Edit @productThumbnail.Name">
+                                            <span class="glyphicon glyphicon-edit"></span>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("Update", "Product", new {id = productThumbnail.Id, supplierId = productThumbnail.SupplierId})" title="Edit @productThumbnail.Name">
+                                            <i class="glyphicon glyphicon-pencil"></i>
+                                        </a>
+                                    }
+                                    @if (userModel != null && (userModel.RoleId == RoleEnum.Admin || userModel.RoleId == RoleEnum.Manager))
+                                    {
+                                        <a href="@Url.Action("Delete", "Product", new
+                                            {
+                                                id = productThumbnail.Id,
+                                                catId = categoryId,
+                                                order = itemOrder,
+                                                limit = itemLimit,
+                                                page = itemPage,
+                                                supplierId=productThumbnail.SupplierId
+                                            })" title="Unload @productThumbnail.Name."
+                                           onclick="return txtDelete('@productThumbnail.Name');">
+                                            <i class="glyphicon glyphicon-trash"></i>
+                                        </a>
+
+                                        <a href="#" onclick="showModalSetHomepage(this)" title="Chọn hiển thị trên trang chủ"
+                                           data-product-id="@productThumbnail.Id"
+                                           data-product-name="@productThumbnail.Name">
+                                            <span class="glyphicon glyphicon-home"></span>
+                                        </a>
+
+                                        if (productThumbnail.Status == StatusEnum.Active)
+                                        {
+                                            <a href="/Product/Approve?id=@(productThumbnail.Id)&currentcontroller=@(currentcontroller)"><span class="icon-remove" title="Không cho phép đăng sản phẩm"></span></a>
+                                        }
+                                        if (productThumbnail.Status == StatusEnum.Pending)
+                                        {
+                                            <a href="/Product/Approve?id=@productThumbnail.Id&currentcontroller=@(currentcontroller)"><span class="icon-ok" title="cho phép đăng sản phẩm"></span></a>
+                                        }
+                                        if (productThumbnail.UpdatedProduct != null)
+                                        {
+                                            <span class="label label-danger">Cần xét duyệt thay đổi</span>
+                                        }
+
+                                    }
+                                    <br />
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div id="pager">
+                <div class="slick-pager" style="padding: 3px;">
+                    <div class="row">
+                        <div class="col-sm-7">
+                            <style>
+                                .slick-item-nav a {
+                                    text-decoration: black none;
+                                    color: black;
+                                    background: transparent;
+                                    border: transparent;
+                                }
+
+                                .slick-item-nav-actived {
+                                    clear: both;
+                                    border-color: #48ac2e !important;
+                                    background: #48ac2e !important;
+                                    color: #fff;
+                                }
+                            </style>
+
+                            <span class="slick-pager-nav">
+                                @PagingHelper(categoryId, itemPage, itemSort, itemOrder, itemLimit, totalPage, actionName, controllerName, supplierId, searchString)
+                            </span>
+
+                            @{
+                                var from = (itemPage - 1) * itemLimit + 1;
+                                var to = itemPage * itemLimit;
+                                if (to > itemTotalProduct || to < 0)
+                                {
+                                    to = itemTotalProduct;
+                                }
+                            }
+                            <span class="slick-pager-status">Showing @from to @to records</span>
+                        </div>
+
+                        <div class="col-sm-5">
+                            <span class="slick-pager-settings pull-right">
+
+                                <span class="slick-pager-settings-expanded">
+                                    Show:
+                                    @foreach (var item in pageLimitList)
+                                    {
+                                        var className = string.Empty;
+                                        if (itemLimit == item)
+                                        {
+                                            className = "settings_expanded_active";
+                                        }
+
+                                        <a data="@item" class="@className"
+                                           href="@Url.Action(actionName, controllerName, new
+                                                         {
+                                                             catId = categoryId,
+                                                             order = itemOrder,
+                                                             limit = item == 0 ? "0" : item.ToString(),
+                                                             page = 1,
+                                                             supplierId=supplierId,
+                                                             query=searchString
+                                                         })">
+                                            @(item <= 0 ? "All" : item.ToString())
+                                        </a>
+                                    }
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-update-quantity-product" style="display:none">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="col-md-3 control-label">Nhập số lượng <span style="color:red">*</span> </label>
+                <div class="col-md-8">
+                    <input name="input-quantity" onkeydown="validateNumber(event)" type="text" class="form-control" maxlength="10" style="text-align:center" value="">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Set home page  -->
+<div id="set-homepage-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Cập nhật vị trí trang chủ [<span id="set-homepage-product-name"></span>]</h4>
+            </div>
+            <div class="modal-body form-horizontal" id="content-set-homepage">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="close-modal">Đóng</button>
+                <button type="button" class="btn btn-default" onclick="return setHomePage(this);">Cập nhật</button>
+                <input type="hidden" value="" id="product-id" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@helper PagingHelper(int categoryId, int itemPage, string itemSort, int itemOrder, int itemLimit, int totalPage, string actionName, string controllerName, long? supplierId, string searchString)
+{
+
+if (itemPage > 1)
+{
+        <span class="slick-item-nav">
+            <a href="@Url.Action(actionName, controllerName, new
+                         {
+                             catId = categoryId,
+                             order = itemOrder,
+                             limit = itemLimit,
+                             page = 1,
+                             supplierId = supplierId,
+                             query=searchString
+                         })">
+                <i class="icon-double-angle-left"></i>
+            </a>
+        </span>
+        <span class="slick-item-nav">
+            <a href="@Url.Action(actionName, controllerName, new
+                 {
+                     catId = categoryId,
+                     order = itemOrder,
+                     limit = itemLimit,
+                     page = (itemPage - 1),
+                     supplierId = supplierId,
+                     query=searchString
+                 })">
+                <i class="icon-angle-left"></i>
+            </a>
+        </span>
+}
+
+if (totalPage > 6)
+{
+    for (var i = 1; i <= 3; i++)
+    {
+        if (i == itemPage)
+        {
+                <span class="slick-item-nav slick-item-nav-actived"><span>@i</span></span>
+        }
+        else
+        {
+                <span class="slick-item-nav">
+                    <a href="@Url.Action(actionName, controllerName, new
+                                 {
+                                     catId = categoryId,
+                                     order = itemOrder,
+                                     limit = itemLimit,
+                                     page = i,
+                                     supplierId = supplierId,
+                                     query=searchString
+                                 })" title="Page @i">
+                        @i
+                    </a>
+                </span>
+        }
+    }
+
+        <span class="slick-item-nav">
+            <a href="javascript:void(0);">...</a>
+        </span>
+
+    for (var i = totalPage - 2; i <= totalPage; i++)
+    {
+        if (i == itemPage)
+        {
+                <span class="slick-item-nav slick-item-nav-actived"><span>@i</span></span>
+        }
+        else
+        {
+                <span class="slick-item-nav">
+                    <a href="@Url.Action(actionName, controllerName, new
+                                  {
+                                      catId = categoryId,
+                                      order = itemOrder,
+                                      limit = itemLimit,
+                                      page = i,
+                                      supplierId = supplierId,
+                                      query=searchString
+                                  })" title="Page @i">
+                        @i
+                    </a>
+                </span>
+        }
+    }
+}
+else
+{
+    for (var i = 1; i <= totalPage; i++)
+    {
+        if (i == itemPage)
+        {
+                <span class="slick-item-nav slick-item-nav-actived"><span>@i</span></span>
+        }
+        else
+        {
+                <span class="slick-item-nav">
+                    <a href="@Url.Action(actionName, controllerName, new
+                        {
+                            catId = categoryId,
+                            order = itemOrder,
+                            limit = itemLimit,
+                            page = i,
+                            supplierId = supplierId,
+                            query = searchString
+                        })" title="Page @i">
+                        @i
+                    </a>
+                </span>
+        }
+    }
+}
+
+if (itemPage < totalPage)
+{
+        <span class="slick-item-nav">
+            <a href="@Url.Action(actionName, controllerName, new
+                         {
+                             catId = categoryId,
+                             order = itemOrder,
+                             limit = itemLimit,
+                             page = (itemPage + 1),
+                             supplierId = supplierId,
+                             query=searchString
+                         })">
+                <i class="icon-angle-right"></i>
+            </a>
+        </span>
+        <span class="slick-item-nav">
+            <a href="@Url.Action(actionName, controllerName, new
+                         {
+                             catId = categoryId,
+                             order = itemOrder,
+                             limit = itemLimit,
+                             page = totalPage,
+                             supplierId = supplierId,
+                             query=searchString
+                         })">
+                <i class="icon-double-angle-right"></i>
+            </a>
+        </span>
+}
+}
+

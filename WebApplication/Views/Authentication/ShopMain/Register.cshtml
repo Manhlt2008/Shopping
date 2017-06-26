@@ -1,0 +1,103 @@
+﻿@using WebApplication.Lib.Bll.Lang
+@using WebApplication.Lib.Bll.SystemSetting
+@{
+    var lang = new LangValue(LangValue.LangEnum.Vi, LangValue.DictionaryEnum.CmsAuthenticationRegister);
+    var masterpageLang = new LangValue(LangValue.LangEnum.Vi, LangValue.DictionaryEnum.MasterPage);
+
+    ViewBag.Title = ViewTitleBll.Title(lang.GetValue(LangValue.CmsAuthentication.Register.Title));
+
+    Layout = "~/Views/Shared/ShopMain/_ShopMainLayout.cshtml";
+}
+<div class="b-inner-page-header f-inner-page-header b-bg-header-inner-page">
+    <div class="b-inner-page-header__content">
+        <div class="container">
+            <h1 class="f-primary-l c-default">@lang.GetValue(LangValue.CmsAuthentication.Register.Title)</h1>
+        </div>
+    </div>
+</div>
+<div class="l-main-container">
+    <div class="b-breadcrumbs f-breadcrumbs">
+        <div class="container">
+            <ul>
+                <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-home"></i> @masterpageLang.GetValue(LangValue.MasterPage.Menu.Home)</a></li>
+                <li><i class="fa fa-angle-right"></i><span> @lang.GetValue(LangValue.CmsAuthentication.Register.Title)</span></li>
+            </ul>
+        </div>
+    </div>
+    <div class="container b-container-login-page">
+        @using (Html.BeginForm("Register", "Authentication", FormMethod.Post, new { enctype = "multipart/form-data", @Class = "form-horizontal", @Id = "form-register" }))
+        {
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="b-form-row f-primary-l f-title-big c-secondary">@lang.GetValue(LangValue.CmsAuthentication.Register.CreateAnAccount)</div>
+                    <div class="b-form-row">@lang.GetValue(LangValue.CmsAuthentication.Register.CreateAnAccountSub)</div>
+                    <hr class="b-hr" />
+                    <div class="row b-form-inline b-form-horizontal">
+                        <div class="col-xs-12">
+                            <div class="b-form-row">
+                                <label class="b-form-horizontal__label" for="form-register-input-firstname">
+                                    @lang.GetValue(LangValue.CmsAuthentication.Register.FirstName)
+                                </label>
+                                <div class="b-form-horizontal__input">
+                                    <input type="text" id="form-register-input-firstname" class="form-control" name="Firstname" placeholder="@lang.GetValue(LangValue.CmsAuthentication.Register.FirstName)" />
+                                </div>
+                            </div>
+                            <div class="b-form-row">
+                                <label class="b-form-horizontal__label" for="form-register-input-lastname">
+                                    @lang.GetValue(LangValue.CmsAuthentication.Register.LastName)
+                                </label>
+                                <div class="b-form-horizontal__input">
+                                    <input type="text" id="form-register-input-lastname" class="form-control" name="Lastname" placeholder="@lang.GetValue(LangValue.CmsAuthentication.Register.LastName)" />
+                                </div>
+                            </div>
+                            <div class="b-form-row">
+                                <label class="b-form-horizontal__label" for="form-register-input-email">
+                                    @lang.GetValue(LangValue.CmsAuthentication.Register.YourEmail)
+                                </label>
+                                <div class="b-form-horizontal__input">
+                                    <input type="email" id="form-register-input-email" class="form-control" name="Email" placeholder="@lang.GetValue(LangValue.CmsAuthentication.Register.YourEmail)" />
+                                </div>
+                            </div>
+                            <div class="b-form-row">
+                                <label class="b-form-horizontal__label" for="form-register-input-password">
+                                    @lang.GetValue(LangValue.CmsAuthentication.Register.YourPassword)
+                                </label>
+                                <div class="b-form-horizontal__input">
+                                    <input type="password" id="form-register-input-password" class="form-control" name="Password" />
+                                </div>
+                            </div>
+                            <div class="b-form-row">
+                                <label class="b-form-horizontal__label" for="form-register-input-password-confirm">
+                                    @lang.GetValue(LangValue.CmsAuthentication.Register.ConfirmPassword)
+                                </label>
+                                <div class="b-form-horizontal__input">
+                                    <input type="password" id="form-register-input-password-confirm" class="form-control" />
+                                </div>
+                            </div>
+                            <div class="b-form-row">
+                                <div class="b-form-horizontal__label"></div>
+                                <div class="b-form-horizontal__input">
+                                    <label for="checkbox-condition" class="condition" id="checkbox-condition-area">
+                                        <input type="checkbox" class="b-form-checkbox b-form-checkbox" id="checkbox-condition" />
+                                        <span>@lang.GetValue(LangValue.CmsAuthentication.Register.AgreeTo) <a href="@Url.Action("Index", "TermAndConditions")" target="_blank" class="c-secondary f-more">@lang.GetValue(LangValue.CmsAuthentication.Register.TermAndCondition)</a></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="b-form-row">
+                                <div class="b-form-horizontal__label"></div>
+                                <div class="b-form-horizontal__input">
+                                    <input type="submit" class="b-btn f-btn b-btn-md b-btn-default f-primary-b b-btn__w100" id="btnSubmitForm" onclick="Register(event)"
+                                           value="@lang.GetValue(LangValue.CmsAuthentication.Register.SignUpNow)" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="f-primary-l f-title-big c-secondary">@lang.GetValue(LangValue.CmsAuthentication.Register.WelcomeTo)</div>
+                    <p>@Html.Raw(@lang.GetValue(LangValue.CmsAuthentication.Register.WelcomeToSub))</p>
+                </div>
+            </div>
+        }
+    </div>
+</div>

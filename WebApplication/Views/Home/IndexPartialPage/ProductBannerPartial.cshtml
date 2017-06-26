@@ -1,0 +1,25 @@
+﻿@{
+    var banners = (List<WebApplication.Models.Slider.SliderModel>)Model;
+}
+<div id="banner0" class="banners row">
+    @if (banners.Count > 0)
+    {
+        int count = 0;
+        foreach (var item in banners)
+        {
+            count = count + 1;
+            <div class="col-sm-6 banner-1">
+                <div class="banner-box">
+                    <a class="clearfix" href="@item.GoToLink">
+                        <img src="@item.Image_Url" alt="@item.Title" class="img-responsive" style="width: 420px;height: 220px;" />
+                        <div class="s-desc">
+                            <h2>@item.Title</h2>
+                            @Html.Raw(@item.Description)
+                            <p class="link">Shop now!</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        }
+    }
+</div>

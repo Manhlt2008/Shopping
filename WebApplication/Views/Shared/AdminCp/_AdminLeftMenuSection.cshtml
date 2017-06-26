@@ -1,0 +1,121 @@
+﻿@using WebApplication.Lib.Bll
+@using WebApplication.Lib.Util.Constant
+
+@{
+    var userModel = UserBll.GetUser();
+}
+
+<nav id="side_fixed_nav">
+    <div class="slim_scroll">
+        <div class="side_nav_actions">
+            <a href="javascript:void(0)" id="side_fixed_nav_toggle"><span class="icon-align-justify"></span></a>
+            <div id="toogle_nav_visible" class="make-switch switch-mini" data-on="success" data-on-label="
+                    <i class='icon-lock'></i>" data-off-label="<i class='icon-unlock-alt'></i> ">
+                    <input id="nav_visible_input" type="checkbox">
+                </div>
+        </div>
+        <ul id="text_nav_side_fixed">
+            @if (userModel != null && (userModel.RoleId == RoleEnum.Admin || userModel.RoleId == RoleEnum.Manager))
+            {
+                <li>
+                    <a href="@Url.Action("Index", "Admin")"><span class="icon-dashboard"></span>Trang Quản Lý</a>
+                </li>
+                <li>
+                    <a href="javascript:void(0);"><span class="li_settings"></span> Cấu Hình</a>
+                    <ul>
+                        <li><a href="@Url.Action("Index", "Settings")">Cấu Hình Chung</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:void(0)"><span class="icon-puzzle-piece"></span>Chọn SP Trang Chủ</a>
+                    <ul>
+                        <li><a href="@Url.Action("Featured", "HomePage")">Nổi Bật</a></li>
+                        <li><a href="@Url.Action("Lasted", "HomePage")">Mới Nhất</a></li>
+                        <li><a href="@Url.Action("Specials", "HomePage")">Đặc Biệt</a></li>
+                        <li><a href="@Url.Action("BestSellers", "HomePage")">Mua Nhiều Nhất</a></li>
+                        <li><a href="@Url.Action("Slider", "Slider")">Slider</a></li>
+                        <li><a href="@Url.Action("Banner", "Slider")">Banner</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:void(0)"><span class="li_user"></span>Tài Khoản</a>
+                    <ul>
+                        <li><a href="@Url.Action("ManageAccount", "Admin")">Quản Lý</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="javascript:void(0)"><span class="icon-th-list"></span>Quản lý Loại SP</a>
+                    <ul>
+                        <li><a href="@Url.Action("Manage", "Category")">Quản Lý</a></li>
+                        <li><a href="@Url.Action("Create", "Category")">Tạo Mới</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:void(0)"><span class="li_t-shirt"></span>Sản Phẩm</a>
+
+                    <ul>
+                        <li><a href="@Url.Action("Manage", "Product")">Quản Lý</a></li>
+                        <li><a href="@Url.Action("Create", "Product")">Tạo Mới</a></li>
+                        <li><a href="@Url.Action("PendingProduct", "Product")">Duyệt Sản Phẩm</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:void(0)"><span class="li_shop"></span>Nhà Cung Cấp</a>
+                    <ul>
+                        <li><a href="@Url.Action("Manage", "Supplier")">Quản Lý</a></li>
+                        <li><a href="@Url.Action("Create", "Supplier")">Tạo Mới</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:void(0)"><span class="glyphicon glyphicon-shopping-cart"></span>Đơn Hàng</a>
+                    <ul>
+                        <li><a href="@Url.Action("Manage", "Order")">Quản Lí</a></li>
+                        <li><a href="@Url.Action("Create", "Order")">Tạo Mới</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:void(0)"><span class="li_note"></span> Đánh Giá</a>
+                    <ul>
+                        <li><a href="@Url.Action("Manage", "Review")">Quản Lý</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:void(0)"><span class="li_data"></span>Lịch Sử Giao Dịch</a>
+                    <ul>
+                        <li><a href="@Url.Action("TransactionHistoryForAdmin", "Transaction")">Lịch Sử Giao Dịch</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:void(0)"><span class="li_cup"></span>Deal To Day</a>
+                    <ul>
+                        <li><a href="@Url.Action("Index", "DealToDay")">Deal To Day</a></li>
+                    </ul>
+                </li>
+            }
+            else
+            {
+                if (userModel.RoleId.Equals(RoleEnum.SupplierManager) ||
+                                                     userModel.RoleId.Equals(RoleEnum.SupplierEmployee))
+                {
+                    <li>
+                        <a href="javascript:void(0)"><span class="li_shop"></span>Nhà Cung Cấp</a>
+                        <ul>
+                            <li><a href="@Url.Action("Manage", "Supplier")">Quản Lý</a></li>
+                        </ul>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+</nav>
+
+<script>
+    $(document).ready(function () {
+        $("#text_nav_side_fixed a").each(function () {
+            if ($(this).attr("href") == window.location.pathname) {
+                $(this).parent().addClass("active");
+            }
+        })
+    })
+</script>

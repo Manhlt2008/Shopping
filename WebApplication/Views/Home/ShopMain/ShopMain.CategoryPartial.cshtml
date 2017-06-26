@@ -1,0 +1,119 @@
+﻿@using System.Globalization
+@using WebApplication.Lib.Bll
+@using WebApplication.Lib.Bll.Lang
+@using WebApplication.Lib.Util.Constant
+@using WebApplication.Models.Category
+@using WebApplication.Models.Product
+@{
+    var lang = new LangValue(LangValue.LangEnum.Vi, LangValue.DictionaryEnum.CmsHomeIndex);
+
+    var menuLang = new LangValue(LangValue.LangEnum.Vi, LangValue.DictionaryEnum.MasterPage);
+
+    var categories = CategoryBll.FindAllCategories();
+
+    var categoryModels = categories.Select(cat => new CategoryManageList(cat)).ToList();
+
+    var specialsProduct = ProductBll.FindAllHomePageProducts(TypeHomePageEnum.Specials);
+    var specialsProductThumbnails = specialsProduct.Select(product => new ProductThumbnailModel(product)).ToList();
+
+    var productThumbnails = Enumerable.Empty<ProductThumbnailModel>().ToList();
+
+    var modelList = new ProductThumbnailModelList();
+
+    if (specialsProductThumbnails != null && specialsProductThumbnails.Count > 0)
+    {
+
+        modelList = new ProductThumbnailModelList(specialsProductThumbnails, "", ProductThumbnailModelList.Specials);
+
+        if (modelList.ProductThumbnailModels != null)
+        {
+            productThumbnails = modelList.ProductThumbnailModels;
+        }
+    }
+    var cul = CultureInfo.GetCultureInfo("vi-VN");
+}
+<aside>
+    <div class="b-form-row b-input-search">
+        <input class="form-control input-search" type="text" maxlength="50"
+               placeholder="@menuLang.GetValue(LangValue.MasterPage.Menu.SearchPlaceHolder)">
+        <span id="btn-search" class="b-btn b-btn-search f-btn-search fa fa-search"></span>
+    </div>
+    <div class="row b-col-default-indent">
+        <div class="col-md-12">
+            <div class="b-categories-filter">
+                <a href="@Url.Action("Category", "Product", new {id = 0})">
+                    <h4 class="f-primary-b b-h4-special f-h4-special c-primary">@lang.GetValue(LangValue.CmsHome.Index.Categories)</h4>
+                </a>
+                <ul>
+                    <li>
+                        <a href="@Url.Action("BestSeller", "Product")"><i class="fa fa-dot-circle-o"></i>Sản Phẩm Bán Chạy</a>
+                    </li>
+                    @foreach (var categoryModel in categoryModels)
+                    {
+                        var isHaveSubCategory = categoryModel.CategoryManageLists != null && categoryModel.CategoryManageLists.Count > 0;
+                        if (categoryModel.Id == 36 && System.Web.Configuration.WebConfigurationManager.AppSettings["dealtoday"] == "0"){ continue;} 
+                            if (!isHaveSubCategory)
+                            {
+                            <li id="left-menu-category-id-@categoryModel.Id">
+                                <a href="@Url.Action("Category", "Product", new {id = categoryModel.Id})">
+                                    <i class="fa fa-dot-circle-o"></i> @categoryModel.Name
+                                    <span class="b-categories-filter_count f-categories-filter_count">@CategoryBll.ProductCounter(categoryModel.Id)</span>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="has-submenu" id="left-menu-category-id-@categoryModel.Id">
+                                <a href="javascript:void(0);">
+                                    <i class="fa fa-plus-circle" id="submenu-@categoryModel.Id" data-toggle="collapse" data-target="#submenu-content-@categoryModel.Id" aria-expanded="false"></i>
+                                </a>
+                                <a href="@Url.Action("Category", "Product", new {id = categoryModel.Id})">
+                                    @categoryModel.Name
+                                    <span class="b-categories-filter_count f-categories-filter_count">@CategoryBll.ProductCounter(categoryModel.Id)</span>
+                                </a>
+                                <ul class="nav collapse" id="submenu-content-@categoryModel.Id" role="menu" aria-labelledby="submenu-@categoryModel.Id">
+                                    @foreach (var categoryManageList in categoryModel.CategoryManageLists)
+                                    {
+                                        <li id="left-menu-category-id-@categoryManageList.Id">
+                                            <a href="@Url.Action("Category", "Product", new {id = categoryManageList.Id})">
+                                                <i class="fa fa-minus-circle"></i> @categoryManageList.Name
+                                                <span class="b-categories-filter_count f-categories-filter_count">@CategoryBll.ProductCounter(categoryManageList.Id)</span>
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-12">
+            @if (specialsProductThumbnails.Count > 0)
+            {
+                <h4 class="f-primary-b b-h4-special f-h4-special c-primary">@lang.GetValue(LangValue.CmsHome.Index.Special)</h4>
+
+                foreach (var product in productThumbnails)
+                {
+                    <div class="b-blog-short-post b-blog-short-post--popular b-blog-short-post--w-img b-blog-short-post--img-hover-bordered f-blog-short-post--w-img row f-blog-short-post--popular">
+                        <div class="b-blog-short-post__item col-md-12 col-sm-6 col-xs-12">
+                            <div class="b-blog-short-post__item_img">
+                                <a href="@Url.Action("View", "Product", new {id = product.Id})">
+                                    <img class="img-fit-60" data-retina src="@Url.Action("View", "Image", new {id = product.Cover})" alt="@product.Name" />
+                                </a>
+                            </div>
+                            <div class="b-remaining">
+                                <div class="b-blog-short-post__item_text f-blog-short-post__item_text">
+                                    <a href="@Url.Action("View", "Product", new {id = product.Id})">@product.Name</a>
+                                </div>
+                                <div class="f-blog-short-post__item_price f-primary-b">
+                                    @product.Price.ToString("#,###", cul.NumberFormat) VND
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</aside>

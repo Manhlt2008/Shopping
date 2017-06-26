@@ -1,0 +1,104 @@
+﻿@using WebApplication.Models.Product
+@using WebApplication.Lib.Util.Constant;
+@using WebApplication.Lib.Bll;
+@using System.Globalization
+@{
+    var specialsProduct = ProductBll.FindAllHomePageProducts(TypeHomePageEnum.Specials);
+    var specialsProductThumbnails = specialsProduct.Select(product => new ProductThumbnailModel(product)).ToList();
+
+    var productThumbnails = Enumerable.Empty<ProductThumbnailModel>().ToList();
+
+    var modelList = new ProductThumbnailModelList();
+
+    if (specialsProductThumbnails != null && specialsProductThumbnails.Count > 0)
+    {
+
+        modelList = new ProductThumbnailModelList(specialsProductThumbnails, "", ProductThumbnailModelList.Specials);
+
+        if (modelList.ProductThumbnailModels != null)
+        {
+            productThumbnails = modelList.ProductThumbnailModels;
+        }
+    }
+    var cul = CultureInfo.GetCultureInfo("vi-VN");
+}
+<div class="box specials">
+    <div class="box-heading">
+        <h3>Đặc biệt</h3>
+    </div>
+    <div class="box-content">
+        <div class="product-layout">
+            <div class="specials-scroll">
+                @if (specialsProductThumbnails != null && specialsProductThumbnails.Count > 0)
+                {
+                    foreach (var product in productThumbnails)
+                    {
+                        <div>
+                            <div class="product-thumb transition equal-height-767">
+                                <div class="sale">Sale</div>
+                                <div class="image">
+                                    <a href="@Url.Action("View", "Product", new {id = product.Id})">
+                                        <img alt="@product.Name" title="@product.Name" class="img-responsive" src="@Url.Action("View", "Image", new {id = product.Cover})" />
+                                    </a>
+                                </div>
+                                <div class="caption">
+                                    <div class="price">
+                                        <span class="price-new">
+                                            @product.Price.ToString("#,###", cul.NumberFormat)
+                                        </span>
+                                    </div>
+                                    <div class="name">
+                                        <a href="@Url.Action("View", "Product", new {id = product.Id})">
+                                            @product.Name
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="cart-button">
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(window)
+        .load(function () {
+            var slider = $(".bestseller-slider");
+            if ($(window).width() > 767) {
+                slider.bxSlider({
+                    mode: 'vertical',
+                    slideWidth: 270,
+                    minSlides: 3,
+                    maxSlides: 3,
+                    moveSlides: 1,
+                    pager: false,
+                    slideMargin: 30,
+                    controls: true
+                });
+            } else {
+                if (!slider.hasClass('activated')) {
+                    slider.owlCarousel({
+                        items: 3,
+                        margin: 30,
+                        smartSpeed: 450,
+                        dots: false,
+                        nav: true,
+                        loop: true,
+                        navClass: ['owl-prev fa fa-angle-up', 'owl-next fa fa-angle-down'],
+                        responsive: {
+                            0: { items: 1 },
+                            370: { items: 2 },
+                            570: { items: 3 }
+                        }
+                    });
+                    slider.addClass('activated');
+                }
+            }
+        })
+
+
+</script>

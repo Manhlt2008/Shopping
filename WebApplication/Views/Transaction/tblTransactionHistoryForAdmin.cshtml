@@ -1,0 +1,70 @@
+﻿@{
+    ViewBag.Title = "tblTransactionHistoryForAdmin";
+    var resultModel = (WebApplication.Models.User.ResultModel)ViewBag.TransactionHistory;
+    var trans = new List<WebApplication.Models.Transaction.TransactionModel>();
+    if (resultModel != null && resultModel.Code == 0)
+    {
+        trans = (List<WebApplication.Models.Transaction.TransactionModel>)resultModel.Data;
+    }
+}
+<table id="dt_scroll" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th>Mã GD</th>
+            <th>Ngày GD</th>
+            <th>Người GD</th>
+            <th>Mã HĐ</th>
+            <th>Loại TT</th>
+            <th>Số tiền</th>
+            <th>Mô tả</th>
+            <th>Trạng Thái</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (trans != null)
+        {
+            int count = 0;
+            foreach (var item in trans)
+            {
+                string statusText = "";
+                string classText = "";
+                count = count + 1;
+                if (@item.Status == 1)
+                {
+                    statusText = "Thành công";
+                    classText = "label label-success";
+
+                }
+                else
+                {
+                    statusText = "Thất bại";
+                    classText = "label label-danger";
+                }
+                <tr>
+                    <td>@count</td>
+                    <td>@item.Id</td>
+                    <td>@item.CreatedDate</td>
+                    <td>@item.Email</td>
+                    <td>@item.OrderCode</td>
+                    <td>@item.PaymentType</td>
+                    <td>@string.Format("{0:n0}", @item.TotalPrice) đ</td>
+                    <td>@item.ExtraInfo</td>
+                    <td>
+                        <span class="@classText">@statusText</span>
+                    </td>
+                    <td>
+                        <a href="#" title="Xem chi tiết giao dịch" 
+                           data-id="@item.Id" 
+                           data-order-id="@item.OrderId" 
+                           data-order-code="@item.OrderCode" onclick="getTransactionHistoryDetail(this)">
+                            <span class="glyphicon glyphicon-eye-open"></span>
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+        
+    </tbody>
+</table>

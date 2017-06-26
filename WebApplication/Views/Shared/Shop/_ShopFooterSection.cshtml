@@ -1,0 +1,151 @@
+﻿@using WebApplication.Lib.Bll
+@{
+    var settings = SettingsBll.GetSettings(SettingsBll.GetSettingNameGroup(SettingsBll.SettingTypeGroup.Footer));
+
+    string aboutSetting;
+    string copyrightSetting;
+    string facebookUrl;
+    string facebookTab;
+    string facebookWidth;
+    string facebookHeight;
+    string facebookTitle;
+    string followUsFacebook;
+    string followUsGooglePlus;
+    string followUsYouTube;
+    string followUsTwitter;
+
+    settings.TryGetValue(SettingsBll.SettingNames.FooterAbout, out aboutSetting);
+    settings.TryGetValue(SettingsBll.SettingNames.FooterCopyright, out copyrightSetting);
+    settings.TryGetValue(SettingsBll.SettingNames.FooterFacebookPagePluginUrl, out facebookUrl);
+    settings.TryGetValue(SettingsBll.SettingNames.FooterFacebookPagePluginTabs, out facebookTab);
+    settings.TryGetValue(SettingsBll.SettingNames.FooterFacebookPagePluginWidth, out facebookWidth);
+    settings.TryGetValue(SettingsBll.SettingNames.FooterFacebookPagePluginHeight, out facebookHeight);
+    settings.TryGetValue(SettingsBll.SettingNames.FooterFacebookPagePluginTitle, out facebookTitle);
+    settings.TryGetValue(SettingsBll.SettingNames.FooterFollowUsFacebook, out followUsFacebook);
+    settings.TryGetValue(SettingsBll.SettingNames.FollowUsGooglePlus, out followUsGooglePlus);
+    settings.TryGetValue(SettingsBll.SettingNames.FollowUsYouTube, out followUsYouTube);
+    settings.TryGetValue(SettingsBll.SettingNames.FooterFollowUsTwitter, out followUsTwitter);
+}
+
+<div class="content_bottom">
+    <div class="box_html About">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h5>About</h5>
+                    <p>@Html.Raw(aboutSetting)</p>
+                </div>
+                <div class="col-sm-6">
+                    <div class="fb-page" data-href="@facebookUrl" data-tabs="@facebookTab" data-width="@facebookWidth"
+                         data-height="@facebookHeight" data-small-header="true" data-adapt-container-width="true"
+                         data-hide-cover="false" data-show-facepile="true">
+                        <blockquote cite="@facebookUrl" class="fb-xfbml-parse-ignore">
+                            <a href="@facebookUrl">@facebookTitle</a>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="footer-line"></div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-4">
+                <div class="footer_box">
+                    <h5>Thông Tin</h5>
+                    <ul class="list-unstyled">
+                        <li>
+                            <a href="@Url.Action("Index", "AboutUs")">Giới Thiệu</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "DeliveryInformation")">Thông Tin Vận Chuyển</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "PrivacyPolicy")">Chính Sách Bảo Mật</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "TermAndConditions")">Điều Khoản Sử Dụng</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-4">
+                <div class="footer_box">
+                    <h5>Dịch Vụ Khách Hàng</h5>
+                    <ul class="list-unstyled">
+                        <li>
+                            <a href="@Url.Action("Index", "ContactUs")">Liên Hệ</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "Return")">Chính Sách Hoàn Trả</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Index", "Operating")">Quy Chế Hoạt Động</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-4">
+                <div class="footer_box">
+                    <h5>Hỗ Trợ Khách Hàng</h5>
+                    <ul class="list-unstyled">
+                        <li>
+                            <a href="@Url.Action("Index", "FAQ")">FAQ</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-4">
+                <div class="footer_box">
+                    <h5>My Account</h5>
+                    <ul class="list-unstyled">
+                        <li>
+                            <a href="@Url.Action("Info", "User")">Tài Khoản</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("TransactionHistoryForUser", "Transaction")">Order History</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Cart", "Order")">Giỏ Hàng</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="col-lg-2 col-md-2 col-sm-4 border">
+                <div class="footer_box">
+                    <h5>Follow Us</h5>
+                    <ul class="list-unstyled social">
+                        <li>
+                            <a href="@followUsFacebook.Replace("\\", "")" target="_blank"><span class="fa fa-facebook"></span>Facebook </a>
+                        </li>
+                        <li>
+                            <a href="@followUsTwitter.Replace("\\", "")" target="_blank"><span class="fa fa-twitter"></span>Twitter</a>
+                        </li>
+                        <li>
+                            <a href="@followUsGooglePlus.Replace("\\", "")" target="_blank"><span class="fa fa-google-plus"></span>Google +</a>
+                        </li>
+                        <li>
+                            <a href="@followUsYouTube.Replace("\\", "")" target="_blank"><span class="fa fa-youtube"></span>YouTube</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <div class="copyright">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="footer-line"></div>
+                </div>
+            </div>
+            <img src="~/Content/view/theme/v1/image/footer-logo.png" alt="" />@Html.Raw(copyrightSetting.Replace("\\", ""))
+        </div>
+    </div>
+</footer>

@@ -1,0 +1,161 @@
+﻿@using WebApplication.Models.Category;
+@{
+    ViewBag.Title = "Thông tin tài khoản";
+    Layout = "~/Views/Shared/ShopMain/_ShopMainLayout.cshtml";
+
+    var categoryModels = (List<CategoryManageList>)ViewBag.Categories;
+    var user = (WebApplication.Models.User.UserModel)ViewBag.User;
+}
+<div class="l-main-container">
+    <div class="b-breadcrumbs f-breadcrumbs">
+        <div class="container">
+            <ul>
+                <li><a href="/"><i class="fa fa-home"></i>Home</a></li>
+                <li><a href="#"><i class="fa fa-angle-right"></i> Tài khoản</a></li>
+                <li><i class="fa fa-angle-right"></i><span> Thông tin tài khoản</span></li>
+            </ul>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                @Html.Partial("Partial/LeftMenuPartial")
+            </div>
+            <div class="col-md-9">
+                <div class="b-form-row f-primary-l f-title-big c-secondary">Thông tin tài khoản</div>
+                <div class="b-form-row">Cập nhật thông tin tài khoản của bạn để được hỗ trợ tốt nhất</div>
+                <hr class="b-hr" />
+                @if (user != null)
+                {
+                    <div class="row b-form-inline b-form-horizontal">
+                        <div class="col-xs-12">
+                            <div class="b-form-row">
+                                <label class="b-form-horizontal__label" for="create_account_email">Địa chỉ E-mail</label>
+                                <div class="b-form-horizontal__input">
+                                    <span class="form-control" readonly>@user.Email</span>
+                                </div>
+                            </div>
+                            <div class="b-form-row">
+                                <label class="b-form-horizontal__label">Họ</label>
+                                <div class="b-form-horizontal__input">
+                                    <input type="text" name="firstname" value="@user.Firstname" placeholder="Họ" id="input-firstname" class="form-control">
+                                </div>
+                            </div>
+                            <div class="b-form-row">
+                                <label class="b-form-horizontal__label">Tên</label>
+                                <div class="b-form-horizontal__input">
+                                    <input type="text" name="lastname" value="@user.Lastname" placeholder="Tên" id="input-lastname" class="form-control">
+                                </div>
+                            </div>
+                            <div class="b-form-row">
+                                <label class="b-form-horizontal__label" for="create_account_phone">Giới tính</label>
+                                <div class="b-form-horizontal__input">
+                                    @{
+                                        var isCheckMale = "";
+                                        var isCheckFemale = "";
+
+                                        if (user.Gender == 1)
+                                        {
+                                            isCheckMale = "checked";
+                                            isCheckFemale = "";
+                                        }
+                                        else
+                                        {
+                                            isCheckMale = "";
+                                            isCheckFemale = "checked";
+                                        }
+
+                                        <div class="col-sm-2" style="text-align: right">
+                                            <input type="radio" name="input-gender" value="1" @isCheckMale> Nam
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <input type="radio" name="input-gender" value="0" @isCheckFemale> Nữ
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="b-form-row">
+                                <label class="b-form-horizontal__label">Ngày sinh</label>
+                                <div class="b-form-horizontal__input">
+                                    <input type="text" class="form-control datepicker" placeholder="Ngày sinh" id="input-dob"
+                                           value="@String.Format("{0:dd-MM-yyyy}", @user.DateOfBirth)">
+                                </div>
+
+                            </div>
+                            <div class="b-form-row">
+                                <label class="b-form-horizontal__label">Số điện thoại</label>
+                                <div class="b-form-horizontal__input">
+                                    <input type="text" name="input-phone" value="@user.Phone" placeholder="Số điện thoại" id="input-phone" class="form-control">
+                                </div>
+                            </div>
+                            <div class="b-form-row">
+                                <label class="b-form-horizontal__label">Tỉnh/Thành phố</label>
+                                <div class="b-form-horizontal__input b-form-select ">
+                                    <select class="j-select" id="select-provinces">
+                                        <option value=""></option>
+                                    </select>
+                                    <input type="hidden" id="input-province-selected" value="@user.Province" />
+                                </div>
+                            </div>
+                            <div class="b-form-row">
+                                <label class="b-form-horizontal__label">Quận/Huyện</label>
+                                <div class="b-form-horizontal__input b-form-select">
+                                    <select class="j-select" id="select-districts">
+                                        <option value=""></option>
+                                    </select>
+                                    <input type="hidden" id="input-district-selected" value="@user.District" />
+                                </div>
+                            </div>
+                            <div class="b-form-row">
+                                <label class="b-form-horizontal__label">Xã/Phường</label>
+                                <div class="b-form-horizontal__input b-form-select ">
+                                    <select class="j-select" id="select-wards">
+                                        <option value=""></option>
+                                    </select>
+                                    <input type="hidden" id="input-ward-selected" value="@user.Ward" />
+                                </div>
+                            </div>
+                            <div class="b-form-row">
+                                <label class="b-form-horizontal__label">Địa chỉ</label>
+                                <div class="b-form-horizontal__input">
+                                    <input type="text" name="input-address" value="@user.Address" placeholder="Địa chỉ" id="input-address" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="b-form-row">
+                                <div class="b-form-horizontal__label"></div>
+                                <div class="b-form-horizontal__input">
+                                    <input type="button" value="Tiếp tục" class="b-btn f-btn b-btn-md b-btn-default f-primary-b b-btn__w100" onclick="UpdateInfo()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                                        }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section ExtendScript
+{
+    <script>
+        $(document).ready(function () {
+            var dob = $("#input-dob").val();
+            $("#input-dob").datepicker("option", "dateFormat", "dd-mm-yy");
+            $("#input-dob").val(dob);
+
+            var today = new Date();
+            var lastDate = new Date(today.getFullYear() + 1, 11, 31);
+            $(function () {
+                $('#input-dob').datepicker({
+                    minDate: '0',
+                    yearRange: '-0:+1',
+                    maxDate: lastDate,
+                    hideIfNoPrevNext: true
+                });
+            });
+        })
+    </script>
+<script src="~/Scripts/jquery-1.8.2.min.js"></script>
+    <script src="~/Scripts/MainShop/Authentication/AuthenticationController.js"></script>
+}

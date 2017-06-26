@@ -1,0 +1,95 @@
+﻿<div class="swipe-menu">
+    <ul>
+        <li>
+            <a href="@Url.Action("Info", "User")" title="Tài Khoản">
+                <i class="fa fa-user"></i>
+                <span>Tài Khoản</span>
+            </a>
+        </li>
+        @if (WebApplication.Lib.Bll.UserBll.GetUser() != null)
+        {
+            <li>
+                <a href="@Url.Action("TransactionHistoryForUser", "Transaction")">Lịch sử giao dịch</a>
+            </li>
+            
+            <li>
+                <a href="@Url.Action("TransactionHistoryForUser", "Transaction")">Danh sách đơn hàng</a>
+            </li>
+
+            if (WebApplication.Lib.Bll.UserBll.GetUser().RoleId == WebApplication.Lib.Util.Constant.RoleEnum.Admin || WebApplication.Lib.Bll.UserBll.GetUser().RoleId == WebApplication.Lib.Util.Constant.RoleEnum.SupplierManager)
+            {
+                <li>
+                    <a href="@Url.Action("Index", "Settings")">Trang quản lí</a>
+                </li>
+            }
+
+            <li>
+                <a href="@Url.Action("Logout", "Authentication")">Đăng xuất</a>
+            </li>
+        }
+        else
+        {
+            <li>
+                <a href="@Url.Action("Register", "Authentication")"><i class="fa fa-user"></i>Đăng Kí</a>
+            </li>
+            <li>
+                <a href="@Url.Action("Login", "Authentication")"><i class="fa fa-lock"></i>Đăng Nhập</a>
+            </li>
+        }
+
+
+        <li>
+            <a href="@Url.Action("Cart", "Order")" title="Shopping Cart">
+                <i class="flaticon-shopping-cart"></i> Giỏ hàng
+            </a>
+        </li>
+    </ul>
+    
+    @*<ul class="foot">
+        <li>
+            <a href="index8816.html?route=information/information&amp;information_id=4">About</a>
+        </li>
+        <li>
+            <a href="index1766.html?route=information/information&amp;information_id=6">Delivery Information</a>
+        </li>
+        <li>
+            <a href="index1679.html?route=information/information&amp;information_id=3">Privacy Policy</a>
+        </li>
+        <li>
+            <a href="index99e4.html?route=information/information&amp;information_id=5">Terms &amp; Conditions</a>
+        </li>
+    </ul>
+    <ul class="foot foot-1">
+        <li>
+            <a href="index2724.html?route=information/contact">Contact Us</a>
+        </li>
+        <li>
+            <a href="indexda9d.html?route=account/return/insert">Returns</a>
+        </li>
+        <li>
+            <a href="index7cb2.html?route=information/sitemap">Site Map</a>
+        </li>
+    </ul>
+    <ul class="foot foot-2">
+        <li>
+            <a href="indexd773.html?route=product/manufacturer">Brands</a>
+        </li>
+        <li>
+            <a href="index4dd2.html?route=account/voucher">Gift Vouchers</a>
+        </li>
+        <li>
+            <a href="indexfca3.html?route=affiliate/account">Affiliates</a>
+        </li>
+        <li>
+            <a href="indexf110.html?route=product/special">Specials</a>
+        </li>
+    </ul>
+    <ul class="foot foot-3">
+        <li>
+            <a href="indexee92.html?route=account/order">Order History</a>
+        </li>
+        <li>
+            <a href="indexb4e9.html?route=account/newsletter">Newsletter</a>
+        </li>
+    </ul>*@
+</div>

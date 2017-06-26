@@ -1,0 +1,75 @@
+﻿@{
+    ViewBag.Title = "tblListSlider";
+    var resultModelActive = (WebApplication.Models.User.ResultModel)ViewBag.ResultModelActive;
+    var actives = new List<WebApplication.Models.Slider.SliderModel>();
+    if (resultModelActive != null && resultModelActive.Code == 0)
+    {
+        actives = (List<WebApplication.Models.Slider.SliderModel>)resultModelActive.Data;
+    }
+}
+
+<table class="table table-bordered table-striped" id="table-slider">
+    <thead>
+        <tr>
+            <th width="5%">STT</th>
+            <th width="20%">Tiêu đề</th>
+            <th width="25%">Mô tả</th>
+            <th width="10%%">Đường Dẫn</th>
+            <th width="10%">Loại hiển thị</th>
+            <th width="20%">Hình ảnh</th>
+            <th width="10%"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (actives.Count > 0)
+        {
+            int count = 0;
+            foreach (var item in actives)
+            {
+                count = count + 1;
+                <tr>
+                    <td>@count</td>
+                    <td>
+                        <a href="@Url.Action("Update", "Slider", new { id = @item.Id })" title="Chỉnh sửa Slider/Banner này">
+                            @item.Title
+                        </a>
+                    </td>
+                    <td>@Html.Raw(@item.Description)</td>
+                    <td>
+                        <a href="@item.GoToLink" target="_blank">Link</a>
+                    </td>
+                    <td>@item.Type</td>
+                    <td>
+                        <a href="@item.Image_Url" target="_blank">Link</a>
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Update", "Slider", new { id = @item.Id })" title="Chỉnh sửa Slider/Banner này">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+                        <a href="#" title="Tạm ngưng hoạt động Slider/Banner này"
+                           data-status="2"
+                           data-title="@item.Title"
+                           data-id="@item.Id"
+                           onclick="SliderController.activeOrInActive(this)">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </a>
+
+                        @if (count != 1)
+                        {
+                            <a href="#" onclick="SliderController.IncreaseIOrder(this)" title="Tăng vị trí" data-slider-id="@item.Id">
+                                <span class="glyphicon glyphicon-arrow-up"></span>
+                            </a>
+                        }
+                        @if (count != actives.Count)
+                        {
+                            <a href="#" onclick="SliderController.DecreaseIOrder(this)" title="Giảm vị trí" data-slider-id="@item.Id">
+                                <span class="glyphicon glyphicon-arrow-down"></span>
+                            </a>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>

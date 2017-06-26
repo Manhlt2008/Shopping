@@ -1,0 +1,17 @@
+﻿@{
+    Layout = "~/Views/Shared/ShopMain/_ShopMainLayout.cshtml";
+}
+<div class="l-main-container">
+    <div class="b-page-error">
+        <div class="container">
+            <div class="b-title-error f-title-error">
+                <span class="f-primary-eb">@ViewBag.ErrorCode</span>
+                <strong class="f-primary-l">@ViewBag.Title</strong>
+            </div>
+            <div class="b-error-description f-error-description">
+                <strong class="f-primary"> @ViewBag.Description</strong>
+                <span class="f-primary"></span>
+            </div>
+        </div>
+    </div>
+</div>

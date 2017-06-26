@@ -1,0 +1,85 @@
+﻿@using WebApplication.Lib.Bll.Lang
+@using WebApplication.Lib.Bll.SystemSetting
+
+@{
+    Layout = "~/Views/Shared/ShopMain/_ShopMainLayout.cshtml";
+
+    var lang = new LangValue(LangValue.LangEnum.Vi, LangValue.DictionaryEnum.CmsAuthenticationLogin);
+    var masterpageLang = new LangValue(LangValue.LangEnum.Vi, LangValue.DictionaryEnum.MasterPage);
+
+    ViewBag.Title = ViewTitleBll.Title(lang.GetValue(LangValue.CmsAuthentication.Login.Title));
+}
+
+<div class="b-inner-page-header f-inner-page-header b-bg-header-inner-page">
+    <div class="b-inner-page-header__content">
+        <div class="container">
+            <h1 class="f-primary-l c-default">
+                @lang.GetValue(LangValue.CmsAuthentication.Login.Title)
+            </h1>
+        </div>
+    </div>
+</div>
+<div class="l-main-container">
+    <div class="b-breadcrumbs f-breadcrumbs">
+        <div class="container">
+            <ul>
+                <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-home"></i> @masterpageLang.GetValue(LangValue.MasterPage.Menu.Home)</a></li>
+                <li><i class="fa fa-angle-right"></i><span> @lang.GetValue(LangValue.CmsAuthentication.Login.Title)</span></li>
+            </ul>
+        </div>
+    </div>
+    <div class="container b-container-login-page">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="b-log-in-form">
+                    <div class="f-primary-l f-title-big c-secondary">@lang.GetValue(LangValue.CmsAuthentication.Login.SignInTitle)</div>
+                    <p>@lang.GetValue(LangValue.CmsAuthentication.Login.SignInTitleSub)</p>
+                    <hr class="b-hr" />
+                    <div class="b-form-row b-form-inline b-form-horizontal">
+                        <div class="col-xs-12">
+                            <form onsubmit="return Login('@Url.Action("Login", "Authentication")');">
+                                <div class="b-form-row">
+                                    <label class="b-form-horizontal__label" for="input-email">@lang.GetValue(LangValue.CmsAuthentication.Login.Email)</label>
+                                    <div class="b-form-horizontal__input">
+                                        <input type="email" class="form-control" id="input-email" @*required="required"*@/>
+                                    </div>
+                                </div>
+                                <div class="b-form-row">
+                                    <label class="b-form-horizontal__label" for="input-password">@lang.GetValue(LangValue.CmsAuthentication.Login.Password)</label>
+                                    <div class="b-form-horizontal__input">
+                                        <input type="password" id="input-password" class="form-control" @*required="required"*@/>
+                                    </div>
+                                </div>
+                                <div class="b-form-row">
+                                    <div class="b-form-horizontal__label"></div>
+                                    @*<label for="contact_form_copy" class="b-contact-form__window-form-row-label">
+                                            <input type="checkbox" id="contact_form_copy" class="b-form-checkbox" />
+                                            <span>Remember me</span>
+                                        </label>*@
+                                </div>
+                                <div class="b-form-row">
+                                    <div class="b-form-horizontal__label"></div>
+                                    <div class="b-form-horizontal__input">
+                                        <button id="btn-login" type="submit" class="b-btn f-btn b-btn-md b-btn-default f-primary-b b-btn__w100" onclick="Login()">
+                                            @lang.GetValue(LangValue.CmsAuthentication.Login.SignInNow)
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="f-primary-l f-title-big c-secondary">@lang.GetValue(LangValue.CmsAuthentication.Login.WelcomeTo)</div>
+                <p>@lang.GetValue(LangValue.CmsAuthentication.Login.WelcomeToSub)</p>
+                <div class="b-shortcode-example">
+                    <ul class="b-list-markers f-list-markers">
+                        <li><a href="@Url.Action("Register", "Authentication")"><i class="fa fa-check-circle b-list-markers__ico f-list-markers__ico"></i> @lang.GetValue(LangValue.CmsAuthentication.Login.CreateAccount)</a></li>
+                        <li><a href="@Url.Action("ForgotPassword", "Authentication")"><i class="fa fa-check-circle b-list-markers__ico f-list-markers__ico"></i> @lang.GetValue(LangValue.CmsAuthentication.Login.ForgotPassword)</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

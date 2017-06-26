@@ -1,0 +1,284 @@
+﻿@using WebApplication.Lib.Util.Constant
+@{
+    ViewBag.Title = "Quản lí trang chủ";
+    Layout = "~/Views/Shared/AdminCp/_AdminLayout.cshtml";
+    var resultModel = (WebApplication.Models.User.ResultModel)ViewBag.ResultModel;
+    var homePages = new List<WebApplication.Models.HomPage.HomePageModel>();
+    if (resultModel != null && resultModel.Code == 0)
+    {
+        homePages = (List<WebApplication.Models.HomPage.HomePageModel>)resultModel.Data;
+    }
+}
+@section Breadcrumbs
+{
+    <li><a href="@Url.Action("Manage", "HomePage")">Giao diện trang chủ</a></li>
+    <li><span>Quản lí</span></li>
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">@MessageEnum.Breadcrumbs.SettingBreadcrumb.Index</h4>
+            </div>
+            <div class="panel-body">
+                @Html.Partial("../Settings/SettingSelectionPartial")
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Sản phẩm nổi bật</h4>
+            </div>
+            <div class="panel-body">
+                <div class="sepH_c">
+                    <div class="table-responsive" id="result-search-account">
+                        <table class="table table-bordered table-striped" id="result-search-account">
+                            <thead>
+                                <tr>
+                                    <th width="10%">STT</th>
+                                    <th width="25%">Tên sản phẩm</th>
+                                    <th width="10%">Loại hiển thị</th>
+                                    <th width="20%">Ngày bắt đầu</th>
+                                    <th width="20%">Ngày kết thúc</th>
+                                    <th width="15%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (homePages != null)
+                                {
+                                    int count = 0;
+                                    foreach (var item in homePages)
+                                    {
+                                        count = count + 1;
+                                        string lableClass = "";
+                                        if (@item.TypeHomePageId.Equals(WebApplication.Lib.Util.Constant.TypeHomePageEnum.Featured))
+                                        {
+                                            lableClass = "label label-default";
+                                            <tr>
+                                                <td width="5%">@count</td>
+                                                <td width="20%">@item.ProductName</td>
+                                                <td width="20%"><label class="@lableClass">@item.TypeHomePageName</label></td>
+                                                <td width="10%">@item.StartDate</td>
+                                                <td width="25%">@item.EndDate</td>
+                                                <td>
+                                                    <a href="#" onclick="showModalSetHomepage(this)" title="Chọn hiển thị trên trang chủ"
+                                                       data-product-id="@item.ProductId"
+                                                       data-product-name="@item.ProductName">
+                                                        <span class="glyphicon glyphicon-edit"></span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Sản phẩm mới nhất</h4>
+            </div>
+
+            <div class="panel-body">
+                <div class="sepH_c">
+                    <div class="table-responsive" id="result-search-account">
+                        <table class="table table-bordered table-striped" id="result-search-account">
+                            <thead>
+                                <tr>
+                                    <th width="10%">STT</th>
+                                    <th width="25%">Tên sản phẩm</th>
+                                    <th width="10%">Loại hiển thị</th>
+                                    <th width="20%">Ngày bắt đầu</th>
+                                    <th width="20%">Ngày kết thúc</th>
+                                    <th width="15%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (homePages != null)
+                                {
+                                    int count = 0;
+                                    foreach (var item in homePages)
+                                    {
+                                        count = count + 1;
+                                        string lableClass = "";
+
+                                        if (@item.TypeHomePageId.Equals(WebApplication.Lib.Util.Constant.TypeHomePageEnum.Latest))
+                                        {
+                                            lableClass = "label label-primary";
+                                            <tr>
+                                                <td width="5%">@count</td>
+                                                <td width="20%">@item.ProductName</td>
+                                                <td width="20%"><label class="@lableClass">@item.TypeHomePageName</label></td>
+                                                <td width="10%">@item.StartDate</td>
+                                                <td width="25%">@item.EndDate</td>
+                                                <td>
+                                                    <a href="#" onclick="showModalSetHomepage(this)" title="Chọn hiển thị trên trang chủ"
+                                                       data-product-id="@item.ProductId"
+                                                       data-product-name="@item.ProductName">
+                                                        <span class="glyphicon glyphicon-edit"></span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Sản phẩm đặc biệt</h4>
+            </div>
+
+            <div class="panel-body">
+                <div class="sepH_c">
+                    <div class="table-responsive" id="result-search-account">
+                        <table class="table table-bordered table-striped" id="result-search-account">
+                            <thead>
+                                <tr>
+                                    <th width="10%">STT</th>
+                                    <th width="25%">Tên sản phẩm</th>
+                                    <th width="10%">Loại hiển thị</th>
+                                    <th width="20%">Ngày bắt đầu</th>
+                                    <th width="20%">Ngày kết thúc</th>
+                                    <th width="15%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (homePages != null)
+                                {
+                                    int count = 0;
+                                    foreach (var item in homePages)
+                                    {
+                                        count = count + 1;
+                                        string lableClass = "";
+                                        if (@item.TypeHomePageId.Equals(WebApplication.Lib.Util.Constant.TypeHomePageEnum.Specials))
+                                        {
+                                            lableClass = "label label-success";
+                                            <tr>
+                                                <td width="5%">@count</td>
+                                                <td width="20%">@item.ProductName</td>
+                                                <td width="20%"><label class="@lableClass">@item.TypeHomePageName</label></td>
+                                                <td width="10%">@item.StartDate</td>
+                                                <td width="25%">@item.EndDate</td>
+                                                <td>
+                                                    <a href="#" onclick="showModalSetHomepage(this)" title="Chọn hiển thị trên trang chủ"
+                                                       data-product-id="@item.ProductId"
+                                                       data-product-name="@item.ProductName">
+                                                        <span class="glyphicon glyphicon-edit"></span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Sản phẩm mua nhiều nhất</h4>
+            </div>
+
+            <div class="panel-body">
+                <div class="sepH_c">
+                    <div class="table-responsive" id="result-search-account">
+                        <table class="table table-bordered table-striped" id="result-search-account">
+                            <thead>
+                                <tr>
+                                    <th width="10%">STT</th>
+                                    <th width="25%">Tên sản phẩm</th>
+                                    <th width="10%">Loại hiển thị</th>
+                                    <th width="20%">Ngày bắt đầu</th>
+                                    <th width="20%">Ngày kết thúc</th>
+                                    <th width="15%"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (homePages != null)
+                                {
+                                    int count = 0;
+                                    foreach (var item in homePages)
+                                    {
+                                        count = count + 1;
+                                        string lableClass = "";
+                                        if (@item.TypeHomePageId.Equals(WebApplication.Lib.Util.Constant.TypeHomePageEnum.Bestsellers))
+                                        {
+                                            lableClass = "label label-info";
+                                            <tr>
+                                                <td width="5%">@count</td>
+                                                <td width="20%">@item.ProductName</td>
+                                                <td width="20%"><label class="@lableClass">@item.TypeHomePageName</label></td>
+                                                <td width="10%">@item.StartDate</td>
+                                                <td width="25%">@item.EndDate</td>
+                                                <td>
+                                                    <a href="#" onclick="showModalSetHomepage(this)" title="Chọn hiển thị trên trang chủ"
+                                                       data-product-id="@item.ProductId"
+                                                       data-product-name="@item.ProductName">
+                                                        <span class="glyphicon glyphicon-edit"></span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Set home page  -->
+<div id="set-homepage-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Cập nhật vị trí trang chủ [<span id="set-homepage-product-name"></span>]</h4>
+            </div>
+            <div class="modal-body form-horizontal" id="content-set-homepage">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="close-modal">Đóng</button>
+                <button type="button" class="btn btn-default" onclick="return setHomePage(this);">Cập nhật</button>
+                <input type="hidden" value="" id="product-id" />
+            </div>
+        </div>
+    </div>
+</div>
+@section CustomScript
+{
+    <link href="~/Content/admincp/js/lib/Sticky/sticky.css" rel="stylesheet" />
+    <script src="~/Content/admincp/js/lib/Sticky/sticky.js"></script>
+    <script src="~/Scripts/jquery.form.js"></script>
+    <script src="~/Content/admincp/js/lib/bootbox/bootbox.min.js"></script>
+    <script src="~/Content/admincp/js/jquery.sticky.js"></script>
+    <link href="~/Content/css/datepicker.css" rel="stylesheet" />
+    <script src="~/Content/js/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/AdminCP/Account/Account.js"></script>
+    <script src="~/Scripts/AdminCP/Product/product-controller.js"></script>
+}
+
+

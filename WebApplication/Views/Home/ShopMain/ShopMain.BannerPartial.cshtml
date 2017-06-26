@@ -1,0 +1,51 @@
+﻿@using WebApplication.Lib.Bll.Lang
+@{
+    var lang = new LangValue(LangValue.LangEnum.Vi, LangValue.DictionaryEnum.CmsHomeIndex);
+
+    var banners = (List<WebApplication.Models.Slider.SliderModel>)Model;
+}
+
+
+<section class="b-infoblock b-diagonal-line-bg-light">
+    <div class="container">
+        @foreach (var item in banners)
+        {
+            <div class="col-md-6">
+                <div class="b-news-item b-news-item--medium-size f-news-item">
+                    <div class="b-news-item__img view view-sixth">
+                        <img data-retina src="@item.Image_Url" alt="@item.Title" style="max-width: 260px; max-height: 254px; object-fit: contain;" />
+                        <div class="b-item-hover-action f-center mask">
+                            <div class="b-item-hover-action__inner">
+                                <div class="b-item-hover-action__inner-btn_group">
+                                    <a href="@item.GoToLink" class="b-btn f-btn b-btn-light f-btn-light info"><i class="fa fa-link"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="b-news-item__info">
+                        <div style="height: 135px;">
+                            <a href="@item.GoToLink" class="b-news-item__info_title-big f-news-item__info_title-big f-primary-b">
+                                @if (!item.Title.Trim().IsEmpty())
+                                {
+                                    <span>@item.Title</span>
+                                }
+                                else
+                                {
+                                    <span>&nbsp;</span>
+                                }
+                            </a>
+                            <div class="b-news-item__info_text f-news-item__info_text" style="line-height: 1.5em; height: 5.5em;">
+                                @Html.Raw(@item.Description)
+                            </div>
+                        </div>
+                        <div class="b-news-item__article">
+                            <a href="@item.GoToLink" class="b-btn f-btn b-right b-btn-sm-md f-btn-sm-md f-primary-b">
+                                @lang.GetValue(LangValue.CmsHome.Index.More)
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>

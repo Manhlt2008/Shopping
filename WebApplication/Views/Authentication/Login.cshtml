@@ -1,0 +1,62 @@
+﻿@using WebApplication.Models.Category
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/Shop/_ShopLayout.cshtml";
+
+    var categoryModels = (List<CategoryManageList>)ViewBag.Categories;
+}
+
+@section MenuSection
+{
+    @Html.Partial("../Home/IndexPartialPage/MenuPartial")
+}
+
+@section CategoryColumn
+{
+    @Html.Partial("../Home/IndexPartialPage/CategoryListPartial", categoryModels)
+}
+
+<div id="content" class="col-sm-9">
+    <ul class="breadcrumb">
+        <li><a href="#"><i class="fa fa-home"></i></a></li>
+        <li><a href="#">Tài khoản</a></li>
+        <li><a href="@Url.Action("Login", "Authentication")">Đăng nhập</a></li>
+    </ul>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="well">
+                <div class="heading">
+                    <i class="fa fa-file-text-o"></i>
+                    <div class="extra-wrap">
+                        <h2>Khách hàng mới</h2>
+                        <strong>Đăng kí tài khoản</strong>
+                    </div>
+                </div>
+                <p>Đăng kí tài khoản để được hỗ trợ nhanh hơn có thể. Bạn có thể cập nhật những sản phẩm nhanh nhất</p>
+                <a href="@Url.Action("Register", "Authentication")" class="btn btn-primary">Đăng kí</a>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="well">
+                <div class="heading">
+                    <i class="fa fa-key"></i>
+                    <h2>Đăng nhập</h2>
+                    <strong>Tôi là một khách hàng quay trở lại</strong>
+                </div>
+                <form onsubmit="return Login('@Url.Action("Login","Authentication")');">
+                    <div class="form-group">
+                        <label class="control-label" for="input-email">Địa chỉ E-Mail</label>
+                        <input type="text" name="email" value="" placeholder="Địa chỉ E-Mail" id="input-email" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="input-password">Mật khẩu</label>
+                        <input type="password" name="password" value="" placeholder="Mật khẩu" id="input-password" class="form-control">
+                        <br>
+                        <a href="@Url.Action("ForgotPassword", "Authentication")">Quên mật khẩu</a>
+                    </div>
+                    <button type="submit" value="Đăng nhập" class="btn btn-primary"></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

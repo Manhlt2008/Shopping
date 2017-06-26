@@ -1,0 +1,181 @@
+﻿@{
+    ViewBag.Title = "tblListAccount";
+    var resultModel = (WebApplication.Models.User.ResultModel)ViewBag.ResultModel;
+    var accounts = new List<WebApplication.Lib.Dal.DbContext.Account>();
+    if (resultModel != null && resultModel.Code == 0)
+    {
+        accounts = (List<WebApplication.Lib.Dal.DbContext.Account>)resultModel.Data;
+    }
+
+    var pageLimitList = new List<int> { 0, 5, 10, 25, 50, 75, 100, 200, 500 };
+}
+
+<table class="table table-bordered table-striped" id="result-search-account">
+    <thead>
+        <tr>
+            <th width="5%">STT</th>
+            <th width="20%">E-mail</th>
+            <th width="20%">Họ và tên</th>
+            <th width="10%">Số điện thoại</th>
+            <th width="25%">Địa chỉ</th>
+            <th width="10%">Trạng thái</th>
+            <th width="10%"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (accounts != null)
+        {
+            int count = 0;
+            foreach (var user in accounts)
+            {
+                string statusText = "";
+                string classText = "";
+                count = count + 1;
+                if (@user.Status == 1)
+                {
+                    statusText = "Đang hoạt động";
+                    classText = "label label-success";
+
+                }
+                else
+                {
+                    statusText = "Ngừng hoạt động";
+                    classText = "label label-danger";
+                }
+                <tr>
+                    <td width="5%">@count</td>
+                    <td width="20%"><a href="mailto:@user.Email">@user.Email</a></td>
+                    <td width="20%">@user.Firstname @user.Lastname</td>
+                    <td width="10%">@user.Phone</td>
+                    <td width="25%">@user.Address</td>
+                    <td width="10%"><span class="@classText">@statusText</span></td>
+                    <td>
+                        <a href="#" title="Cập nhật thông tin tài khoản @user.Email" data-email="@user.Email" onclick="return showModalUpdateInfo(this);">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+                        <a href="#" title="Thay đổi mật khẩu @user.Email" data-email="@user.Email" onclick="return showModalChangePassword(this);">
+                            <span class="glyphicon glyphicon-lock"></span>
+                        </a>
+                        @if (@user.Status == 1)
+                        {
+                            <a href="#" title="Đình chỉ hoạt động tài khoản @user.Email" onclick="return activeOrDeactiveAccount(this);" data-email="@user.Email" data-status="2">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="#" title="Kích hoạt tài khoản @user.Email" onclick="return activeOrDeactiveAccount(this);" data-email="@user.Email" data-status="1">
+                                <span class="glyphicon glyphicon-ok"></span>
+                            </a>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+<!-- Modal -->
+<div id="change-password-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Thay đổi mật khẩu [<span id="email-modal-title"></span>]</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div id="content-change-password" class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="input-password">Mật khẩu mới</label>
+                            <div class="col-sm-7">
+                                <input type="password" name="passwordNew" value="" placeholder="Mật khẩu mới" id="input-password-new" class="form-control">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label" for="input-confirm">Mật khẩu mới xác nhận</label>
+                            <div class="col-sm-7">
+                                <input type="password" name="passwordNewConfirm" value="" placeholder="Mật khẩu mới xác nhận" id="input-password-new-confirm" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="close-modal">Đóng</button>
+                <button type="button" class="btn btn-default" onclick="changePassword()">Cập nhật</button>
+                <input type="hidden" value="" id="email-change-password" />
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div id="update-info-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Thay đổi mật khẩu [<span id="email-modal-title-update-info"></span>]</h4>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div id="content-change-password" class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group required">
+                            <label class="col-sm-3 control-label" for="input-email">Địa chỉ E-mail</label>
+                            <div class="col-sm-7">
+                                <span class="form-control" id="update-info-email"></span>
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            <label class="col-sm-3 control-label" for="input-firstname">Họ</label>
+                            <div class="col-sm-3">
+                                <input type="text" name="firstname" value="" placeholder="Họ" id="input-firstname" class="form-control">
+                            </div>
+                            <label class="col-sm-1 control-label" for="input-lastname">Tên</label>
+                            <div class="col-sm-3">
+                                <input type="text" name="lastname" value="" placeholder="Tên" id="input-lastname" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            <label class="col-sm-3 control-label" for="input-lastname">Giới tính</label>
+
+                            <div class="col-sm-2" style="text-align: right">
+                                <input type="radio" name="input-gender" value="1"> Nam
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="radio" name="input-gender" value="0"> Nữ
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            <label class="col-sm-3 control-label">Ngày sinh</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="input-dob" value="" placeholder="Ngày sinh" id="input-dob" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            <label class="col-sm-3 control-label">Số điện thoại</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="input-phone" value="" placeholder="Số điện thoại" id="input-phone" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group required">
+                            <label class="col-sm-3 control-label" for="input-lastname">Địa chỉ</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="input-address" value="" placeholder="Địa chỉ" id="input-address" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="close-modal">Đóng</button>
+                <button type="button" class="btn btn-default" onclick="UpdateInfo()">Cập nhật</button>
+                <input type="hidden" value="" id="email-update-info" />
+            </div>
+        </div>
+    </div>
+</div>

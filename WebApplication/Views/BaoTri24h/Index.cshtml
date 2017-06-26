@@ -1,0 +1,221 @@
+﻿@using WebApplication.Lib.Bll.SystemSetting
+@{
+    Layout = "~/Views/Shared/ShopMain/_ShopMainLayout.cshtml";
+    ViewBag.Title = ViewTitleBll.Title("Bảo trì 244 - Dịch Vụ Vệ Sinh Máy Lạnh");
+}
+<div class="l-main-container">
+    <section>
+        <div class="b-bg-default b-infoblock">
+            <div class="b-infoblock--without-border">
+                <div class="container b-relative">
+                    <h2 class="c-default f-primary-l f-title-bigger">Dịch Vụ</h2>
+                    <h1 class="c-default f-primary-b f-title-biggest">bảo trì máy lạnh</h1>
+                    <h3 class="f-primary-b f-title-big c-senary">Dịch vụ bảo trì trọn gói</h3>
+                    <a href="@Url.Action("VeSinhMayLanh", "BaoTri24h")" class="button-lg f-uppercase b-default-top-indent">Vệ Sinh Máy Lạnh</a>
+                </div>
+            </div>
+        </div>
+        <div class="b-infoblock"></div>
+    </section>
+    <section class="b-infoblock b-diagonal-line-bg-light">
+        <div class="container">
+            <p>
+                Gói dịch vụ “ bảo trì trọn gói” hệ thống điện – nước – điện lạnh <b>Giảm 40%</b>,  giá thấp nhất chỉ còn 5 triệu đồng/ 1 năm.
+            </p>
+            <p>
+                Khi có sự cố xảy ra cho các thiết bị điện, nước, Điện lạnh trong gia đình, đa phần mọi người thường lúng túng và không thể tìm ra giải pháp khắc phục sự cố. Với những gia đình vắng bóng đàn ông, thì chị em lại càng bối rối khi xử lý những vấn đề liên quan đến hệ thống điện, nước.
+            </p>
+            <p>
+                Quả thật, không chỉ với các chị em, mà với cả những ai ít quan tâm đến các kiến thức về sửa chữa điện nước cũng sẽ băn khoăn, ngần ngại trước những khoản tiền phải chi cho việc sửa chữa.
+            </p>
+            <p style="text-align: center">
+                <img src="~/Content/baotri24h/01.jpg" />
+            </p>
+            <h3 class="f-primary-b f-title-big">ĐIỂM NỔI BẬT</h3>
+            <p class="f-primary-l">Công ty Cổ phần Bảo trì 24h cung cấp “Dịch vụ bảo trì trọn gói”, Nhằm đáp ứng các nhu cầu của quý khách hàng.</p>
+            <div class="b-infoblock-with-icon-group row">
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <div class="b-infoblock-with-icon">
+                        <a href="#" class="b-infoblock-with-icon__icon f-infoblock-with-icon__icon fade-in-animate">
+                            <i class="fa fa-check"></i>
+                        </a>
+                        <div class="b-infoblock-with-icon__info f-infoblock-with-icon__info">
+                            <a href="#" class="f-infoblock-with-icon__info_title b-infoblock-with-icon__info_title f-primary-sb">Các sự cố về hệ thống điện</a>
+                            <div class="f-infoblock-with-icon__info_text b-infoblock-with-icon__info_text">
+                                Gói bảo trì trọn gói tại 24h giúp bạn khắc phục nhanh chóng các sự cố về hệ thống điện- nước – điện lạnh trong nhà với chi phí rất thấp
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <div class="b-infoblock-with-icon">
+                        <a href="#" class="b-infoblock-with-icon__icon f-infoblock-with-icon__icon fade-in-animate">
+                            <i class="fa fa-check"></i>
+                        </a>
+                        <div class="b-infoblock-with-icon__info f-infoblock-with-icon__info">
+                            <a href="#" class="f-infoblock-with-icon__info_title b-infoblock-with-icon__info_title f-primary-sb">Tư vấn hỗ trợ</a>
+                            <div class="f-infoblock-with-icon__info_text b-infoblock-with-icon__info_text">
+                                Tư vấn và hỗ trợ cách sử dụng các trang thiết bị trong thời gian bảo trì.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix visible-sm-block"></div>
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <div class="b-infoblock-with-icon">
+                        <a href="#" class="b-infoblock-with-icon__icon f-infoblock-with-icon__icon fade-in-animate">
+                            <i class="fa fa-check"></i>
+                        </a>
+                        <div class="b-infoblock-with-icon__info f-infoblock-with-icon__info">
+                            <a href="#" class="f-infoblock-with-icon__info_title b-infoblock-with-icon__info_title f-primary-sb">Thay thế lắp đặt</a>
+                            <div class="f-infoblock-with-icon__info_text b-infoblock-with-icon__info_text">
+                                Hỗ trợ thay thế, lắp đặt các thiệt bị mới
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix visible-md-block visible-lg-block"></div>
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <div class="b-infoblock-with-icon">
+                        <a href="#" class="b-infoblock-with-icon__icon f-infoblock-with-icon__icon fade-in-animate">
+                            <i class="fa fa-check"></i>
+                        </a>
+                        <div class="b-infoblock-with-icon__info f-infoblock-with-icon__info">
+                            <a href="#" class="f-infoblock-with-icon__info_title b-infoblock-with-icon__info_title f-primary-sb">Thường xuyên kiểm tra</a>
+                            <div class="f-infoblock-with-icon__info_text b-infoblock-with-icon__info_text">
+                                Thường xuyên kiểm tra các thiết bị đang sử dụng trong thời gian bảo trì
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix visible-sm-block"></div>
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <div class="b-infoblock-with-icon">
+                        <a href="#" class="b-infoblock-with-icon__icon f-infoblock-with-icon__icon fade-in-animate">
+                            <i class="fa fa-check"></i>
+                        </a>
+                        <div class="b-infoblock-with-icon__info f-infoblock-with-icon__info">
+                            <a href="#" class="f-infoblock-with-icon__info_title b-infoblock-with-icon__info_title f-primary-sb">Chuyên nghiệp tận tình</a>
+                            <div class="f-infoblock-with-icon__info_text b-infoblock-with-icon__info_text">
+                                Đội ngũ kỹ thuật viên chuyên nghiệp, tận tình. Nhanh chóng, chu đáo, an toàn
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix visible-sm-block"></div>
+            </div>
+        </div>
+    </section>
+    <section class="b-infoblock--small">
+        <div class="container">
+            <div class="row b-col-default-indent">
+                <div class="col-md-12">
+                    <h3 class="f-primary-b f-title-big">THÔNG TIN CHI TIẾT</h3>
+                    <p class="f-primary-l">Công ty chúng tôi trân trọng gửi đến quý khách hàng các gói dịch vụ mới của Công ty: </p>
+                    <div class="b-shortcode-example">
+                        <table class="b-table-primary f-table-primary f-center">
+                            <tr>
+                                <th>Dịch vụ</th>
+                                <th>Giá / năm</th>
+                                <th>Giá giảm 40%</th>
+                            </tr>
+                            <tr>
+                                <td>Diện tích sử dụng &lt;= 100 m2</td>
+                                <td>8,499,000 đ</td>
+                                <td>5,100,000 đ</td>
+                            </tr>
+                            <tr>
+                                <td>Diện tích sử dụng &lt;= 200 m2</td>
+                                <td>13,599,000 đ</td>
+                                <td>8,159,000 đ</td>
+                            </tr>
+                            <tr>
+                                <td>Diện tích sử dụng &lt;= 300 m2</td>
+                                <td>16,699,000 đ</td>
+                                <td>10,019,000 đ</td>
+                            </tr>
+                            <tr>
+                                <td>Diện tích sử dụng &gt; 300 m2</td>
+                                <td>Khảo sát báo giáa</td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="page-href" id="blockquotes"></div>
+            <div class="b-shortcode-example">
+                <p>Khác với các dịch vụ sửa chữa, bảo trì bên ngoài như thời gian phục vụ không đảm bảo, giá nhân công tự phát và trả tiền theo từng lần sửa chữa, chất lượng kỹ thuật không theo quy trình, ít trách nhiệm và không có sự kiểm soát về kỹ thuật, vật tư không có xuất sứ rõ ràng và bảo hành không hiệu quả. khi xảy ra sự cố không phục vụ đúng trách nhiệm và gây khó khăn cho khách hàng... thì với dịch vụ trọn gói bảo trì và sửa chữa hệ thống điện - nước – điện lạnh của công ty Cổ phần Bảo trì 24H, khách hàng sẽ được nhân viên kỹ thuật đến tận nhà liệt kê thiết bị, ký hợp đồng và tiến hành bảo dưỡng các thiết bị điện nước, điện lạnh, lên nhật ký để bảo dưỡng thiết bị trong nhà.</p>
+                <p style="text-align: center">
+                    <img src="~/Content/baotri24h/02.png" />
+                </p>
+            </div>
+            <div class="page-href" id="">Quy trình xử lý kỹ thuật:</div>
+            <div class="b-shortcode-example">
+                <ul>
+                    <li>Kiểm tra tổng thể toàn bộ thiết bị cần sửa chữa.</li>
+                    <li>Lên phương án bảo dưỡng sửa chữa, thay thế.</li>
+                    <li>Thỏa thuận phương án làm việc với khách hàng.</li>
+                    <li>Khách hàng đồng ý phương án làm việc</li>
+                    <li>Nhân viên kỹ thuật 24H tiến hành sửa chữa (thay thế).</li>
+                    <li>Khi hoàn thiện công việc, nhân viên kỹ thuật 24H kiểm tra, chạy thử từng bộ phận.</li>
+                    <li>Sau khi vận hành thiết bị tốt, tiến hành chạy thử và bàn giao thiết bị.</li>
+                </ul>
+                <p>
+                    Như vậy chúng ta đã có thêm 1 lựa chọn đó là dịch vụ sửa chữa trọn gói về Điện,Nước, Điện lạnh của 24H trong gia đình.
+                    Với số liên hệ duy nhất: <b>(08) 39.30.90.09</b>. Hy vọng với những chia sẻ trên thì những vấn đề về Điện – Nước – Điện lạnh trong gia đình cũng như các công ty sẽ được giải quyết nhanh chóng và dễ dàng. Nâng cao chất lượng cuộc sống của quý vị.
+                </p>
+            </div>
+        </div>
+    </section>
+    <section class="b-infoblock b-diagonal-line-bg-light b-bg-full-primary">
+        <div class="container">
+            <h3 class="f-primary-b f-title-big">điều kiện sử dụng</h3>
+            <div class="row b-col-default-indent" data-animate-group-wrap>
+                <div class="col-sm-12 col-xs-12">
+                    <div class="b-mention-item">
+                        <ul>
+                            <li>Thời hạn sử dụng voucher: Hợp đồng <b>01 Năm</b> kể từ ngày ký.</li>
+                            <li>Địa điểm sử dụng voucher: Công ty Cổ phần Bảo trì 24H – 53/9, Trần Khánh Dư, Phường Tân Định, Quận 1, TP. HCM</li>
+                            <li>Áp dụng cho gói dịch vụ trọn gói của Công ty Cổ phần Bảo trì 24H</li>
+                            <li>01 Voucher/1 hợp đồng (không bù thêm tiền), mỗi địa chỉ được áp dụng 1 voucher.</li>
+                            <li>Khách hàng có thể mua nhiều voucher để sử dụng hoặc tặng người thân.</li>
+                            <li>Chưa bao gồm 10%VAT. Công Ty Cổ Phần Bảo trì 24H chịu trách nhiệm xuất hoá đơn tài chính khi khách hàng yêu cầu. Khách hàng liên hệ theo số 08 3930 9009 (để được tư vấn tốt nhất).</li>
+                            <li>Không áp dụng đồng thời với các chương trình khuyến mãi khác.</li>
+                            <li>Khách hàng vui lòng liên hệ (08) 3930 9009 để được tư vấn tốt nhất.</li>
+                            <li>Phiếu không có giá trị quy đổi thành tiền mặt</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="b-carousel-reset b-carousel-arr-out b-carousel-roundabout f-carousel-roundabout b-remaining">
+            <div class="f-center b-logo-group j-logo-slider">
+                <div class="b-logo-item">
+                    <a href="~/Content/baotri24h/01.jpg">
+                        <img class="is-normal" src="~/Content/baotri24h/01.jpg" alt="" />
+                        <img class="is-hover" src="~/Content/baotri24h/01.jpg" alt="" />
+                    </a>
+                </div>
+                <div class="b-logo-item">
+                    <a href="~/Content/baotri24h/01.jpg">
+                        <img class="is-normal" src="~/Content/baotri24h/02.png" alt="" />
+                        <img class="is-hover" src="~/Content/baotri24h/02.png" alt="" />
+                    </a>
+                </div>
+                <div class="b-logo-item">
+                    <a href="~/Content/baotri24h/01.jpg">
+                        <img class="is-normal" src="~/Content/baotri24h/03.jpg" alt="" />
+                        <img class="is-hover" src="~/Content/baotri24h/03.jpg" alt="" />
+                    </a>
+                </div>
+                <div class="b-logo-item">
+                    <a href="~/Content/baotri24h/01.jpg">
+                        <img class="is-normal" src="~/Content/baotri24h/04.jpg" alt="" />
+                        <img class="is-hover" src="~/Content/baotri24h/04.jpg" alt="" />
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

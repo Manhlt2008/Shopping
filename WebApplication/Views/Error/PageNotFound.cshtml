@@ -1,0 +1,28 @@
+﻿@using WebApplication.Models.Category
+@{
+    Layout = "~/Views/Shared/Shop/_ShopLayout.cshtml";
+    var categoryModels = (List<CategoryManageList>)ViewBag.Categories;
+    
+}
+
+@section CategoryColumn
+{
+    @Html.Partial("../Home/IndexPartialPage/CategoryListPartial", categoryModels)
+}
+
+<div id="content" class="col-sm-9">
+    <ul class="breadcrumb">
+        <li>
+            <a href="@Url.Action("Index", "Home")"><i class="fa fa-home"></i></a>
+        </li>
+
+        <li>@ViewBag.Title</li>
+    </ul>
+
+    <h1>@ViewBag.Description</h1>
+    <p>Bạn vui lòng click <a href="@Url.Action("Index", "Home")">đây</a> để trở lại trang chủ
+    </p>
+    <div class="buttons">
+        <div class="pull-right"><a href="@Url.Action("Index", "Home")" class=" btn btn-primary">Tiếp Tục</a></div>
+    </div>
+</div>

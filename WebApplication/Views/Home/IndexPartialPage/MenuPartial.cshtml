@@ -1,0 +1,103 @@
+﻿<div class="container">
+    <div class="row">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-9">
+            <nav id="top" class="top_panel">
+                <div id="top-links" class="nav">
+                    <ul class="list-inline">
+                        <li class="first">
+                            <a href="@Url.Action("Index", "Home")">
+                                <i class="flaticon-home-button"></i><span class="hidden-sm">Trang Chủ</span>
+                            </a>
+                        </li>
+                        @*<li>
+                                <a href="#" id="wishlist-total" title="Wish List (0)">
+                                    <i class="flaticon-bookmark-button"></i> <span class="hidden-sm">Yêu thích (0)</span>
+                                </a>
+                            </li>*@
+                        <li class="dropdown">
+                            <a href="#" title="My Account" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="flaticon-user-account-box"></i>
+                                <span class="hidden-sm">Tài Khoản</span> <span class="caret hidden-sm"></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-left">
+
+
+                                @if (WebApplication.Lib.Bll.UserBll.GetUser() != null)
+                                {
+                                    <li>
+                                        <a href="@Url.Action("ChangePassword", "User")">Đổi Mật Khẩu</a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Info", "User")">Thông Tin Tài Khoản</a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("List", "Order")">Danh sách đơn hàng</a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("TransactionHistoryForUser", "Transaction")">Lịch Sử Giao Dịch</a>
+                                    </li>
+                                    if (WebApplication.Lib.Bll.UserBll.GetUser().RoleId == WebApplication.Lib.Util.Constant.RoleEnum.Admin || WebApplication.Lib.Bll.UserBll.GetUser().RoleId == WebApplication.Lib.Util.Constant.RoleEnum.SupplierManager)
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("ManageAccount", "Admin")">Trang Quản Trị</a>
+                                        </li>
+                                    }
+
+                                    <li>
+                                        <a href="@Url.Action("Logout", "Authentication")">Đăng Xuất</a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Register", "Authentication")">Đăng Kí</a>
+                                    </li>
+                                    <li>
+                                        <a href="@Url.Action("Login", "Authentication")">Đăng Nhập</a>
+                                    </li>
+                                }
+
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Cart", "Order")" title="Shopping Cart">
+                                <i class="flaticon-shopping-cart"></i> <span class="hidden-sm">Giỏ Hàng</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Cart", "Order")" title="Checkout" onclick="CartController.checkout();">
+                                <i class="flaticon-check-box"></i> <span class="hidden-sm">Thanh Toán</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                    <div class="box-cart">
+                        <div id="cart" class="cart">
+                            <button type="button" data-toggle="dropdown" data-loading-text="Loading..." class="dropdown-toggle">
+                                <i class="flaticon-shopping-cart"></i>
+                                <span id="cart-total" class="cart-total">0 món()s) - 0 đ</span>
+                                <span id="cart-total2" class="cart-total2 visible-xs">0</span>
+                                <span id="cart-total3" class="cart-total3 hidden-xs">0 item(s)</span>
+                                <span class="fa fa-angle-down"></span>
+                            </button>
+                            <ul class="dropdown-menu pull-right" id="shopping-cart-detail">
+                                <li>
+                                    <p class="text-center">Giỏ hàng của bạn đang trống!</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+
+@section ExtendScript
+{
+    <script>
+        CartController.init(true);
+        CartController.loadShoppingCartTable(true);
+    </script>
+}

@@ -1,0 +1,455 @@
+﻿@using System.Globalization
+@using WebApplication.Models.Product
+@using WebApplication.Models.Review
+@{
+    ViewBag.Title = "Manage";
+    Layout = "~/Views/Shared/AdminCp/_AdminLayout.cshtml";
+
+    var cul = CultureInfo.GetCultureInfo("vi-VN");
+
+    var pageLimitList = new List<int> { 0, 5, 10, 25, 50, 75, 100, 200, 500 };
+
+    var itemLimit = (int)ViewBag.Limit;
+    var itemSort = (string)ViewBag.Sort ?? "default";
+    var itemOrder = (int)ViewBag.Order;
+    var totalReview = (int)ViewBag.TotalReview;
+    int totalPage = totalReview / (itemLimit == 0 ? 1 : itemLimit);
+    var productId = (int)ViewBag.ProductId;
+
+    if (totalPage == 0)
+    {
+        totalPage = 1;
+    }
+
+    var itemPage = (int)ViewBag.Page;
+
+    var products = (List<ProductViewModel>)ViewBag.Products ?? new List<ProductViewModel>();
+
+    var productViewModel = (ProductViewModel)ViewBag.Product ?? new ProductViewModel
+    {
+        Id = 0,
+        Name = string.Empty,
+        Cover = 0,
+        Gallery = new List<long>()
+    };
+
+    var reviewViewModels = (List<ReviewViewModel>)ViewBag.Reviews;
+}
+
+
+@section Breadcrumbs
+{
+    <li>
+        <a href="@Url.Action("Manage", "Review")">Manage</a>
+    </li>
+    <li>
+        <span>Đợi duyệt Reviews</span>
+    </li>
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Danh sách Review</h4>
+            </div>
+            <div class="slick_grid">
+                <div class="panel_controls">
+                    <div class="form-horizontal">
+                        <div class="col-sm-9">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Sản phẩm</label>
+                                <div class="col-sm-8">
+                                    @{
+                                        var currentProductId = "0";
+                                        if (productId > 0)
+                                        {
+                                            currentProductId = Url.Action("Manage", "Product", new
+                                            {
+                                                productId = productId,
+                                                order = itemOrder,
+                                                limit = itemLimit,
+                                                page = itemPage
+                                            });
+                                        }
+                                    }
+                                    <input type="hidden" id="currentProduct" value="@productViewModel.Name" />
+                                    <select class="" name="ProductId" id="product_select">
+                                        <option value="" disabled selected>Select Option</option>
+                                        @foreach (var product in products)
+                                        {
+                                            <option value="@Url.Action("Manage", "Review", new
+                                                           {
+                                                               productId = product.Id,
+                                                               order = itemOrder,
+                                                               limit = itemLimit,
+                                                               page = itemPage
+                                                           })">
+                                                @product.Name
+                                            </option>
+                                        }
+                                    </select>
+                                </div>
+                                <label class="col-sm-2 control-label">
+                                    <input type="checkbox" id="chkListAllReviews"
+                                           data-url="@Url.Action("Manage", "Review", new
+                                                     {
+                                                         productId = 0,
+                                                         order = itemOrder,
+                                                         limit = itemLimit,
+                                                         page = itemPage
+                                                     })"
+                                           @(productId == 0 ? "checked " : string.Empty) /> Tất cả sản phẩm
+                                </label>
+                            </div>
+                            <div class="col-sm-4">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <div class="sepH_c">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 15%">Sản phẩm</th>
+                                            <th style="width: 15%">Tác giả</th>
+                                            <th style="width: 45%">Nội dung</th>
+                                            <th style="width: 15%">Ngày viết</th>
+                                            <th style="width: 10%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var reviewModel in reviewViewModels)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <a href="@Url.Action("View", "Product", new {id = reviewModel.Product.Id})" target="_blank">
+                                                        @reviewModel.Product.Name
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a href="@Url.Action("Info", "User", new {id = reviewModel.Account.Id})">
+                                                        @reviewModel.Account.FirstName @reviewModel.Account.LastName
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    @{
+                                            if (reviewModel.Message.Length > 150)
+                                            {
+                                                <span title="@reviewModel.Message">@reviewModel.Message.Substring(0, 150)...</span>
+                                            }
+                                            else
+                                            {
+                                                <span title="@reviewModel.Message">@reviewModel.Message</span>
+                                            }
+                                                    }
+                                                </td>
+                                                <td>@reviewModel.CreatedDate.ToString("g")</td>
+
+                                                <td>
+                                                    <a href="#" title="Approve" onclick="ReviewManageController.approve(@reviewModel.Id)"><span class="icon-ok"></span></a>
+                                                    <a href="#reviewDetailModal-@reviewModel.Id" data-toggle="modal"
+                                                       title="View detail of @reviewModel.Account.FirstName @reviewModel.Account.LastName">
+                                                        <span class="glyphicon glyphicon-edit"></span>
+                                                    </a>
+                                                    <a href="#" title="Delete review" onclick="">
+                                                        <span class="glyphicon glyphicon-trash"></span>
+                                                    </a>
+
+                                                    <div class="modal fade" id="reviewDetailModal-@reviewModel.Id">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                    <h4 class="modal-title">Review</h4>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div class="form-horizontal">
+                                                                        <div class="form-group">
+                                                                            <label class="col-sm-4 control-label">Sản phẩm liên quan</label>
+                                                                            <div class="col-sm-8">
+                                                                                <p class="form-control-static">
+                                                                                    <a href="@Url.Action("View", "Product", new {id = reviewModel.Product.Id})" target="_blank">
+                                                                                        @reviewModel.Product.Name
+                                                                                    </a>
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="col-sm-4 control-label">Tác giả</label>
+                                                                            <div class="col-sm-8">
+                                                                                <p class="form-control-static">
+                                                                                    <a href="@Url.Action("Info", "User", new {id = reviewModel.Account.Id})" target="_blank">
+                                                                                        @reviewModel.Account.FirstName @reviewModel.Account.LastName
+                                                                                    </a>
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label class="col-sm-4 control-label">Ngày viết</label>
+                                                                            <div class="col-sm-8">
+                                                                                <p class="form-control-static">
+                                                                                    @reviewModel.CreatedDate.ToString("G")
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="inputMessage-@reviewModel.Id" class="col-sm-4 control-label">Tin nhắn</label>
+                                                                            <div class="col-sm-8">
+                                                                                <div id="editArea-@reviewModel.Id" style="display: none">
+
+                                                                                    <textarea id="inputMessage-@reviewModel.Id" cols="10" rows="10" class="form-control">@reviewModel.Message</textarea>
+
+                                                                                    <div class="pull-right">
+                                                                                        <a href="#" title="Save" style="font-size: larger" onclick="ReviewManageController.saveMessage(@reviewModel.Id);">
+                                                                                            <span class="glyphicon glyphicon-floppy-disk"></span>
+                                                                                        </a>
+                                                                                        <a href="#" title="Cancel" style="font-size: larger" onclick="ReviewManageController.cancelMessage(@reviewModel.Id)">
+                                                                                            <span class="glyphicon glyphicon-floppy-remove"></span>
+                                                                                        </a>
+                                                                                    </div>
+
+                                                                                </div>
+                                                                                <a href="#" class="form-control-static editable editable-click"
+                                                                                   id="staticMessage-@reviewModel.Id" style="cursor: text"
+                                                                                   onclick="ReviewManageController.enableEdit(@reviewModel.Id)">
+                                                                                    @reviewModel.Message
+                                                                                </a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+
+                                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                                                                    <button type="button" class="btn btn-primary" onclick="ReviewManageController.saveAndApprove(@reviewModel.Id)">Lưu thay đổi</button>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="pager">
+                        <div class="slick-pager">
+                            <div class="row">
+                                <div class="col-sm-7">
+                                    <style>
+                                        .slick-item-nav a {
+                                            text-decoration: black none;
+                                            color: black;
+                                            background: transparent;
+                                            border: transparent;
+                                        }
+
+                                        .slick-item-nav-actived {
+                                            clear: both;
+                                            border-color: #48ac2e !important;
+                                            background: #48ac2e !important;
+                                            color: #fff;
+                                        }
+                                    </style>
+
+                                    <span class="slick-pager-nav">
+                                        @PagingHelper(productId, itemPage, itemSort, itemOrder, itemLimit, totalPage)
+                                    </span>
+
+                                    @{
+                                        var from = (itemPage - 1) * itemLimit + 1;
+                                        var to = itemPage * itemLimit;
+                                        if (to > totalReview || to < 0)
+                                        {
+                                            to = totalReview;
+                                        }
+                                    }
+                                    <span class="slick-pager-status">Showing @from to @to records</span>
+                                </div>
+
+                                <div class="col-sm-5">
+                                    <span class="slick-pager-settings pull-right">
+
+                                        <span class="slick-pager-settings-expanded">
+                                            Show:
+                                            @foreach (var item in pageLimitList)
+                                            {
+                                                var className = string.Empty;
+                                                if (itemLimit == item)
+                                                {
+                                                    className = "settings_expanded_active";
+                                                }
+
+                                                <a data="@item" class="@className"
+                                                   href="@Url.Action("Manage", "Review", new
+                                                         {
+                                                             productId = productId,
+                                                             order = itemOrder,
+                                                             limit = item == 0 ? "0" : item.ToString(),
+                                                             page = 1
+                                                         })">
+                                                    @(item <= 0 ? "All" : item.ToString())
+                                                </a>
+                                            }
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@helper PagingHelper(int productId, int itemPage, string itemSort, int itemOrder, int itemLimit, int totalPage)
+{
+    if (itemPage > 1)
+    {
+        <span class="slick-item-nav">
+            <a href="@Url.Action("Manage", "Review", new
+                     {
+                         productId = productId,
+                         order = itemOrder,
+                         limit = itemLimit,
+                         page = 1
+                     })">
+                <i class="icon-double-angle-left"></i>
+            </a>
+        </span>
+        <span class="slick-item-nav">
+            <a href="@Url.Action("Manage", "Review", new
+                     {
+                         productId = productId,
+                         order = itemOrder,
+                         limit = itemLimit,
+                         page = (itemPage - 1)
+                     })">
+                <i class="icon-angle-left"></i>
+            </a>
+        </span>
+    }
+
+    if (totalPage > 6)
+    {
+        for (var i = 1; i <= 3; i++)
+        {
+            if (i == itemPage)
+            {
+                <span class="slick-item-nav slick-item-nav-actived"><span>@i</span></span>
+            }
+            else
+            {
+                <span class="slick-item-nav">
+                    <a href="@Url.Action("Manage", "Review", new
+                             {
+                                 productId = productId,
+                                 order = itemOrder,
+                                 limit = itemLimit,
+                                 page = i
+                             })" title="Page @i">
+                        @i
+                    </a>
+                </span>
+            }
+        }
+
+        <span class="slick-item-nav">
+            <a href="javascript:void(0);">...</a>
+        </span>
+
+        for (var i = totalPage - 2; i <= totalPage; i++)
+        {
+            if (i == itemPage)
+            {
+                <span class="slick-item-nav slick-item-nav-actived"><span>@i</span></span>
+            }
+            else
+            {
+                <span class="slick-item-nav">
+                    <a href="@Url.Action("Manage", "Review", new
+                             {
+                                 productId = productId,
+                                 order = itemOrder,
+                                 limit = itemLimit,
+                                 page = i
+                             })" title="Page @i">
+                        @i
+                    </a>
+                </span>
+            }
+        }
+    }
+    else
+    {
+        for (var i = 1; i <= totalPage; i++)
+        {
+            if (i == itemPage)
+            {
+                <span class="slick-item-nav slick-item-nav-actived"><span>@i</span></span>
+            }
+            else
+            {
+                <span class="slick-item-nav">
+                    <a href="@Url.Action("Manage", "Review", new
+                             {
+                                 productId = productId,
+                                 order = itemOrder,
+                                 limit = itemLimit,
+                                 page = i
+                             })" title="Page @i">
+                        @i
+                    </a>
+                </span>
+            }
+        }
+    }
+
+    if (itemPage < totalPage)
+    {
+        <span class="slick-item-nav">
+            <a href="@Url.Action("Manage", "Review", new
+                     {
+                         productId = productId,
+                         order = itemOrder,
+                         limit = itemLimit,
+                         page = (itemPage + 1)
+                     })">
+                <i class="icon-angle-right"></i>
+            </a>
+        </span>
+        <span class="slick-item-nav">
+            <a href="@Url.Action("Manage", "Review", new
+                     {
+                         productId = productId,
+                         order = itemOrder,
+                         limit = itemLimit,
+                         page = totalPage
+                     })">
+                <i class="icon-double-angle-right"></i>
+            </a>
+        </span>
+    }
+}
+
+
+@section CustomScript
+{
+    <script src="~/Content/admincp/js/lib/bootbox/bootbox.min.js"></script>
+    <script src="~/Scripts/AdminCP/Review/ReviewManageController.js" type="text/javascript" language="JavaScript"></script>
+
+    <script>
+        ReviewManageController.init({
+            approveUrl: "@Url.Action("Approve","Review")",
+            approveAndUpdateUrl: "@Url.Action("ApproveAndUpdate", "Review")"
+        });
+    </script>
+}

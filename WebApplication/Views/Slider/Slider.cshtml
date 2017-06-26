@@ -1,0 +1,89 @@
+﻿@{
+    ViewBag.Title = "Quản lí Slider";
+    Layout = "~/Views/Shared/AdminCp/_AdminLayout.cshtml";
+
+    var resultModelActive = (WebApplication.Models.User.ResultModel)ViewBag.ResultModelActive;
+    var actives = new List<WebApplication.Models.Slider.SliderModel>();
+    if (resultModelActive != null && resultModelActive.Code == 0)
+    {
+        actives = (List<WebApplication.Models.Slider.SliderModel>)resultModelActive.Data;
+    }
+
+    var resultModelInActive = (WebApplication.Models.User.ResultModel)ViewBag.ResultModelInActive;
+    var inActives = new List<WebApplication.Models.Slider.SliderModel>();
+    if (resultModelInActive != null && resultModelInActive.Code == 0)
+    {
+        inActives = (List<WebApplication.Models.Slider.SliderModel>)resultModelInActive.Data;
+    }
+}
+@section Breadcrumbs
+{
+    <li><a href="@Url.Action("Slider", "Slider")">Giao diện trang chủ</a></li>
+    <li><span>Quản lí Slider</span></li>
+}
+<input class="sticky" type="hidden" />
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    Slider đang hoạt động
+                    <span class="pull-right">
+                        <a class="btn btn-primary btn-sm" data-toggle="modal" href="@Url.Action("Create","Slider")">
+                            <span class="li_t-shirt"></span> Thêm Slider/Banner
+                        </a>
+                    </span>
+                </h4>
+            </div>
+            <div class="sepH_c">
+                <div class="table-responsive" id="result-table-active">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Slider ngưng họa động</h4>
+            </div>
+            <div class="sepH_c">
+                <div class="table-responsive" id="result-table-inactive">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section CustomScript
+{
+    <link href="~/Content/admincp/js/lib/Sticky/sticky.css" rel="stylesheet" />
+    <script src="~/Content/admincp/js/lib/Sticky/sticky.js"></script>
+    <script src="~/Scripts/jquery.form.js"></script>
+    <script src="~/Content/admincp/js/lib/bootbox/bootbox.min.js"></script>
+    <script src="~/Content/admincp/js/jquery.sticky.js"></script>
+    <link href="~/Content/css/datepicker.css" rel="stylesheet" />
+    <script src="~/Content/js/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/AdminCP/Account/Account.js"></script>
+    <script src="~/Scripts/AdminCP/Product/product-controller.js"></script>
+    <script src="~/Scripts/AdminCP/Slider/Slider.js"></script>
+    <script>
+        SliderController.init({
+            url: {
+                listSliderActive: "@Url.Action("SliderActive", "Slider")",
+                listSliderInActive: "@Url.Action("SliderInActive", "Slider")",
+                activeOrInActive: "@Url.Action("UpdateStatusSlider", "Slider")",
+                increaseIOrder: "@Url.Action("IncreaseIOrder", "Slider")",
+                decreaseIOrder: "@Url.Action("DecreaseIOrder", "Slider")"
+            }
+        });
+
+        SliderController.listSliderActive();
+        SliderController.listSliderInActive();
+    </script>
+}
+
+

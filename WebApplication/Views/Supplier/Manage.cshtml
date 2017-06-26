@@ -1,0 +1,186 @@
+﻿@using WebApplication.Lib.Bll
+@using WebApplication.Lib.Dal.DbContext
+@using WebApplication.Lib.Util.Constant
+@{
+    ViewBag.Title = "Manage";
+    Layout = "~/Views/Shared/AdminCp/_AdminLayout.cshtml";
+
+    var suppliers = (List<Supplier>)ViewBag.Suppliers;
+    var userModel = UserBll.GetUser();
+
+}
+
+@section Breadcrumbs
+{
+    <li><a href="@Url.Action("Manage", "Supplier")">Quản lí</a></li>
+    <li><span>Danh sách nhà cung cấp</span></li>
+}
+@section CustomScript
+{
+    <link href="~/Content/admincp/js/lib/Sticky/sticky.css" rel="stylesheet" />
+    <script src="~/Content/admincp/js/lib/Sticky/sticky.js"></script>
+    <script src="~/Scripts/jquery.form.js"></script>
+    <script src="~/Content/admincp/js/lib/bootbox/bootbox.min.js"></script>
+    <script src="~/Content/admincp/js/jquery.sticky.js"></script>
+    <link href="~/Content/css/datepicker.css" rel="stylesheet" />
+    <script src="~/Content/js/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/AdminCP/Account/Account.js"></script>
+
+    <!-- datatbles -->
+    <link rel="stylesheet" href="~/Content/admincp/js/lib/dataTables/media/DT_bootstrap.css">
+    <link rel="stylesheet" href="~/Content/admincp/js/lib/dataTables/extras/TableTools/media/css/TableTools.css">
+
+    <script src="~/Content/admincp/js/lib/bootbox/bootbox.min.js"></script>
+    <!-- datatables -->
+    <script src="~/Content/admincp/js/lib/dataTables/media/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        //        if ($('#dt_basic').length) {
+        //            $('#dt_basic').dataTable({
+        //                "sPaginationType": "bootstrap_full"
+        //            });
+        //        }
+
+    </script>
+    <script>
+        var status_active = 1;
+        var status_inactive = 2;
+        function activeOrDeactiveSupplier(element) {
+            var email = $(element).data("email");
+            var status = $(element).data("status");
+            var text = "";
+            if (status == status_active) {
+                text = "Bạn muốn kích hoạt nhà cung cấp [" + email + "] ?";
+            } else if (status == status_inactive) {
+                text = "Bạn muốn định chỉ hoạt động nhà cung cấp [" + email + "] ?";
+            }
+            var options = {
+                url: "/Supplier/UpdateStatus",
+                data: {
+                    email: email,
+                    status: status
+                },
+                beforeSubmit: showRequest,
+                success: function (response) {
+                    if (response.resultCode == 0) {
+                        messageSuccess("Thao tác thành công!");
+                    } else {
+                        messageDanger(response.message);
+                    }
+
+                },
+                type: 'post'
+            };
+
+            bootbox.dialog({
+                message: text,
+                title: "Đình chỉ hoạt động nhà cung cấp",
+                buttons: {
+                    danger: {
+                        label: "Hủy",
+                        className: "btn-default",
+                        callback: function () {
+                        }
+                    },
+                    success: {
+                        label: "Đồng ý",
+                        className: "btn-default",
+                        callback: function () {
+                            $.ajax(options);
+                            location.reload();
+                        }
+                    },
+                }
+            });
+        }
+    </script>
+}
+<link rel="stylesheet" href="~/Content/admincp/js/lib/dataTables/media/DT_bootstrap.css">
+<link rel="stylesheet" href="~/Content/admincp/js/lib/dataTables/extras/TableTools/media/css/TableTools.css">
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Danh Sách Nhà Cung Cấp</h4>
+            </div>
+            <table id="dt_basic" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th width="5%">STT</th>
+                        <th width="15%">Nhà Cung Cấp</th>
+                        <th width="25%">Đia Chỉ</th>
+                        <th width="10%">Điện Thoại</th>
+                        <th width="15%">Email</th>
+                        <th width="15%">Website</th>
+                        <td width="10%">Trạng Thái</td>
+                        <th width="5%"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (suppliers != null)
+                    {
+                        int count = 0;
+                        foreach (var item in suppliers)
+                        {
+                            string statusText = "";
+                            string classText = "";
+                            count = count + 1;
+                            if (@item.Status == StatusEnum.Active)
+                            {
+                                statusText = "Đang hoạt động";
+                                classText = "label label-success";
+
+                            }
+                            else
+                            {
+                                statusText = "Ngừng hoạt động";
+                                classText = "label label-danger";
+                            }
+                            <tr>
+                                <td width="5%">@count</td>
+                                <td width="15%">
+                                    @item.Name <a href="@Url.Action("Manage", "Product", new {@supplierId = item.Id})" target="_blank">(Sản Phẩm)</a>
+                                </td>
+                                <td width="25%">
+                                    @item.Address
+                                </td>
+                                <td width="10%">
+                                    @item.Phone
+                                </td>
+                                <td width="15%">
+                                    <a href="mailto:@item.Email">@item.Email</a>
+
+                                </td>
+                                <td width="15%">
+                                    <a href="@item.Website">@item.Website</a>
+                                </td>
+                                <td width="10%">
+                                    <span class="@classText">@statusText</span>
+                                </td>
+                                <td width="5%">
+                                    <a href="@Url.Action("UpdateInfoSupplier","Supplier",new {@id=item.Id})" title="Cập nhật thông tin nhà cung cấp @item.Email">
+                                        <span class="glyphicon glyphicon-pencil"></span>
+                                    </a>
+                                    @if (item.Status == StatusEnum.Active && (userModel.RoleId == RoleEnum.Admin || userModel.RoleId == RoleEnum.Manager))
+                                    {
+                                        <a href="#" title="Đình chỉ hoạt động nhà cung cấp @item.Email" onclick="return activeOrDeactiveSupplier(this);" data-email="@item.Email" data-status="2">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="#" title="Kích hoạt nhà cung cấp @item.Email" onclick="return activeOrDeactiveSupplier(this);" data-email="@item.Email" data-status="1">
+                                            <span class="glyphicon glyphicon-ok"></span>
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

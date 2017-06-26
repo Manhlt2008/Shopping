@@ -1,0 +1,97 @@
+﻿@model CategoryModel
+
+@using WebApplication.Models.Category
+@{
+    ViewBag.Title = "Create Category";
+    Layout = "~/Views/Shared/AdminCp/_AdminLayout.cshtml";
+
+    var parentCategories = (CategoryDropDownListModel)ViewBag.ParentCategory ?? new CategoryDropDownListModel();
+
+    var category = (CategoryModel)ViewBag.Category ?? new CategoryModel
+    {
+        Id = 0,
+        Name = string.Empty,
+        ParentCategoryId = 0
+    };
+}
+
+@section Breadcrumbs
+{
+    <li><a href="@Url.Action("Manage", "Category")">Quản lí</a></li>
+    <li><span>Tại mới</span></li>
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Tạo thể loại mới</h4>
+            </div>
+            <div class="panel-body">
+                <fieldset>
+                    @using (Html.BeginForm(category.Id == 0 ? "Create": "Update", "Category", FormMethod.Post, new { @class = "form-horizontal", id = "createCategoryForm" }))
+                    {
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Parent Category</label>
+                            <div class="col-sm-10">
+                                @Html.HiddenFor(m => m.Id, new { @Value = category.Id, id = "txtCategoryId" })
+                                <select class="select2" name="ParentCategoryId">
+                                    @if (category.ParentCategoryId == 0)
+                                    {
+                                        <option value="" disabled selected>Select Option</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="" disabled>Select Option</option>
+
+                                    }
+                                    <option value="0">&nbsp;</option>
+                                    @foreach (var item in parentCategories.SelectListItems)
+                                    {
+                                        if (category.ParentCategoryId.ToString().Equals(item.Value))
+                                        {
+                                            <option value="@item.Value" selected>@item.Text</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Name, new { @class = "col-sm-2 control-label req" })
+                            <div class="col-sm-10">
+                                <div class="sepH_b">
+                                    @Html.TextBoxFor(m => m.Name, new { Class = "form-control", placeholder = "Name", @Value = category.Name })
+                                    <ul id="validator-name-invalid" class="parsley-error-list" style="display: none;">
+                                        <li class="required" style="display: list-item;">
+                                            <span id="validator-name-invalid-message"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <button class="btn btn-default" type="submit" id="btnSubmit">Lưu</button>
+                            </div>
+                        </div>
+
+                    }
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section CustomScript
+{
+    <script src="~/Scripts/AdminCP/Category/create-form.js"></script>
+    <script>
+        if ($('.select2').length) {
+            $('.select2')
+                .select2({
+                    allowClear: true,
+                    placeholder: "Select..."
+                });
+        }
+    </script>
+}

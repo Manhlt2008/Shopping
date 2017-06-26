@@ -1,0 +1,42 @@
+﻿@using WebApplication.Lib.Bll
+<div class="form-group">
+    <div class="col-sm-3 control-label">Tác Vụ</div>
+    <div class="col-sm-5">
+        <select id="settingActionSelect">
+            <option selected="selected" disabled="disabled"></option>
+            <optgroup label="Cấu Hình Trang Chủ">
+                <option value="@Url.Action("Index", "Settings")">Hiển Thị Sản Phẩm</option>
+                <option value="@Url.Action("Footer", "Settings")">Cấu Hình Footer</option>
+                <option value="@Url.Action("ContactUs", "Settings")">Cấu hình Contact Us</option>
+
+            </optgroup>
+            <optgroup label="Chọn Sản Phẩm Trang Chủ">
+                <option value="@Url.Action("Featured", "HomePage")">Nổi bật</option>
+                <option value="@Url.Action("Lasted", "HomePage")">Mới nhất</option>
+                <option value="@Url.Action("Specials", "HomePage")">Đặc biệt</option>
+                <option value="@Url.Action("BestSellers", "HomePage")">Mua nhiều nhất</option>
+                <option value="@Url.Action("Slider", "Slider")">Slider</option>
+                <option value="@Url.Action("Banner", "Slider")">Banner</option>
+                <option value="@Url.Action("Index", "Settings")">Hiển Thị Sản Phẩm</option>
+                <option value="@Url.Action("Footer", "Settings")">Cấu Hình Footer</option>
+            </optgroup>
+            <optgroup label="Quản Lý Bài Viết">
+                <option value="@Url.Action("Article", "Settings", new {type = StaticPageBll.PageTypeName.AboutUs})">Trang About Us</option>
+                <option value="@Url.Action("Article", "Settings", new {type = "Delivery Information"})">Trang Thông Tin Vận Chuyển</option>
+                <option value="@Url.Action("Article", "Settings", new {type = "Privacy Policy"})">Trang Chính Sách Bảo Mật</option>
+                <option value="@Url.Action("Article", "Settings", new {type = "Term and Conditions"})">Trang Điều Khoản Sử Dụng</option>
+                <option value="@Url.Action("Article", "Settings", new {type = StaticPageBll.PageTypeName.Returns})">Chính Sách Hoàn Trả</option>
+                <option value="@Url.Action("Article", "Settings", new {type = StaticPageBll.PageTypeName.Operating})">Quy Chế Hoạt Động</option>
+                <option value="@Url.Action("Article", "Settings", new {type = StaticPageBll.PageTypeName.Faq})">FAQ</option>
+                <option value="@Url.Action("Article", "Settings", new {type=StaticPageBll.PageTypeName.DisputeResolutionPolicy})">Cơ Chế Giải Quyết Tranh Chấp</option>
+            </optgroup>
+            <optgroup label="Hóa Đơn">
+                <option value="@Url.Action("Order", "Settings")">Cấu Hình Hóa Đơn</option>
+            </optgroup>
+        </select>
+    </div>
+</div>
+
+<script>
+
+</script>

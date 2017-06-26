@@ -1,0 +1,193 @@
+﻿<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>@ViewBag.Title</title>
+
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,useser-scalable=no">
+    <link rel="shortcut icon" type="image/x-icon" href="~/favicon.ico">
+
+    <!-- bootstrap framework-->
+    <link rel="stylesheet" href="~/Content/admincp/bootstrap/css/bootstrap.min.css">
+    <!-- todc-bootstrap -->
+    <link rel="stylesheet" href="~/Content/admincp/css/todc-bootstrap.min.css">
+    <!-- font awesome -->
+    <link rel="stylesheet" href="~/Content/admincp/css/font-awesome/css/font-awesome.min.css">
+    <!-- flag icon set -->
+    <link rel="stylesheet" href="~/Content/admincp/img/flags/flags.css">
+    <!-- retina ready -->
+    <link rel="stylesheet" href="~/Content/admincp/css/retina.css">
+    <!-- bootstrap switch -->
+    <link rel="stylesheet" href="~/Content/admincp/js/lib/bootstrap-switch/stylesheets/bootstrap-switch.css">
+    <link rel="stylesheet" href="~/Content/admincp/js/lib/bootstrap-switch/stylesheets/ebro_bootstrapSwitch.css">
+
+    <!-- aditional stylesheets -->
+    <!-- vector map -->
+    <link rel="stylesheet" href="~/Content/admincp/js/lib/jvectormap/jquery-jvectormap-1.2.2.css">
+    <!-- owl carousel -->
+    <link rel="stylesheet" href="~/Content/admincp/js/lib/owl-carousel/owl.carousel.css">
+    <!-- responsive lightbox -->
+    <link rel="stylesheet" href="~/Content/admincp/js/lib/magnific-popup/magnific-popup.css">
+    <!-- linecons -->
+    <link rel="stylesheet" href="~/Content/admincp/css/linecons/style.css">
+    <!-- fullcalendar -->
+    <link rel="stylesheet" href="~/Content/admincp/js/lib/fullcalendar/fullcalendar.css">
+    <!-- 2col multiselect -->
+    <link rel="stylesheet" href="~/Content/admincp/js/lib/multi-select/css/multi-select.css">
+    <link rel="stylesheet" href="~/Content/admincp/js/lib/multi-select/css/ebro_multi-select.css">
+    <!-- selection 2 -->
+    <link rel="stylesheet" href="~/Content/admincp/js/lib/select2/select2.css" />
+    <link rel="stylesheet" href="~/Content/admincp/js/lib/select2/ebro_select2.css" />
+    <!-- datatbles -->
+    <link rel="stylesheet" href="~/Content/admincp/js/lib/dataTables/media/DT_bootstrap.css">
+    <link rel="stylesheet" href="~/Content/admincp/js/lib/dataTables/extras/TableTools/media/css/TableTools.css">
+
+
+    <!-- ebro styles -->
+    <link rel="stylesheet" href="~/Content/admincp/css/style.css">
+    <!-- ebro theme -->
+    <link rel="stylesheet" href="~/Content/admincp/css/theme/color_1.css" id="theme">
+
+    <!-- sticky -->
+    <link rel="stylesheet" href="~/Content/admincp/js/lib/Sticky/sticky.css">
+
+    <link rel="stylesheet" href="~/Content/admincp-css/admincp-custom.css" />
+
+
+    <!--[if lt IE 9]>
+        <link rel="stylesheet" href="~/Content/admincp/css/ie.css">
+        <script src="~/Content/admincp/js/ie/html5shiv.js"></script>
+        <script src="~/Content/admincp/js/ie/respond.min.js"></script>
+        <script src="~/Content/admincp/js/ie/excanvas.min.js"></script>
+    <![endif]-->
+    <!-- custom fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Roboto:300,700&amp;subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+
+</head>
+<body class=" sidebar_hidden side_fixed">
+    <div id="wrapper_all">
+        @RenderPage("_AdminTopHeaderSection.cshtml")
+        @RenderPage("_AdminTopNavigationBarSection.cshtml")
+
+        <section id="breadcrumbs">
+            <div class="container">
+                <ul>
+                    <li><a href="@Url.Action("Index", "Admin")">Home</a></li>
+                    @RenderSection("Breadcrumbs", false)
+                </ul>
+            </div>
+        </section>
+
+        <section class="container clearfix main_section">
+            <div id="main_content_outer" class="clearfix">
+                <div id="main_content">
+
+                    <!-- main content -->
+                    @RenderBody()
+                </div>
+            </div>
+        </section>
+        <div id="footer_space"></div>
+    </div>
+
+    @RenderPage("_AdminFooterSection.cshtml")
+
+    @RenderPage("_AdminLeftMenuSection.cshtml")
+
+    <!--[[ common plugins ]]-->
+    <!-- jQuery -->
+    <script src="~/Content/admincp/js/jquery.min.js"></script>
+    <!-- bootstrap framework -->
+    <script src="~/Content/admincp/bootstrap/js/bootstrap.min.js"></script>
+    <!-- jQuery resize event -->
+    <script src="~/Content/admincp/js/jquery.ba-resize.min.js"></script>
+    <!-- jquery cookie -->
+    <script src="~/Content/admincp/js/jquery_cookie.min.js"></script>
+    <!-- retina ready -->
+    <script src="~/Content/admincp/js/retina.min.js"></script>
+    <!-- typeahead -->
+    <script src="~/Content/admincp/js/lib/typeahead.js/typeahead.min.js"></script>
+    <script src="~/Content/admincp/js/lib/typeahead.js/hogan-2.0.0.js"></script>
+
+    <!-- tinyNav -->
+    <script src="~/Content/admincp/js/tinynav.js"></script>
+    <!-- slimscroll -->
+    <script src="~/Content/admincp/js/lib/jQuery-slimScroll/jquery.slimscroll.min.js"></script>
+
+    <!-- bootstrap switch -->
+    <script src="~/Content/admincp/js/lib/bootstrap-switch/js/bootstrap-switch.min.js"></script>
+
+    <!-- touchSwipe -->
+    <script src="~/Content/admincp/js/lib/TouchSwipe/jquery.touchSwipe.min.js"></script>
+
+    <!-- Navgoco -->
+    <script src="~/Content/admincp/js/lib/navgoco/jquery.navgoco.min.js"></script>
+
+    <!-- ebro common scripts/functions -->
+    <script src="~/Content/admincp/js/ebro_common.js"></script>
+
+
+    <!--[[ page specific plugins ]]-->
+    <!-- peity (small charts) -->
+    <script src="~/Content/admincp/js/lib/peity/jquery.peity.min.js"></script>
+    <!-- vector map -->
+    <script src="~/Content/admincp/js/lib/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="~/Content/admincp/js/lib/jvectormap/maps/jquery-jvectormap-world-mill-en.js"></script>
+    <!-- easy pie chart -->
+    <script src="~/Content/admincp/js/lib/easy-pie-chart/jquery.easy-pie-chart.js"></script>
+    <!-- charts -->
+    <script src="~/Content/admincp/js/lib/flot/jquery.flot.min.js"></script>
+    <script src="~/Content/admincp/js/lib/flot/jquery.flot.pie.min.js"></script>
+    <script src="~/Content/admincp/js/lib/flot/jquery.flot.time.min.js"></script>
+    <script src="~/Content/admincp/js/lib/flot/jquery.flot.tooltip.min.js"></script>
+    <script src="~/Content/admincp/js/lib/flot/jquery.flot.resize.js"></script>
+    <!-- video embed -->
+    <script src="~/Content/admincp/js/lib/FitVids/jquery.fitvids.js"></script>
+    <!-- carousel -->
+    <script src="~/Content/admincp/js/lib/owl-carousel/owl.carousel.min.js"></script>
+    <!-- responsive lightbox -->
+    <script src="~/Content/admincp/js/lib/magnific-popup/jquery.magnific-popup.min.js"></script>
+    <!-- jQueryUi -->
+    <script src="~/Content/admincp/js/lib/jquery_ui/jquery-ui-1.10.3.custom.min.js"></script>
+    <!-- fullcalendar -->
+    <script src="~/Content/admincp/js/lib/fullcalendar/fullcalendar.js"></script>
+    <!-- selection 2-->
+    <script src="~/Content/admincp/js/lib/select2/select2.min.js"></script>
+    <!-- fileupload widgets -->
+    <script src="~/Content/admincp/js/lib/jasny_plugins/bootstrap-fileupload.js"></script>
+    <!-- Numeral -->
+    <script src="~/Scripts/Numeral/numeral.min.js"></script>
+    <!-- datatables -->
+    <script src="~/Content/admincp/js/lib/dataTables/media/js/jquery.dataTables.min.js"></script>
+    <!-- datatables column reorder -->
+    <script src="~/Content/admincp/js/lib/dataTables/extras/ColReorder/media/js/ColReorder.min.js"></script>
+    <!-- datatable fixed columns -->
+    <script src="~/Content/admincp/js/lib/dataTables/extras/FixedColumns/media/js/FixedColumns.min.js"></script>
+    <!-- datatables column toggle visibility -->
+    <script src="~/Content/admincp/js/lib/dataTables/extras/ColVis/media/js/ColVis.min.js"></script>
+    <!-- datatable table tools -->
+    <script src="~/Content/admincp/js/lib/dataTables/extras/TableTools/media/js/TableTools.min.js"></script>
+    <script src="~/Content/admincp/js/lib/dataTables/extras/TableTools/media/js/ZeroClipboard.js"></script>
+    <!-- datatable bootstrap style -->
+    <script src="~/Content/admincp/js/lib/dataTables/media/DT_bootstrap.js"></script>
+    <script src="~/Content/admincp/js/pages/ebro_dashboard.js"></script>
+    <script src="~/Content/admincp/js/lib/Sticky/sticky.js"></script>
+    <script src="~/Content/admincp/js/pages/ebro_notifications.js"></script>
+
+    <script src="~/Scripts/Shop/shop-messages.js"></script>
+    <script src="~/Scripts/AdminCP/common.js"></script>
+    
+    @RenderSection("CustomScript", false)
+
+    <!--[if lte IE 9]>
+            <script src="~/Content/admincp/js/ie/jquery.placeholder.js"></script>
+            <script>
+                $(function() {
+                    $('input, textarea').placeholder();
+                });
+            </script>
+        <![endif]-->
+</body>
+</html>
+

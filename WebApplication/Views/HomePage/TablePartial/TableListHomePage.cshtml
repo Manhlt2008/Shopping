@@ -1,0 +1,83 @@
+﻿@{
+    ViewBag.Title = "TableListHomePage";
+    var resultModel = (WebApplication.Models.User.ResultModel)ViewBag.ResultModel;
+    var homePages = new List<WebApplication.Models.HomPage.HomePageModel>();
+    if (resultModel != null && resultModel.Code == 0)
+    {
+        homePages = (List<WebApplication.Models.HomPage.HomePageModel>)resultModel.Data;
+    }
+}
+
+<table class="table table-bordered table-striped" id="result-search-account">
+    <thead>
+        <tr>
+            <th width="10%">STT 1</th>
+            <th width="25%">Tên sản phẩm</th>
+            <th width="10%">Loại hiển thị</th>
+            <th width="15%"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (homePages != null)
+        {
+            int count = 0;
+            foreach (var item in homePages)
+            {
+                count = count + 1;
+                string lableClass = "";
+                if (@item.TypeHomePageId.Equals(WebApplication.Lib.Util.Constant.TypeHomePageEnum.Bestsellers))
+                {
+                    lableClass = "label label-default";
+                }
+                else
+                    if (@item.TypeHomePageId.Equals(WebApplication.Lib.Util.Constant.TypeHomePageEnum.Featured))
+                    {
+                        lableClass = "label label-success";
+                    }
+                    else
+                        if (@item.TypeHomePageId.Equals(WebApplication.Lib.Util.Constant.TypeHomePageEnum.Latest))
+                        {
+                            lableClass = "label label-primary";
+                        }
+                        else if (@item.TypeHomePageId.Equals(WebApplication.Lib.Util.Constant.TypeHomePageEnum.Specials))
+                        {
+                            lableClass = "label label-info";
+                        }
+
+                <tr>
+                    <td width="5%">@count</td>
+                    <td width="20%">@item.ProductName</td>
+                    <td width="20%"><label class="@lableClass">@item.TypeHomePageName</label></td>
+                    <td>
+                        <a href="#" onclick="showModalSetHomepage(this)" title="Chọn hiển thị trên trang chủ"
+                           data-product-id="@item.ProductId"
+                           data-product-name="@item.ProductName">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+
+                        @if (count != 1)
+                        {
+                            <a href="#" onclick="HomePageController.IncreaseIOrder(this)" title="Tăng vị trí"
+                               data-product-id="@item.ProductId"
+                               data-homepage-id="@item.Id"
+                               data-product-name="@item.ProductName">
+                                <span class="glyphicon glyphicon-arrow-up"></span>
+                            </a>
+                        }
+                        @if (count != homePages.Count)
+                        {
+                            <a href="#" onclick="HomePageController.DecreaseIOrder(this)" title="Giảm vị trí"
+                               data-product-id="@item.ProductId"
+                               data-homepage-id="@item.Id"
+                               data-product-name="@item.ProductName">
+                                <span class="glyphicon glyphicon-arrow-down"></span>
+                            </a>
+                        }
+
+                    </td>
+                </tr>
+
+            }
+        }
+    </tbody>
+</table>

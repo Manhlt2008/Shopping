@@ -1,0 +1,186 @@
+﻿@using WebApplication.Lib.Bll.SystemSetting
+@{
+    Layout = "~/Views/Shared/ShopMain/_ShopMainLayout.cshtml";
+    ViewBag.Title = ViewTitleBll.Title("Bảo trì 24h - Dịch Vụ Vệ Sinh Máy Lạnh");
+}
+<div class="l-main-container">
+    <section>
+        <div class="b-bg-default b-infoblock">
+            <div class="b-infoblock--without-border">
+                <div class="container b-relative">
+                    <h2 class="c-default f-primary-l f-title-bigger">Dịch Vụ</h2>
+                    <h1 class="c-default f-primary-b f-title-biggest">vệ sinh máy lạnh</h1>
+                    <h3 class="f-primary-b f-title-big c-senary"></h3>
+                    <a href="@Url.Action("Index", "BaoTri24h")" class="button-lg f-uppercase b-default-top-indent">Bảo Trì Trọn Gói</a>
+                </div>
+            </div>
+        </div>
+        <div class="b-infoblock"></div>
+    </section>
+    <section class="b-infoblock b-diagonal-line-bg-light">
+        <div class="container">
+            <p>
+                Vệ sinh máy lạnh định kỳ giúp máy lạnh hoạt động tốt, tăng tuổi thọ, tiết kiệm điện, đem Lại nguồn không khí tốt, bảo vệ sức khỏe gia đình. Giá 150.000 VNĐ, nay chỉ còn 80.000 VNĐ, Giảm đến 40%.
+            </p>
+            <p style="text-align: center">
+                <img src="~/Content/baotri24h/05.jpg" alt="" style="width: 500px;" />
+            </p>
+            <h3 class="f-primary-b f-title-big">ĐIỂM NỔI BẬT</h3>
+            <p class="f-primary-l"></p>
+            <div class="b-infoblock-with-icon-group row">
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <div class="b-infoblock-with-icon">
+                        <a href="#" class="b-infoblock-with-icon__icon f-infoblock-with-icon__icon fade-in-animate">
+                            <i class="fa fa-check"></i>
+                        </a>
+                        <div class="b-infoblock-with-icon__info f-infoblock-with-icon__info">
+                            <a href="#" class="f-infoblock-with-icon__info_title b-infoblock-with-icon__info_title f-primary-sb">Vệ sinh bảo trì máy lạnh tận nhà</a>
+                            <div class="f-infoblock-with-icon__info_text b-infoblock-with-icon__info_text">
+                                Giúp máy lạnh hoạt động tốt, tăng tuổi thọ, tiết kiệm điện năng, tránh được các sự cố rủi ro về điện, đồng thời mang đến cho không gian nhà bạn nguồn không khí sạch, tránh các bệnh về hô hấp
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <div class="b-infoblock-with-icon">
+                        <a href="#" class="b-infoblock-with-icon__icon f-infoblock-with-icon__icon fade-in-animate">
+                            <i class="fa fa-check"></i>
+                        </a>
+                        <div class="b-infoblock-with-icon__info f-infoblock-with-icon__info">
+                            <a href="#" class="f-infoblock-with-icon__info_title b-infoblock-with-icon__info_title f-primary-sb">Quy trình bài bản</a>
+                            <div class="f-infoblock-with-icon__info_text b-infoblock-with-icon__info_text">
+                                Quy trình dịch vụ được thao tác bài bản, kĩ lưỡng
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix visible-sm-block"></div>
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <div class="b-infoblock-with-icon">
+                        <a href="#" class="b-infoblock-with-icon__icon f-infoblock-with-icon__icon fade-in-animate">
+                            <i class="fa fa-check"></i>
+                        </a>
+                        <div class="b-infoblock-with-icon__info f-infoblock-with-icon__info">
+                            <a href="#" class="f-infoblock-with-icon__info_title b-infoblock-with-icon__info_title f-primary-sb">Dịch vụ trọn gói</a>
+                            <div class="f-infoblock-with-icon__info_text b-infoblock-with-icon__info_text">
+                                Có dịch vụ trọn gói cho hộ gia đình, cơ quan, nhà hàng, khách sạn, cao ốc
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix visible-md-block visible-lg-block"></div>
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <div class="b-infoblock-with-icon">
+                        <a href="#" class="b-infoblock-with-icon__icon f-infoblock-with-icon__icon fade-in-animate">
+                            <i class="fa fa-check"></i>
+                        </a>
+                        <div class="b-infoblock-with-icon__info f-infoblock-with-icon__info">
+                            <a href="#" class="f-infoblock-with-icon__info_title b-infoblock-with-icon__info_title f-primary-sb">Đội ngũ chuyên nghiệp</a>
+                            <div class="f-infoblock-with-icon__info_text b-infoblock-with-icon__info_text">
+                                Đội ngũ kỹ thuật viên chuyên nghiệp, tận tình. Nhanh chóng, chu đáo, an toàn.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix visible-sm-block"></div>
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <div class="b-infoblock-with-icon">
+                        <a href="#" class="b-infoblock-with-icon__icon f-infoblock-with-icon__icon fade-in-animate">
+                            <i class="fa fa-check"></i>
+                        </a>
+                        <div class="b-infoblock-with-icon__info f-infoblock-with-icon__info">
+                            <a href="#" class="f-infoblock-with-icon__info_title b-infoblock-with-icon__info_title f-primary-sb">Chuyên nghiệp tận tình</a>
+                            <div class="f-infoblock-with-icon__info_text b-infoblock-with-icon__info_text">
+                                Đội ngũ kỹ thuật viên chuyên nghiệp, tận tình. Nhanh chóng, chu đáo, an toàn
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix visible-sm-block"></div>
+            </div>
+        </div>
+    </section>
+    <section class="b-infoblock--small">
+        <div class="container">
+            <div class="row b-col-default-indent">
+                <div class="col-md-12">
+                    <h3 class="f-primary-b f-title-big">THÔNG TIN CHI TIẾT</h3>
+                    <p class="f-primary-l">Ở vùng khí hậu nắng nóng quanh năm như Sài Gòn thì việc sử dụng máy lạnh đã trở thành nhu cầu cần thiết của hầu hết mọi người. Và để máy lạnh luôn hoạt động tốt, tiết kiệm điện năng cũng như đảm bảo sức khỏe cho cả gia đình thì việc bảo trì vệ sinh máy lạnh định kỳ là rất cần thiết. Ngay hôm nay, hãy tận dụng voucher 80.000 VNĐ của Công ty Cổ phần Bảo Trì 24h, vệ sinh ngay máy lạnh nhà mình để có được một mùa hè thật mát mẻ </p>
+                </div>
+            </div>
+            <div class="page-href" id="blockquotes">Những lợi ích của việc bảo trì, vệ sinh máy lạnh:</div>
+            <div class="b-shortcode-example">
+                <p>
+                    <ul>
+                        <li>Bảo vệ máy lạnh, giúp tăng tuổi thọ của máy.</li>
+                        <li>Đem lại cho bạn nguồn không khí sạch. Tránh được các bệnh về đường hô hấp.</li>
+                        <li>Báo trước được những hư hỏng có thể xảy ra để kịp thời sửa máy lạnh.</li>
+                        <li>Giúp máy hoạt động tốt, ổn định, và tiết kiệm điện năng.</li>
+                        <li>Tránh được các sự cố, rủi ro về điện: hở mạch.</li>
+                    </ul>
+                </p>
+                <p style="text-align: center">
+                    <img src="~/Content/baotri24h/06.jpg" alt="" />
+                </p>
+            </div>
+            <div class="page-href" id="">Vậy bao lâu bạn cần vệ sinh máy lạnh một lần</div>
+            <div class="b-shortcode-example">
+                <ul>
+                    <li>Đối với hộ gia đình thời gian khoảng từ 3 – 4 tháng/lần. Nếu tần suất sử dụng thấp thì khoảng 6 tháng/lần.</li>
+                    <li>Đối với công ty nhà hàng khoảng 3 tháng/lần. Trong môi trường có nhiều bụi bẩn thời gian nên là 1- 2 tháng/lần.</li>
+                    <li>Đối với cơ sở - xí nghiệp sản xuất thời gian là khoảng 1tháng/lần.</li>
+                </ul>
+            </div>
+            <div class="page-href" id="">Công ty Cổ phần Bảo trì 24H - Địa chỉ uy tín giúp bảo trì và vệ sinh máy lạnh:</div>
+            <div class="b-shortcode-example">
+                <p>
+                    Công ty Cổ phần Bảo trì 24H ra đời và tiên phong trong việc cung cấp, phát triển các dịch vụ sửa chữa điện – nước – điện lạnh trong gia đình chính là địa chỉ uy tín, giúp bảo trì và vệ sinh máy lạnh nhà bạn. Với đội ngũ kỹ thuật viên chuyên nghiệp, tận tình, nhân viên công ty sẽ giúp máy lạnh nhà bạn hoạt động tốt trở lại, hạn chế nguồn điện năng tiêu thụ hàng tháng cho gia đình cũng như duy trì tuổi thọ cho thiết bị, giúp máy lạnh sử dụng được lâu hơn, bền bỉ hơn và ít gặp trục trặc hơn.
+                </p>
+                <p style="text-align: center">
+                    <img src="~/Content/baotri24h/06.jpg" alt="" />
+                </p>
+            </div>
+            <div class="page-href" id="">Các bước thực hiện</div>
+            <div class="b-shortcode-example">
+                <ul>
+                    <li>Vệ sinh bảo dưỡng máy lạnh.</li>
+                    <li>Kiểm tra độ ồn và độ rung khác thường của máy.</li>
+                    <li>Kiểm tra rò rỉ gas tại các giắc co nối. Siết chặt nếu cần thiết.</li>
+                    <li>Kiểm tra khả năng lưu thông gió của dàn nóng/lạnh. Loại bỏ vật cản nếu cần thiết.</li>
+                </ul>
+                <p style="text-align: center">
+                    <img src="~/Content/baotri24h/07.jpg" alt="" />
+                </p>
+                <p style="text-align: center">
+                    <strong>Chỉ với  80.000VNĐ cho một lần bảo trì và vệ sinh máy lạnh. Bạn còn chần chừ gì mà không MUA ngay!</strong>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="b-infoblock b-diagonal-line-bg-light b-bg-full-primary">
+        <div class="container">
+            <h3 class="f-primary-b f-title-big">điều kiện sử dụng</h3>
+            <div class="row b-col-default-indent" data-animate-group-wrap>
+                <div class="col-sm-12 col-xs-12">
+                    <div class="b-mention-item">
+                        <ul>
+                            <li>Thời hạn sử dụng voucher: <b>01 Năm</b> kể từ ngày phát hành.</li>
+                            <li>Địa điểm sử dụng voucher: Công ty Cổ phần Bảo trì 24H – 53/9, Trần Khánh Dư, Phường Tân Định, Quận 1, TP. HCM</li>
+                            <li>Áp dụng cho Dịch vụ vệ sinh máy lạnh của Công ty Cổ phần Bảo trì 24H  từ 7h đến 21h tất cả các ngày trong tuần.</li>
+                            <li>01 Voucher/1 máy lạnh (không bù thêm tiền), mỗi địa chỉ được áp dụng tối đa 03 voucher.</li>
+                            <li>Khách hàng có thể mua nhiều voucher để sử dụng hoặc tặng người thân.</li>
+                            <li>Chỉ áp dụng các khu vực Q.1, Q.3, Q.4, Q.5, Q.7 (Phú Mỹ Hưng), Q2, Q.10, Q.11, Q.Phú Nhuận, Q.Bình Thạnh, Q. Tân Bình.</li>
+                            <li>Chỉ áp dụng cho máy lạnh treo tường.</li>
+                            <li>Máy lạnh âm trần, máy lạnh đứng phụ thu 250.000VNĐ/ máy. Máy lạnh treo trần phụ thu 350.000 VNĐ/ máy.</li>
+                            <li>Chưa bao gồm 10%VAT. Công Ty Cổ Phần Bảo trì 24H chịu trách nhiệm xuất hoá đơn tài chính khi khách hàng yêu cầu. Khách hàng liên hệ theo số 08 3930 9009 (để được tư vấn tốt nhất).</li>
+                            <li>Không áp dụng đồng thời với các chương trình khuyến mãi khác.</li>
+                            <li>Khách hàng vui lòng đặt chỗ trước khi đến để được phục vụ tốt nhất.</li>
+                            <li>Phiếu không có giá trị quy đổi thành tiền mặt</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

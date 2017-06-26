@@ -1,0 +1,490 @@
+﻿@using WebApplication.Lib.Bll
+@using WebApplication.Lib.Bll.Lang
+@using WebApplication.Lib.Bll.SystemSetting
+@{
+    Layout = "~/Views/Shared/ShopMain/_ShopMainLayout.cshtml";
+    var lang = new LangValue(LangValue.LangEnum.Vi, LangValue.DictionaryEnum.CmsOrderCart);
+    ViewBag.Title = ViewTitleBll.Title(lang.GetValue(LangValue.CmsOrder.Cart.Title));
+
+    var user = UserBll.GetUser() ?? new WebApplication.Models.User.UserModel();
+    var provinces = AddressBll.GetAllProvinces().OrderBy(m => m.Name);
+    var districts = AddressBll.GetAllDistricts().OrderBy(m => m.Name);
+
+    var isAllowCreateOrder = (bool)ViewBag.IsAllowCreateOrder;
+}
+
+<div class="b-inner-page-header f-inner-page-header b-bg-header-inner-page">
+    <div class="b-inner-page-header__content">
+        <div class="container">
+            <h1 class="f-primary-l c-default">@lang.GetValue(LangValue.CmsOrder.Cart.ShoppingCart)</h1>
+            <div class="f-primary-l f-inner-page-header_title-add c-senary"></div>
+        </div>
+    </div>
+</div>
+<div class="l-main-container">
+    <div class="b-breadcrumbs f-breadcrumbs">
+        <div class="container">
+            <ul>
+                <li><a href="@Url.Action("Index", "Home" )"><i class="fa fa-home"></i>@lang.GetValue(LangValue.CmsOrder.Cart.Home)</a></li>
+                <li><i class="fa fa-angle-right"></i><span>@lang.GetValue(LangValue.CmsOrder.Cart.ShoppingCart)</span></li>
+            </ul>
+        </div>
+    </div>
+    <section class="b-infoblock">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    @Html.Partial("../Home/ShopMain/ShopMain.CategoryPartial", null)
+                </div>
+                <div class="col-md-9 ">
+                    <div class="b-col-default-indent">
+                        <div class="f-primary-b b-title-b-hr f-title-b-hr b-null-top-indent">@lang.GetValue(LangValue.CmsOrder.Cart.ShoppingCart)</div>
+                        <div class="b-product-cart b-default-top-indent b-table-reset j-price-count-box">
+
+                            @if (!isAllowCreateOrder)
+                            {
+                                <div class="b-col-default-indent">
+                                    <div class="b-alert-info f-alert-info">
+                                        <div class="b-remaining">
+                                            <i class="fa fa-info-circle"></i> <strong>Thông Báo:</strong> Do PhuNuMart đang trong giai đoạn thử nghiệm, nên chúng tôi chỉ tiếp nhận 500 hóa đơn mỗi ngày. Hiện quý khách không thể tiến hành thanh toán, xin vui lòng quay trở lại vào ngày mai.
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            <div id="cart-table-message" class="b-col-default-indent" style="display: none;">
+                                <div class="b-alert-info f-alert-info">
+                                    <div class="b-remaining">
+                                        <i class="fa fa-info-circle"></i> Không có sản phẩm nào trong giỏ hàng.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="loading-selector"></div>
+
+                            <div class="cart-table">
+                                <table id="cart-table-content" style="display: none;">
+                                    <tbody>
+                                        <tr>
+                                            <th><span class="f-primary-b">@lang.GetValue(LangValue.CmsOrder.Cart.OrderTableHeadItem)</span></th>
+                                            <th width="160"><span class="f-primary-b">@lang.GetValue(LangValue.CmsOrder.Cart.OrderTableHeadPrice)</span></th>
+                                            <th width="100"><span class="f-primary-b">@lang.GetValue(LangValue.CmsOrder.Cart.OrderTableHeadQuantity)</span></th>
+                                            <th width="170"><span class="f-primary-b">@lang.GetValue(LangValue.CmsOrder.Cart.OrderTableHeadTotal)</span></th>
+                                            <th width="30"><span class="f-center">Xóa</span></th>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="b-href-with-img">
+                                                    <a class="c-primary" href="shop_detail.html">
+                                                        <img class="img-fit-60" data-retina="" src="/Image/View/12605" alt="Ưu đãi dịch vụ phủ nano kính trước và đánh bóng ô tô tại Chăm sóc xe DP" width="60">
+                                                        <p>
+                                                            <span class="f-title-small ">Ưu đãi dịch vụ phủ nano kính trước và đánh bóng ô tô tại Chăm sóc xe DP</span>
+                                                            <span class="f-title-smallest ">Subtitle sample</span>
+                                                        </p>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                            <td><span class="f-primary-b c-default f-title-medium">$<span class="j-product-price">299.00</span></span></td>
+                                            <td class="f-center">
+                                                <div class="b-product-card__info_count">
+                                                    <input type="number" min="1" class="form-control form-control--secondary j-product-count" value="1">
+                                                </div>
+                                            </td>
+                                            <td><span class="f-primary-b c-default f-title-medium">$<span class="j-product-total "></span></span></td>
+                                            <td><span class="f-primary-b f-center"><a href="">X</a></span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="row b-col-default-indent">
+                            <div class="col-md-6 " id="addForm" style="display:none;">
+                                @if (user.Email != null)
+                                {
+                                    <div class="b-product-cart-small">
+                                        <div class="b-product-cart-small__header">
+                                            <div class="f-primary-b c-default f-uppercase f-title-small">Địa Chỉ Nhận Hàng</div>
+                                        </div>
+                                        <div class="b-product-cart-small__content">
+                                            <form id="cart-delivery">
+                                                <div class="b-product-cart-small__content_info">
+                                                    <div class="b-product-cart-small__content_info_row">
+
+                                                        <label class="c-primary b-null-bottom-indent">
+                                                            <input checked="checked" value="CurrentAddress" class="b-form-radio b-form-radio--big-indent" type="radio" name="payoption" />
+                                                            <span class=""></span>
+                                                            Địa Chỉ Hiện Tại
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="b-product-cart-small__content_info">
+                                                    <div class="b-product-cart-small__content_info_row">
+                                                        <label class="c-primary b-null-bottom-indent">
+                                                            <input value="NewAddress" class="b-form-radio b-form-radio--big-indent" type="radio" name="payoption" />
+                                                            <span class=""></span>
+                                                            Bạn muốn giao hàng đến địa chỉ khác?
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div id="address-form">
+                                                    <div class="b-product-cart-small__content_row clearfix">
+                                                        <div class="b-product-cart-small__content_row-half b-form-row--big">
+                                                            <input id="lastName" name="lastName" type="text" class="form-control form-control--alt" placeholder="Họ*" value="@user.Lastname" disabled="disabled" required="">
+                                                        </div>
+                                                        <div class="b-product-cart-small__content_row-half b-form-row--big">
+                                                            <input id="firstName" name="firstName" type="text" class="form-control form-control--alt" placeholder="Tên*" value="@user.Firstname" disabled="disabled" required="">
+                                                        </div>
+                                                    </div>
+                                                    <div class="b-product-cart-small__content_row b-form-row--big">
+                                                        <input id="email" name="email" type="email" class="form-control form-control--alt" placeholder="Email*" value="@user.Email" disabled="disabled" required="">
+                                                    </div>
+                                                    <div class="b-product-cart-small__content_row clearfix">
+                                                        <div class="b-product-cart-small__content_row-half ">
+                                                            <div class="b-form-row--big b-form-select b-select--secondary">
+                                                                <select class="j-select" id="sex" name="sex" disabled="disabled">
+                                                                    @if (user.Gender != 1 || user.Gender != 0)
+                                                                    {
+                                                                        <option value="" disabled selected>Giới Tính</option>
+                                                                    }
+                                                                    @if (user.Gender == 0)
+                                                                    {
+                                                                        <option value="0" selected="selected">Nam</option>
+                                                                        <option value="1">Nữ</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <option value="0">Nam</option>
+                                                                        <option value="1" selected="selected">Nữ</option>
+                                                                    }
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="b-product-cart-small__content_row-half b-form-row--big">
+                                                            <input id="phone" name="phone" type="text" class="form-control form-control--alt" placeholder="Điện Thoại *" value="@user.Phone" disabled="disabled" required="">
+                                                        </div>
+                                                    </div>
+                                                    <div class="b-product-cart-small__content_row b-form-row--big">
+                                                        <input id="address" name="address" type="text" class="form-control form-control--alt" placeholder="Địa Chỉ *" value="@user.Address" disabled="disabled" required="">
+                                                    </div>
+                                                    <div>
+                                                        <div class="b-product-cart-small__content_row b-form-row--big">
+                                                            <div class="b-form-row b-form-select b-select--alt">
+                                                                <select class="j-select" id="province" name="province" disabled="disabled" size="8">
+                                                                    @{
+                                                                        bool isSelected = false;
+                                                                    }
+                                                                    @foreach (var province in provinces)
+                                                                    {
+                                                                        if (province.ProvinceId == user.Province)
+                                                                        {
+                                                                            isSelected = true;
+                                                                            <option value="@province.ProvinceId" selected="selected">@province.Name</option>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <option value="@province.ProvinceId">@province.Name</option>
+                                                                        }
+                                                                    }
+                                                                    @if (!isSelected)
+                                                                    {
+                                                                        <option value="default" disabled selected>Chọn Tỉnh / Thành Phố *</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        isSelected = false;
+                                                                    }
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <div class="b-product-cart-small__content_row b-form-row--big">
+                                                                <div class="b-form-row b-form-select b-select--alt ">
+                                                                    <select class="j-select" id="district" name="district" disabled="disabled" size="8">
+                                                                        @foreach (var district in districts)
+                                                                        {
+                                                                            if (district.DistrictId == user.District)
+                                                                            {
+                                                                                isSelected = true;
+                                                                                <option value="@district.DistrictId" selected="selected">@district.Name</option>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <option value="@district.DistrictId">@district.Name</option>
+                                                                            }
+                                                                        }
+                                                                        @if (!isSelected)
+                                                                        {
+                                                                            <option value="default" disabled selected>Chọn Quận / Huyện *</option>
+                                                                        }
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <a class="b-btn f-btn b-btn-sm f-btn-sm b-btn-default f-primary-b" href="/"><i class="fa fa-angle-left"></i>&nbsp;Tiếp Tục Mua Sắm</a>
+                                                                        }
+                            </div>
+                            <div id="checkout-panel" class="col-md-6" style="display: none;">
+                                <div class="b-product-cart-small">
+                                    <div class="b-product-cart-small__header">
+                                        <div class="f-primary-b c-default f-uppercase f-title-small">Phương Thức Thanh Toán</div>
+                                    </div>
+                                    <div class="b-product-cart-small__content">
+                                        <div class="b-product-cart-small__content_info">
+                                            <div class="b-product-cart-small__content_info">
+                                                <div class="b-product-cart-small__content_info_row">
+                                                    <label class="c-primary b-null-bottom-indent">
+                                                        <input checked="checked" value="1" class="b-form-radio b-form-radio--big-indent" type="radio" name="PaymentMethod" />
+                                                        <span class=""></span>
+                                                        Thanh Toán Bằng Tiền Mặt
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            @if (System.Web.Configuration.WebConfigurationManager.AppSettings["123Pay"] == "1")
+                                            {
+                                                <div class="b-product-cart-small__content_info">
+                                                    <div class="b-product-cart-small__content_info_row">
+                                                        <label class="c-primary b-null-bottom-indent">
+                                                            <input value="2" class="b-form-radio b-form-radio--big-indent" type="radio" name="PaymentMethod" />
+                                                            <span class=""></span>
+                                                            Thanh Toán Bằng Cổng 123Pay
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            }
+                                            @*<div class="b-product-cart-small__content_info">
+                                                <div class="b-product-cart-small__content_info_row">
+                                                    <label class="c-primary b-null-bottom-indent">
+                                                        <input value="2" class="b-form-radio b-form-radio--big-indent" type="radio" name="PaymentMethod" />
+                                                        <span class=""></span>
+                                                        Thanh Toán Bằng Cổng 123Pay
+                                                    </label>
+                                                </div>
+                                            </div>*@
+                                        </div>
+                                        <div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="b-product-cart-small">
+                                    <div class="b-product-cart-small__header">
+                                        <div class="f-primary-b c-default f-uppercase f-title-small">Thông Tin Thanh Toán</div>
+                                    </div>
+                                    <div class="b-product-cart-small__content">
+                                        <div class="b-product-cart-small__content_info">
+                                            <div class="b-product-cart-small__content_info_row">
+                                                <div class="b-product-cart-small__content_info_title f-title-smallest c-senary">
+                                                    @lang.GetValue(LangValue.CmsOrder.Cart.CartSubTotal)
+                                                </div>
+                                                <div class="b-product-cart-small__content_info_value f-primary-b c-default f-title-medium">
+                                                    <span class="j-price-total" id="subTotal"></span>
+                                                </div>
+                                            </div>
+                                            <div class="b-product-cart-small__content_info_row">
+                                                <div class="b-product-cart-small__content_info_title f-title-smallest c-senary">
+                                                    @lang.GetValue(LangValue.CmsOrder.Cart.Tax)
+                                                </div>
+                                                <div class="b-product-cart-small__content_info_value f-primary-b c-default f-title-medium" id="tax">
+                                                    0
+                                                </div>
+                                            </div>
+                                            <div class="b-product-cart-small__content_info_row">
+                                                <div class="b-product-cart-small__content_info_title f-title-smallest c-senary">
+                                                    @lang.GetValue(LangValue.CmsOrder.Cart.CartTotal)
+                                                </div>
+                                                <div class="b-product-cart-small__content_info_value f-primary-b c-default f-title-medium">
+                                                    <span class="j-price-total" id="total"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="b-tag-container b-right">
+                                                <button id="checkout-button" type="submit" href="javascript:void(0);" class="b-btn f-btn b-btn-sm f-btn-sm b-btn-default f-primary-b">
+                                                    <i class="fa fa-check"></i>&nbsp;@lang.GetValue(LangValue.CmsOrder.Cart.ProcessCheckout)
+                                                </button>
+                                            </div>
+                                            <div class="clearfix"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section ExtendScript
+{
+    <script src="~/Scripts/AdminCP/Category/create-form.js"></script>
+
+    <script type="text/javascript">
+        function getDistrictsByProvince(provinceId) {
+            $.ajax({
+                url: '/Order/GetDistrictsByProvince',
+                dataType: "json",
+                type: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify({ provinceId: provinceId }),
+                success: function (data) {
+                    if (!data || data.length == 0) {
+                        return;
+                    }
+                    $("#district").html('');
+                    $("#district")
+                        .append($('<option>',
+                        {
+                            value: "default",
+                            text: "Chọn Quận / Huyện *"
+                        }));
+                    $("#district option[value=default]").attr('selected', 'selected').attr('disabled', 'disabled');
+                    for (var i = 0; i < data.length; i++) {
+                        $("#district")
+                            .append($('<option>',
+                            {
+                                value: data[i].Id,
+                                text: data[i].Name
+                            }));
+                    }
+                    $("#district").selectmenu("refresh");
+                },
+                error: function (xhr) {
+                    alert(xhr);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            CartController.loadShoppingCartTable(true);
+
+            if (!CartController.isEmptyCart()) {
+                $('#checkout-panel').show();
+            } else {
+                $('#checkout-panel').hide();
+            }
+
+            $("input[name='payoption']").change(function () {
+                var selectedRadio = $("input[name='payoption']:checked").val();
+                if (selectedRadio == 'CurrentAddress') {
+                    $("#address-form").find("input,button,textarea,select").attr('disabled', 'disabled');
+                    location.reload();
+                } else {
+                    $("#address-form").find("input,button,textarea,select").removeAttr('disabled');
+                    $('#address-form').trigger("reset");
+                    $("#province").selectmenu("refresh");
+                }
+            });
+
+            // bind change event to select
+            $("#province").on('selectmenuchange', function () {
+                var province = $(this).val();
+                if (province) {
+                    getDistrictsByProvince(province);
+                }
+                return false;
+            });
+
+            jQuery.validator.setDefaults({
+                ignore: [],
+                debug: true,
+                success: "valid",
+                errorClass: 'error validator-error',
+                validClass: 'success',
+                errorElement: 'span',
+                highlight: function (element, errorClass, validClass) {
+                    $(element).addClass(errorClass);
+                },
+                unhighlight: function (element, errorClass, validClass) {
+                    $(element).removeClass(errorClass);
+                },
+                errorPlacement: function (error, element) {
+                    error.appendTo(element.parent());
+                }
+            });
+
+            $("#cart-delivery").validate({
+                rules: {
+                    lastName: {
+                        required: true
+                    },
+                    firstName: {
+                        required: true
+                    },
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    sex: {
+                        required: true
+                    },
+                    phone: {
+                        required: true,
+                        digits: true
+                    },
+                    address: {
+                        required: true
+                    },
+                    province: {
+                        required: true
+                    },
+                    district: {
+                        required: true
+                    }
+                },
+                messages: {
+                    lastName: "Vui lòng nhập họ.",
+                    firstName: "Vui lòng nhập tên.",
+                    email: {
+                        required: "Vui lòng nhập email.",
+                        email: "Email không đúng định dạng."
+                    },
+                    sex: "Vui lòng chọn giới tính.",
+                    phone: {
+                        required: "Vui lòng nhập điện thoại.",
+                        digits: "Số điện thoại này không tồn tại."
+                    },
+                    address: "Vui lòng nhập địa chỉ.",
+                    province: "Vui lòng chọn tỉnh / thành phố.",
+                    district: "Vui lòng chọn quận / huyện."
+                }
+            });
+
+            $('#checkout-button').on('click', function () {
+                var firstName = $("#lastName").val();
+                var lastName = $("#firstName").val();
+                var email = $("#email").val();
+                var sex = $("#sex").val();
+                var phone = $("#phone").val();
+                var address = $("#address").val();
+                var province = $("#province").val();
+                province = (province == null) ? $("#province").val() : province;
+                var district = $("#district").val();
+                district = (district == null) ? $("#district").val() : district;
+                if ($("#cart-delivery").length > 0) {
+                    if (!$("#cart-delivery").valid()) {
+                        return;
+                    } else {
+                        if (firstName.length > 0 && lastName.length > 0 && email.length > 0 && sex.length > 0 && phone.length > 0 && address.length > 0 && province != null && district != null) {
+                            CartController.checkout();
+                        } else {
+                            alert("Thông tin quý khách không đủ vui lòng cung cấp thông thêm");
+                        }
+                    }
+                } else {
+                    CartController.checkout();
+                }
+            });
+        });
+    </script>
+}

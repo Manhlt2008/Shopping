@@ -1,0 +1,31 @@
+﻿<header id="top_header">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-6 col-sm-2">
+                <a href="@Url.Action("Index", "Admin")" class="logo_main" title="Ebro Admin Template:"><img src="~/Content/logo.png" alt="" width="150" height="40"></a>
+            </div>
+            <div class="col-sm-push-4 col-sm-3 text-right hidden-xs">
+
+            </div>
+            <div class="col-xs-6 col-sm-push-4 col-sm-3" >
+                <div class="pull-right dropdown" style="margin-top:10px">
+                    @{
+                        var user = WebApplication.Lib.Bll.UserBll.GetUser();
+
+                        if (user != null)
+                        {
+                            <a href="#" class="user_info dropdown-toggle" title="@user.Email" data-toggle="dropdown" >
+                                <span>Xin chào, @user.Email</span>
+                                <span class="caret"></span>
+                            </a>
+                        }
+                    }
+                    <ul class="dropdown-menu">
+                        <li><a href="@Url.Action("Info", "User")">Tài khoản</a></li>
+                        <li><a href="@Url.Action("Logout", "Authentication")">Đăng xuất</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

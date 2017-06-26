@@ -1,0 +1,190 @@
+﻿
+@using WebApplication.Lib.Bll
+@using WebApplication.Lib.Bll.Lang
+@{
+    var settings = SettingsBll.GetSettings(SettingsBll.GetSettingNameGroup(SettingsBll.SettingTypeGroup.Footer));
+
+    var aboutSetting = string.Empty;
+    var copyrightSetting = string.Empty;
+    var facebookUrl = string.Empty;
+    var facebookTab = string.Empty;
+    var facebookWidth = string.Empty;
+    var facebookHeight = string.Empty;
+    var facebookTitle = string.Empty;
+    var followUsFacebook = string.Empty;
+    var followUsGooglePlus = string.Empty;
+    var followUsYouTube = string.Empty;
+    var followUsTwitter = string.Empty;
+
+    if (settings != null && settings.Count > 0)
+    {
+        settings.TryGetValue(SettingsBll.SettingNames.FooterAbout, out aboutSetting);
+        settings.TryGetValue(SettingsBll.SettingNames.FooterCopyright, out copyrightSetting);
+        settings.TryGetValue(SettingsBll.SettingNames.FooterFacebookPagePluginUrl, out facebookUrl);
+        settings.TryGetValue(SettingsBll.SettingNames.FooterFacebookPagePluginTabs, out facebookTab);
+        settings.TryGetValue(SettingsBll.SettingNames.FooterFacebookPagePluginWidth, out facebookWidth);
+        settings.TryGetValue(SettingsBll.SettingNames.FooterFacebookPagePluginHeight, out facebookHeight);
+        settings.TryGetValue(SettingsBll.SettingNames.FooterFacebookPagePluginTitle, out facebookTitle);
+        settings.TryGetValue(SettingsBll.SettingNames.FooterFollowUsFacebook, out followUsFacebook);
+        settings.TryGetValue(SettingsBll.SettingNames.FollowUsGooglePlus, out followUsGooglePlus);
+        settings.TryGetValue(SettingsBll.SettingNames.FollowUsYouTube, out followUsYouTube);
+        settings.TryGetValue(SettingsBll.SettingNames.FooterFollowUsTwitter, out followUsTwitter);
+
+        aboutSetting = aboutSetting ?? string.Empty;
+        copyrightSetting = copyrightSetting ?? string.Empty;
+        facebookUrl = facebookUrl ?? string.Empty;
+        facebookTab = facebookTab ?? string.Empty;
+        facebookWidth = facebookWidth ?? string.Empty;
+        facebookHeight = facebookHeight ?? string.Empty;
+        facebookTitle = facebookTitle ?? string.Empty;
+        followUsFacebook = followUsFacebook ?? string.Empty;
+        followUsGooglePlus = followUsGooglePlus ?? string.Empty;
+        followUsYouTube = followUsYouTube ?? string.Empty;
+        followUsTwitter = followUsTwitter ?? string.Empty;
+    }
+
+    var lang = new LangValue(LangValue.LangEnum.Vi, LangValue.DictionaryEnum.Footer);
+}
+<footer>
+    <div class="b-footer-primary">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-4 col-xs-12 f-copyright b-copyright">
+                    @Html.Raw(copyrightSetting.Replace("\\", ""))
+                </div>
+                <div class="col-sm-8 col-xs-12">
+                    <div class="b-btn f-btn b-btn-default b-right b-footer__btn_up f-footer__btn_up j-footer__btn_up">
+                        <i class="fa fa-chevron-up"></i>
+                    </div>
+                    <nav class="b-bottom-nav f-bottom-nav b-right hidden-xs f-bottom-nav-size">
+                        <ul>
+                            <li class="is-active-bottom-nav"><a href="@Url.Action("Index", "Home")">Trang Chủ</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="b-footer-secondary row">
+            <div class="col-md-3 col-sm-12 col-xs-12 f-center b-footer-logo-containter">
+                <a href=""><img data-retina class="b-footer-logo color-theme" style="width: 150px" src="~/Content/phunumart.png" alt="Logo" /></a>
+                <div class="b-footer-logo-text f-footer-logo-text">
+                    <p>@Html.Raw(aboutSetting)</p>
+                    <div class="b-btn-group-hor f-btn-group-hor">
+                        <a href="@followUsTwitter.Replace("\\", "")" target="_blank" class="b-btn-group-hor__item f-btn-group-hor__item">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                        <a href="@followUsFacebook.Replace("\\", "")" target="_blank" class="b-btn-group-hor__item f-btn-group-hor__item">
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                        <a href="@followUsGooglePlus.Replace("\\", "")" target="_blank" class="b-btn-group-hor__item f-btn-group-hor__item">
+                            <i class="fa fa-google-plus"></i>
+                        </a>
+                        <a href="@followUsYouTube.Replace("\\", "")" target="_blank" class="b-btn-group-hor__item f-btn-group-hor__item">
+                            <i class="fa fa-youtube"></i>
+                        </a>
+                    </div>
+                    <div class="order-limit">
+                        <img src="~/Content/500orders.png" alt="" />
+                    </div>
+                </div>
+                <br />
+                <div class="col-xs-6 col-sm-6">
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-12 col-xs-12">
+                <h4 class="f-primary-b">@lang.GetValue(LangValue.MasterPage.Footer.InfoTitle)</h4>
+                <div class="b-blog-short-post row">
+                    <div class="b-blog-short-post__item col-md-12 col-sm-4 col-xs-12 f-primary-b">
+                        <div class="b-blog-short-post__item_text f-blog-short-post__item_text">
+                            <a href="@Url.Action("Index", "FAQ")">@lang.GetValue(LangValue.MasterPage.Footer.Faq)</a>
+                        </div>
+                    </div>
+                    <div class="b-blog-short-post__item col-md-12 col-sm-4 col-xs-12 f-primary-b">
+                        <div class="b-blog-short-post__item_text f-blog-short-post__item_text">
+                            <a href="@Url.Action("Index", "Return")">@lang.GetValue(LangValue.MasterPage.Footer.Return)</a>
+                        </div>
+                    </div>
+                    <div class="b-blog-short-post__item col-md-12 col-sm-4 col-xs-12 f-primary-b">
+                        <div class="b-blog-short-post__item_text f-blog-short-post__item_text">
+                            <a href="@Url.Action("Index", "DeliveryInformation")">@lang.GetValue(LangValue.MasterPage.Footer.DeliveryInformation)</a>
+                        </div>
+                    </div>
+                    <div class="b-blog-short-post__item col-md-12 col-sm-4 col-xs-12 f-primary-b">
+                        <div class="b-blog-short-post__item_text f-blog-short-post__item_text">
+                            <a href="@Url.Action("Index", "Operating")">@lang.GetValue(LangValue.MasterPage.Footer.Operating)</a>
+                        </div>
+                    </div>
+                    <div class="b-blog-short-post__item col-md-12 col-sm-4 col-xs-12 f-primary-b">
+                        <div class="b-blog-short-post__item_text f-blog-short-post__item_text">
+                            <a href="@Url.Action("Index", "PrivacyPolicy")">@lang.GetValue(LangValue.MasterPage.Footer.PrivacyPolicy)</a>
+                        </div>
+                    </div>
+                    <div class="b-blog-short-post__item col-md-12 col-sm-4 col-xs-12 f-primary-b">
+                        <div class="b-blog-short-post__item_text f-blog-short-post__item_text">
+                            <a href="@Url.Action("Index", "DisputeResolutionPolicy")">Cơ Chế Giải Quyết Tranh Chấp Phát Sinh</a>
+                        </div>
+                    </div>
+                </div>
+
+                @*<div class="b-blog-short-post row">
+                    <div class="row">
+                        <img src="~/Content/bocongthuong.jpg" alt="Bộ Công Thương" style="width: 150px" />
+                    </div>
+                </div>*@
+            </div>
+            <div class="col-md-6 col-sm-12 col-xs-12">
+                <div class="fb-page" data-href="@facebookUrl" data-tabs="@facebookTab" data-width="@facebookWidth"
+                     data-height="@facebookHeight" data-small-header="true" data-adapt-container-width="true"
+                     data-hide-cover="false" data-show-facepile="true">
+                    <blockquote cite="@facebookUrl" class="fb-xfbml-parse-ignore">
+                        <a href="@facebookUrl">@facebookTitle</a>
+                    </blockquote>
+                </div>
+
+                <div class="f-primary-b b-title-b-hr f-title-b-hr">Đối Tác</div>
+                <div class="b-short-photo-items-group">
+                    <div class="b-column">
+                        <a class="b-short-photo-item fancybox" href="javascript:(void);" title="phununews" rel="footer-group">
+                            <img height="62" data-retina="" src="~/Content/doitac/logopnn.jpg" alt="phununews" width="62">
+                        </a>
+                    </div>
+                    <div class="b-column">
+                        <a class="b-short-photo-item fancybox" href="javascript:(void);" title="mGift" rel="footer-group">
+                            <img height="62" data-retina="" src="~/Content/doitac/mgift150.png" alt="mGift" width="62">
+                        </a>
+                    </div>
+                    <div class="b-column">
+                        <a class="b-short-photo-item fancybox" href="javascript:(void);" title="amawez" rel="footer-group">
+                            <img height="62" data-retina="" src="~/Content/doitac/amawez150.png" alt="amawez" width="62">
+                        </a>
+                    </div>
+                    <div class="b-column">
+                        <a class="b-short-photo-item fancybox" href="javascript:(void);" title="kay.vn" rel="footer-group">
+                            <img height="62" data-retina="" src="~/Content/doitac/kay.vn150.png" alt="kay.vn" width="62">
+                        </a>
+                    </div>
+                    <div class="b-column">
+                        <a class="b-short-photo-item fancybox" href="javascript:(void);" title="dealtoday" rel="footer-group">
+                            <img height="62" data-retina="" src="~/Content/doitac/dealtoday150.jpg" alt="dealtoday" width="62">
+                        </a>
+                    </div>
+                    <div class="b-column">
+                        <a class="b-short-photo-item fancybox" href="javascript:(void);" title="nguoiduatin" rel="footer-group">
+                            <img height="62" data-retina="" src="~/Content/doitac/nguoiduatin150.png" alt="nguoiduatin" width="62">
+                        </a>
+                    </div>
+                    <div class="b-column">
+                        <a class="b-short-photo-item fancybox" href="javascript:(void);" title="nguoitieudung" rel="footer-group">
+                            <img height="62" data-retina="" src="~/Content/doitac/nguoitieudung150.png" alt="nguoitieudung" width="62">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+   
+</footer>

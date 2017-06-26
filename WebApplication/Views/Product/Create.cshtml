@@ -1,0 +1,473 @@
+﻿@using WebApplication.Models.Category
+@using WebApplication.Models.Product
+@model WebApplication.Models.Product.ProductModel
+
+@{
+    Layout = "~/Views/Shared/AdminCp/_AdminLayout.cshtml";
+
+    var categories = (List<CategoryManageList>)ViewBag.Categories ?? new List<CategoryManageList>();
+
+    var productModel = new ProductModel();
+
+    if (ViewBag.Product != null)
+    {
+        productModel = (ProductModel)ViewBag.Product;
+    }
+
+    bool? updateProductStatus = null;
+
+    if (ViewBag.UpdateProductStatus != null)
+    {
+        updateProductStatus = (bool)ViewBag.UpdateProductStatus;
+    }
+
+    ViewBag.Title = productModel.Id == -1 ? "Tạo Mới Sản Phẩm" : "Cập Nhật Sản Phẩm";
+    var supplierId = ViewBag.SupplierId ?? 0;
+}
+
+@section Breadcrumbs
+{
+    <li><a href="@Url.Action("Manage", "Product")">Quản lí</a></li>
+    <li><span>@(productModel.Id == -1 ? "Tạo Mới Sản Phẩm" : "Cập Nhật Sản Phẩm")</span></li>
+}
+
+<style>
+    #galleryFieldset {
+        max-height: 200px;
+        overflow: scroll;
+    }
+</style>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">@(productModel.Id == -1 ? "Tạo Mới Sản Phẩm" : "Cập Nhật Sản Phẩm")</h4>
+            </div>
+            <div class="panel-body">
+
+                @using (Html.BeginForm("Create", "Product", FormMethod.Post, new { @class = "form-horizontal", id = "createProductForm", enctype = "multipart/form-data" }))
+                {
+                    @Html.HiddenFor(m => m.Id, new
+               {
+                   @value = productModel.Id
+
+               })
+                    <fieldset>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label req">Loại sản phẩm</label>
+                            <div class="col-sm-10">
+                                <select class="" name="CategoryId" id="category_select">
+                                    <option value="" disabled selected>Select Option</option>
+                                    @foreach (var category in categories)
+                                    {
+                                        <optgroup label="@category.Name">
+                                            @if (productModel.CategoryId == category.Id)
+                                            {
+                                                <option value="@category.Id" selected="selected">@category.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@category.Id">@category.Name</option>
+                                            }
+
+                                            @if (category.CategoryManageLists != null && category.CategoryManageLists.Count > 0)
+                                            {
+
+                                                foreach (var item in category.CategoryManageLists)
+                                                {
+                                                    if (productModel.CategoryId == item.Id)
+                                                    {
+                                                        <option value="@item.Id" selected="selected">----@item.Name</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.Id">----@item.Name</option>
+                                                    }
+                                                }
+                                            }
+                                        </optgroup>
+                                    }
+                                </select>
+                                <ul id="validator-categoryid-invalid" class="parsley-error-list" style="display: none;">
+                                    <li class="required" style="display: list-item;">
+                                        <span id="validator-categoryid-invalid-message"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        @Html.HiddenFor(m => m.SupplierId, new { @value = supplierId })
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Name, new { @class = "col-sm-2 control-label req" })
+                            <div class="col-sm-10">
+                                @Html.TextBoxFor(m => m.Name, new { Class = "form-control", placeholder = "Name", Value = productModel.Name })
+                                <ul id="validator-name-invalid" class="parsley-error-list" style="display: none;">
+                                    <li class="required" style="display: list-item;">
+                                        <span id="validator-name-invalid-message"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.ShortDescription, new { @class = "col-sm-2 control-label req" })
+                            <div class="col-sm-10">
+                                <textarea class="form-control" placeholder="Mô tả ngắn" name="ShortDescription" id="ShortDescription">@productModel.ShortDescription</textarea>
+                                <ul id="validator-short-description-invalid" class="parsley-error-list" style="display: none;">
+                                    <li class="required" style="display: list-item;">
+                                        <span id="validator-short-description-invalid-message"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Description, new { @class = "col-sm-2 control-label" })
+                            @Html.TextAreaFor(m => m.Description, new { style = "display: none" })
+                            <div class="col-sm-10">
+                                <div class="adjoined-bottom">
+                                    <div class="grid-container">
+                                        <div class="grid-width-100">
+                                            <div id="editor">
+                                                @Html.Raw(productModel.Description)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Price, new { @class = "col-sm-2 control-label req" })
+                            <div class="col-sm-10">
+                                @Html.TextBoxFor(m => m.Price, new { Class = "form-control", placeholder = "Price", type = "currency", Value = productModel.Price })
+                                <ul id="validator-price-invalid" class="parsley-error-list" style="display: none;">
+                                    <li class="required" style="display: list-item;">
+                                        <span id="validator-price-invalid-message"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Quantity, new { @class = "col-sm-2 control-label req" })
+                            <div class="col-sm-10">
+                                @Html.TextBoxFor(m => m.Quantity, new { Class = "form-control", placeholder = "Quantity", type = "number", min = 0, Value = productModel.Quantity })
+                                <ul id="validator-quantity-invalid" class="parsley-error-list" style="display: none;">
+                                    <li class="required" style="display: list-item;">
+                                        <span id="validator-quantity-invalid-message"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="display: none">
+                            @Html.LabelFor(m => m.IsFeatured, new { @class = "col-sm-2 control-label" })
+                            <div class="col-sm-10">
+                                <div class="checkbox">
+                                    <label>
+                                        @Html.CheckBoxFor(m => m.IsFeatured, new { @checked = "checked" })
+                                        Is Feature
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Cover, new { @class = "col-sm-2 control-label" })
+                            <div class="col-sm-10">
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        @Html.HiddenFor(m => m.CoverId, new { Value = productModel.CoverId })
+                                        @if (productModel.CoverId != -1)
+                                        {
+                                            <div class="display-saved-image" id="div-display-saved-image">
+                                                <a href="javascript:void(0)" title="Xóa hình" class="remove-image-button" onclick="deleteCover()">
+                                                    <span class="li_trash icon-2x"></span>
+                                                </a>
+                                                <img src="@Url.Action("View", "Image", new {id = productModel.CoverId})" />
+                                            </div>
+
+                                        }
+                                        <div class="fileupload fileupload-new" data-provides="fileupload" id="divCoverUpload" style="@(productModel.CoverId == -1 ? "" : "display: none")">
+                                            <div class="fileupload-preview img-thumbnail" style="width: 180px; height: 120px;">
+                                            </div>
+                                            <div>
+                                                <span class="btn btn-default btn-file">
+                                                    <span class="fileupload-new">Chọn hình ảnh</span><span class="fileupload-exists">Thay đổi</span><input type="file" name="Cover" />
+                                                </span>
+                                                <a href="#" class="btn btn-default fileupload-exists" data-dismiss="fileupload">Xóa</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-10">
+                                        @Html.LabelFor(m => m.Gallery, new { @class = "col-sm-2 control-label" })
+                                        <div class="col-sm-12">
+                                            <div id="galleryFieldset" class="sepH_b">
+                                                @foreach (var id in productModel.GalleryIds)
+                                                {
+                                                    <div class="col-sm-4" id="gallary-@id">
+                                                        <input type="hidden" name="GalleryIds" id="gallary-id-@id" value="@id" />
+                                                        <div class="display-saved-image" id="div-display-saved-image">
+                                                            <a href="javascript:void(0)" title="Xóa hình" class="remove-image-button" onclick="deleteGallery(@id)">
+                                                                <span class="li_trash icon-2x"></span>
+                                                            </a>
+                                                            <img src="@Url.Action("View", "Image", new {id = id})" />
+                                                        </div>
+                                                    </div>
+                                                }
+
+                                                <div class="col-sm-4">
+                                                    <div class="fileupload fileupload-new" data-provides="fileupload">
+                                                        <div class="fileupload-preview img-thumbnail" style="width: 180px; height: 120px;"></div>
+                                                        <div>
+                                                            <span class="btn btn-default btn-file">
+                                                                <span class="fileupload-new">Chọn hình ảnh</span><span class="fileupload-exists">Thay đổi</span><input type="file" name="Gallery" />
+                                                            </span>
+                                                            <a href="#" class="btn btn-default fileupload-exists" data-dismiss="fileupload">Xóa</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-4">
+                                                    <div class="fileupload fileupload-new" data-provides="fileupload">
+                                                        <div class="fileupload-preview img-thumbnail" style="width: 180px; height: 120px;"></div>
+                                                        <div>
+                                                            <span class="btn btn-default btn-file">
+                                                                <span class="fileupload-new">Chọn hình ảnh</span><span class="fileupload-exists">thay đổi</span><input type="file" name="Gallery" />
+                                                            </span>
+                                                            <a href="#" class="btn btn-default fileupload-exists" data-dismiss="fileupload">Xóa</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <a href="javascript:void(0);" class="row btn btn-default pull-right" onclick="addMoreImage();">
+                                                Add more image
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-2 control-label"></div>
+                            <div class="col-sm-10">
+                                <button class="btn btn-default" type="submit" id="btnSubmit">Lưu</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+
+                        </div>
+                    </fieldset>
+                }
+
+                <style>
+                    .remove-image-button {
+                        position: absolute;
+                        float: left;
+                        display: inline;
+                        /*z-index: 5;*/
+                        right: 0;
+                        padding-right: 10px;
+                    }
+
+                    .display-saved-image > img {
+                        width: 120px;
+                        height: 120px;
+                    }
+
+                    .display-saved-image:hover .remove-image-button {
+                        display: block;
+                    }
+
+                    .remove-image-button {
+                        display: none;
+                    }
+                </style>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section CustomScript
+{
+    <script src="~/Scripts/ckeditor/ckeditor.js"></script>
+    <link rel="stylesheet" href="~/Scripts/ckeditor/samples/toolbarconfigurator/lib/codemirror/neo.css">
+    <script src="~/Scripts/AdminCP/Product/product.js"></script>
+    <script src="~/Scripts/AdminCP/Product/create-form.js"></script>
+
+    <script>
+        if ($('#category_select').length) {
+            $('#category_select')
+                .select2({
+                    allowClear: true,
+                    placeholder: "Select..."
+                });
+        }
+
+        initSample();
+    </script>
+
+    @if (updateProductStatus != null)
+    {
+        if (updateProductStatus.Value)
+        {
+            <script>
+                NotificationUtil.successMessage("Cập nhật sản phẩm thành công.");
+            </script>
+        }
+        else
+        {
+            <script>
+                NotificationUtil.warningMessage("Lưu sản phẩm thất bại. Vui lòng thử lại sau.");
+            </script>
+        }
+    }
+
+    <script>
+        /**
+        *
+        *  Base64 encode / decode
+        *  http://www.webtoolkit.info/
+        *
+        **/
+        var Base64 = {
+
+            // private property
+            _keyStr: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+
+            // public method for encoding
+            encode: function (input) {
+                var output = "";
+                var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
+                var i = 0;
+
+                input = Base64._utf8_encode(input);
+
+                while (i < input.length) {
+
+                    chr1 = input.charCodeAt(i++);
+                    chr2 = input.charCodeAt(i++);
+                    chr3 = input.charCodeAt(i++);
+
+                    enc1 = chr1 >> 2;
+                    enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+                    enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
+                    enc4 = chr3 & 63;
+
+                    if (isNaN(chr2)) {
+                        enc3 = enc4 = 64;
+                    } else if (isNaN(chr3)) {
+                        enc4 = 64;
+                    }
+
+                    output = output +
+                    this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) +
+                    this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
+
+                }
+
+                return output;
+            },
+
+            // public method for decoding
+            decode: function (input) {
+                var output = "";
+                var chr1, chr2, chr3;
+                var enc1, enc2, enc3, enc4;
+                var i = 0;
+
+                input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+
+                while (i < input.length) {
+
+                    enc1 = this._keyStr.indexOf(input.charAt(i++));
+                    enc2 = this._keyStr.indexOf(input.charAt(i++));
+                    enc3 = this._keyStr.indexOf(input.charAt(i++));
+                    enc4 = this._keyStr.indexOf(input.charAt(i++));
+
+                    chr1 = (enc1 << 2) | (enc2 >> 4);
+                    chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+                    chr3 = ((enc3 & 3) << 6) | enc4;
+
+                    output = output + String.fromCharCode(chr1);
+
+                    if (enc3 != 64) {
+                        output = output + String.fromCharCode(chr2);
+                    }
+                    if (enc4 != 64) {
+                        output = output + String.fromCharCode(chr3);
+                    }
+
+                }
+
+                output = Base64._utf8_decode(output);
+
+                return output;
+
+            },
+
+            // private method for UTF-8 encoding
+            _utf8_encode: function (string) {
+                string = string.replace(/\r\n/g, "\n");
+                var utftext = "";
+
+                for (var n = 0; n < string.length; n++) {
+
+                    var c = string.charCodeAt(n);
+
+                    if (c < 128) {
+                        utftext += String.fromCharCode(c);
+                    }
+                    else if ((c > 127) && (c < 2048)) {
+                        utftext += String.fromCharCode((c >> 6) | 192);
+                        utftext += String.fromCharCode((c & 63) | 128);
+                    }
+                    else {
+                        utftext += String.fromCharCode((c >> 12) | 224);
+                        utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+                        utftext += String.fromCharCode((c & 63) | 128);
+                    }
+
+                }
+
+                return utftext;
+            },
+
+            // private method for UTF-8 decoding
+            _utf8_decode: function (utftext) {
+                var string = "";
+                var i = 0;
+                var c = c1 = c2 = 0;
+
+                while (i < utftext.length) {
+
+                    c = utftext.charCodeAt(i);
+
+                    if (c < 128) {
+                        string += String.fromCharCode(c);
+                        i++;
+                    }
+                    else if ((c > 191) && (c < 224)) {
+                        c2 = utftext.charCodeAt(i + 1);
+                        string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+                        i += 2;
+                    }
+                    else {
+                        c2 = utftext.charCodeAt(i + 1);
+                        c3 = utftext.charCodeAt(i + 2);
+                        string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+                        i += 3;
+                    }
+
+                }
+
+                return string;
+            }
+
+        }
+    </script>
+}

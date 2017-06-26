@@ -1,0 +1,62 @@
+﻿@using WebApplication.Lib.Bll.Lang
+@using WebApplication.Lib.Bll.SystemSetting
+@using WebApplication.Models.Category
+@using WebApplication.Models.Product
+
+@section ExtendScript {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.img-container img').centerImage();
+        });
+    </script>
+}
+
+@{
+    var lang = new LangValue(LangValue.LangEnum.Vi, LangValue.DictionaryEnum.CmsHomeIndex);
+
+    ViewBag.Title = ViewTitleBll.Title(lang.GetValue(LangValue.CmsHome.Index.Title));
+
+    Layout = "~/Views/Shared/ShopMain/_ShopMainLayout.cshtml";
+
+    var featuredProductThumbnails = (List<ProductThumbnailModel>)ViewBag.FeaturedProduct ?? Enumerable.Empty<ProductThumbnailModel>().ToList();
+    var latestProductThumbnails = (List<ProductThumbnailModel>)ViewBag.LatestProduct ?? Enumerable.Empty<ProductThumbnailModel>().ToList();
+
+    var resultModelSliderBannerActive = (WebApplication.Models.User.ResultModel)ViewBag.BannerActive;
+    var banners = new List<WebApplication.Models.Slider.SliderModel>();
+    if (resultModelSliderBannerActive != null && resultModelSliderBannerActive.Code == 0)
+    {
+        banners = (List<WebApplication.Models.Slider.SliderModel>)resultModelSliderBannerActive.Data;
+    }
+
+    var resultModelSliderActive = (WebApplication.Models.User.ResultModel)ViewBag.SliderActive;
+    var sliders = new List<WebApplication.Models.Slider.SliderModel>();
+    if (resultModelSliderActive != null && resultModelSliderActive.Code == 0)
+    {
+        sliders = (List<WebApplication.Models.Slider.SliderModel>)resultModelSliderActive.Data;
+    }
+
+    var categoryModels = (List<CategoryManageList>)ViewBag.Categories;
+}
+
+@Html.Partial("ShopMain/ShopMain.SliderPartial", sliders)
+
+@Html.Partial("ShopMain/ShopMain.BannerPartial", banners)
+
+<section class="b-infoblock">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                @Html.Partial("ShopMain/ShopMain.CategoryPartial", categoryModels)
+            </div>
+            <div class="col-md-9 ">
+                <div class="row">
+                    <div class="b-col-default-indent">
+                        @Html.Partial("ShopMain/ShopMain.BestSellerPartial", new ProductThumbnailModelList(featuredProductThumbnails, ProductThumbnailModelList.Sale, ProductThumbnailModelList.Featured))
+                    </div>
+                </div>
+            </div>
+        </div>
+
+ 
+    </div>
+</section>

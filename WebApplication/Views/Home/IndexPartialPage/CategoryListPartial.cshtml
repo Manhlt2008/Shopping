@@ -1,0 +1,96 @@
+﻿@using WebApplication.Models.Category
+@using WebApplication.Models.Product
+@{
+    var categoryModels = (List<CategoryManageList>)Model;
+   
+}
+
+<aside id="column-left" class="col-sm-3 ">
+    <div class="box category">
+        <div class="box-heading">
+            <h3>
+                <i class="flaticon-show-menu-button"></i> <a href="@Url.Action("Category", "Product", new {id = 0})">Danh mục</a>
+            </h3>
+        </div>
+        <div class="box-content">
+            <div class="box-category">
+                <ul class="menu">
+
+                    @foreach (var categoryModel in categoryModels)
+                    {
+                        <li>
+                            <a href="@Url.Action("Category", "Product", new { id = categoryModel.Id })">@categoryModel.Name </a>
+
+                            @if (categoryModel.CategoryManageLists != null && categoryModel.CategoryManageLists.Count > 0)
+                            {
+                                <ul>
+                                    @foreach (var categoryManageList in categoryModel.CategoryManageLists)
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("Category", "Product", new { id = categoryManageList.Id })">@categoryManageList.Name</a>
+                                        </li>
+                                    }
+
+                                </ul>
+                            }
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script>
+        jQuery(document)
+            .ready(function () {
+                jQuery('.box-category .menu').find('li > ul').before('<i class="fa fa-angle-right"></i>');
+                jQuery('.box-category .menu li i')
+                    .on("click",
+                        function () {
+                            if (jQuery(this).hasClass('fa-angle-down')) {
+                                jQuery(this).removeClass('fa-angle-down').parent('li').find(' > ul').slideToggle();
+                            } else {
+                                jQuery(this).addClass('fa-angle-down').parent('li').find(' > ul').slideToggle();
+                            }
+                        });
+            });
+    </script>
+    <script>
+        $(window)
+            .load(function () {
+                var slider = $('.specials-scroll');
+                if ($(window).width() > 767) {
+                    slider.bxSlider({
+                        mode: 'vertical',
+                        slideWidth: 270,
+                        minSlides: 3,
+                        maxSlides: 3,
+                        moveSlides: 1,
+                        pager: false,
+                        slideMargin: 30,
+                        controls: true
+                    });
+                } else {
+                    if (!slider.hasClass('activated')) {
+                        slider.owlCarousel({
+                            items: 3,
+                            margin: 30,
+                            smartSpeed: 450,
+                            dots: false,
+                            nav: true,
+                            loop: true,
+                            navClass: ['owl-prev fa fa-angle-up', 'owl-next fa fa-angle-down'],
+                            responsive: {
+                                0: { items: 1 },
+                                370: { items: 2 },
+                                570: { items: 3 }
+                            }
+                        });
+                        slider.addClass('activated');
+                    }
+                }
+            })
+    </script>
+    @RenderPage("~/Views/Shared/Shop/_ShopSpecialsSection.cshtml")
+    @RenderPage("~/Views/Shared/Shop/_ShopTopSellerSection.cshtml.cshtml")
+
+</aside>

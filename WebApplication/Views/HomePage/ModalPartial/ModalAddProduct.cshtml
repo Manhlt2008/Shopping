@@ -1,0 +1,28 @@
+﻿@{
+    ViewBag.Title = "AddProductModal";
+}
+
+<div class="modal fade" id="addProductModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Thêm sản phẩm</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <label class="pull-right">Sản phẩm</label>
+                    </div>
+                    <div class="col-sm-8">
+                        <select id="addProductDropdownList" class="col-sm-8"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" onclick="HomePageController.addMoreProduct()" id="button-add-homepage" data-type="" data-type-id="">Thêm</button>
+            </div>
+        </div>
+    </div>
+</div>

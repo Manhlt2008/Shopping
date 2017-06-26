@@ -1,0 +1,36 @@
+﻿@using WebApplication.Lib.Bll.Lang
+@using WebApplication.Lib.Dal.DbContext
+@{
+    Layout = "~/Views/Shared/ShopMain/_ShopMainLayout.cshtml";
+
+    var productViewLang = new LangValue(LangValue.LangEnum.Vi, LangValue.DictionaryEnum.CmsProductView);
+
+    var url = (string)ViewBag.Url;
+    var page = (StaticPage)ViewBag.Page;
+
+    ViewBag.Title = page.Title;
+}
+<div class="b-inner-page-header f-inner-page-header b-bg-header-inner-page">
+    <div class="b-inner-page-header__content">
+        <div class="container">
+            <h1 class="f-primary-l c-default">@page.Title</h1>
+        </div>
+    </div>
+</div>
+<div class="l-main-container">
+    <div class="b-breadcrumbs f-breadcrumbs">
+        <div class="container">
+            <ul>
+                <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-home"></i>@productViewLang.GetValue(LangValue.CmsProduct.View.Home)</a></li>
+                <li><i class="fa fa-angle-right"></i><a href="@url">@page.Title</a></li>
+            </ul>
+        </div>
+    </div>
+    <section class="b-diagonal-line-bg-light b-infoblock--small ">
+        <div class="container">
+            <div class="row b-col-default-indent">
+                @Html.Raw(page.Content)
+            </div>
+        </div>
+    </section>
+</div>

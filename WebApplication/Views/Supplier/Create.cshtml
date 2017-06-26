@@ -1,0 +1,301 @@
+﻿@model WebApplication.Models.Supplier.Supplier
+
+
+@using WebApplication.Models.Category
+@using WebApplication.Models.Product
+@using WebApplication.Models.Supplier
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/AdminCp/_AdminLayout.cshtml";
+
+    var categories = (List<CategoryManageList>)ViewBag.Categories ?? new List<CategoryManageList>();
+    var accounts = (List<WebApplication.Lib.Dal.DbContext.Account>)ViewBag.Accounts ?? new List<WebApplication.Lib.Dal.DbContext.Account>();
+    var selectedAccounts = (List<long>)ViewBag.SelectedAccounts ?? new List<long>();
+    var productModel = new ProductModel();
+    var supplierModel = new Supplier
+    {
+        CategoryIds = Enumerable.Empty<long>().ToList()
+    };
+    if (ViewBag.Supplier != null)
+    {
+        supplierModel = (Supplier)ViewBag.Supplier;
+        ViewBag.Title = "Update";
+    }
+}
+
+@section Breadcrumbs
+{
+    <li>
+        <a href="@Url.Action("Manage", "Supplier")">Quản Lý Nhà Cung Cấp</a>
+    </li>
+    <li>
+        <span>@(supplierModel.Id == -1 ? "Tạo Mới Nhà Cung Cấp" : "Cập Nhật Nhà Cung Cấp")</span>
+    </li>
+}
+@section CustomScript
+{
+    <script src="~/Scripts/AdminCP/Product/product.js"></script>
+    <script src="~/Scripts/AdminCP/Product/create-form.js"></script>
+    <script src="~/Content/admincp/js/lib/select2/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#addaccount").click(function () {
+                if ($("#addsupplieraccount").is(":visible")) {
+                    $("#addsupplieraccount").hide();
+                    $("#addsupplier").show();
+                } else {
+                    $("#addsupplieraccount").show();
+                    $("#addsupplier").hide();
+                }
+                //don't follow the link (optional, seen as the link is just an anchor)
+                return false;
+            });
+
+            $("form input:radio").change(function () {
+                var options = document.getElementsByName("account");
+                if (options[0].checked == true) {
+                    $("#addsupplieraccount").hide();
+                    $("#useoldaccount").show();
+                }
+                else {
+                    $("#addsupplieraccount").show();
+                    $("#useoldaccount").hide();
+                }
+            });
+
+            if ($('#s2_multi_value').length) {
+                $('#s2_multi_value').select2({
+                    placeholder: "Select..."
+                });
+            }
+
+            if ($('#s2_multi_value_acc').length) {
+                $('#s2_multi_value_acc').select2({
+                    placeholder: "Select..."
+                });
+            }
+
+        });
+    </script>
+}
+
+<link rel="stylesheet" href="~/Content/admincp/js/lib/select2/select2.css">
+<link rel="stylesheet" href="~/Content/admincp/js/lib/select2/ebro_select2.css">
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4 class="panel-title"><span>@(supplierModel.Id == -1 ? "Tạo Mới Nhà Cung Cấp" : "Cập Nhật Nhà Cung Cấp")</span></h4>
+    </div>
+
+    <div class="panel-body">
+        @using (Html.BeginForm("Create", "Supplier", FormMethod.Post))
+        {
+            @Html.ValidationSummary(true, null, new { @class = "alert alert-danger" })
+            <fieldset>
+                <legend><span>Thông Tin Nhà Cung Cấp</span></legend>
+
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        @Html.HiddenFor(m => m.Id, new { @id = supplierModel.Id })
+                        <label class="col-sm-3 control-label">Tên Nhà Cung Cấp</label>
+                        <div class="col-sm-6">
+                            @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @required = "required", @maxlength = "255", @Value = supplierModel.Name })
+                            <ul id="validator-name-invalid" class="parsley-error-list" style="display: none;">
+                                <li class="required" style="display: list-item;">
+                                    <span id="validator-name-invalid-message"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Loại Sản Phẩm</label>
+                        <div class="col-sm-6">
+                            <select id="s2_multi_value" name="CategoryIds" multiple>
+                                <option value=""></option>
+                                @foreach (var category in categories)
+                                {
+                                    var current = supplierModel.CategoryIds.FirstOrDefault(m => m == category.Id);
+
+                                    <optgroup label="@category.Name">
+                                        @if (current > 0)
+                                        {
+                                            <option value="@category.Id" selected="selected">@category.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@category.Id">@category.Name</option>
+                                        }
+
+                                        @if (category.CategoryManageLists != null && category.CategoryManageLists.Count > 0)
+                                        {
+                                            foreach (var item in category.CategoryManageLists)
+                                            {
+                                                var secondCurrent = supplierModel.CategoryIds.FirstOrDefault(m => m == item.Id);
+
+                                                if (secondCurrent > 0)
+                                                {
+                                                    <option value="@item.Id" selected="selected">----@item.Name</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@item.Id">----@item.Name</option>
+                                                }
+                                            }
+                                        }
+                                    </optgroup>
+                                }
+                            </select>
+                            <ul id="validator-categoryid-invalid" class="parsley-error-list" style="display: none;">
+                                <li class="required" style="display: list-item;">
+                                    <span id="validator-categoryid-invalid-message"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Số Điện Thoại</label>
+                        <div class="col-sm-6">
+                            @Html.TextBoxFor(m => m.Phone, new { @class = "form-control", @required = "required", @maxlength = "200", @Value = supplierModel.Phone })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Email</label>
+                        <div class="col-sm-6">
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @type = "email", @required = "required", @maxlength = "255", @Value = supplierModel.Email })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Địa Chỉ</label>
+                        <div class="col-sm-6">
+                            @Html.TextBoxFor(m => m.Address, new { @class = "form-control", @required = "required", @Value = supplierModel.Address })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Website</label>
+                        <div class="col-sm-6">
+                            @Html.TextBoxFor(m => m.Website, new { @class = "form-control", @required = "required", @maxlength = "255", @Value = supplierModel.Website })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">Facebook</label>
+                        <div class="col-sm-6">
+                            @Html.TextBoxFor(m => m.Facebook, new { @class = "form-control", @required = "required", @Value = supplierModel.Facebook })
+                        </div>
+                    </div>
+                    @if (ViewContext.RouteData.Values["action"].ToString() == "Create")
+                    {
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label"></label>
+                            <div class="col-sm-6">
+                                <input type="radio" name="account" id="newacc" checked="checked" style="display:inline-block;float:left; margin-right: 3px" value='new' /><label for="newacc">Sử dụng tài khoản sẵn có</label>
+                                <input type="radio" name="account" id="oldacc" value='old' style="display:inline-block;float:left; margin-right: 3px" /><label for="oldacc">Tạo tài khoản mới</label>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </fieldset>
+
+
+            <div id="addsupplieraccount" style="display:none">
+                <fieldset>
+                    <legend><span>Tạo Tài Khoản Cho Nhà Cung Cấp</span></legend>
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Email</label>
+                            <div class="col-sm-6">
+                                @Html.TextBoxFor(m => m.UserModel.Email, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Họ</label>
+                            <div class="col-sm-6">
+                                @Html.TextBoxFor(m => m.UserModel.Firstname, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Tên</label>
+                            <div class="col-sm-6">
+                                @Html.TextBoxFor(m => m.UserModel.Lastname, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Password</label>
+                            <div class="col-sm-6">
+                                @Html.PasswordFor(m => m.UserModel.Password, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label"></label>
+                            <div class="col-sm-6">
+                                <button type="submit" class="btn btn-primary btn-lg pull-right">Lưu</button>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div id="useoldaccount">
+                <fieldset>
+                    <legend><span>Chọn Tài Khoản Từ Danh Sách Sẵn Có</span></legend>
+                    <div class="form-horizontal">
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Loại Sản Phẩm</label>
+                            <div class="col-sm-6">
+                                <select id="s2_multi_value_acc" name="AccountIds" multiple>
+                                    <option value=""></option>
+                                    @if (selectedAccounts.Count == 0)
+                                    {
+                                        foreach (var account in accounts)
+                                        {
+                                            <option value="@account.Id">@account.Email</option>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        foreach (var account in accounts)
+                                        {
+                                            int existed = 0;
+                                            for (int i = 0; i < selectedAccounts.Count; i++)
+                                            {
+                                                if (selectedAccounts[i] == account.Id)
+                                                {
+                                                    existed = 1;
+                                                    <option value="@account.Id" selected="selected">@account.Email</option>
+                                                    break;
+                                                }
+                                            }
+                                            if (existed == 0)
+                                            {
+                                                <option value="@account.Id">@account.Email</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                                <ul id="validator-categoryid-invalid" class="parsley-error-list" style="display: none;">
+                                    <li class="required" style="display: list-item;">
+                                        <span id="validator-categoryid-invalid-message"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label"></label>
+                            <div class="col-sm-6">
+                                <button type="submit" class="btn btn-primary btn-lg pull-right">Lưu</button>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        }
+    </div>
+</div>

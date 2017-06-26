@@ -1,0 +1,62 @@
+﻿@using WebApplication.Models.Product
+@using WebApplication.Lib.Util.Constant;
+@using WebApplication.Lib.Bll;
+@using System.Globalization
+@{
+    var bestSellersProduct = ProductBll.FindAllHomePageProducts(TypeHomePageEnum.Bestsellers);
+    var bestSellersProductThumbnails = bestSellersProduct.Select(product => new ProductThumbnailModel(product)).ToList();
+
+    var productThumbnails = Enumerable.Empty<ProductThumbnailModel>().ToList();
+
+    var modelList = new ProductThumbnailModelList();
+
+    if (bestSellersProductThumbnails != null && bestSellersProductThumbnails.Count > 0)
+    {
+
+        modelList = new ProductThumbnailModelList(bestSellersProductThumbnails, "", ProductThumbnailModelList.Bestseller);
+
+        if (modelList.ProductThumbnailModels != null)
+        {
+            productThumbnails = modelList.ProductThumbnailModels;
+        }
+    }
+    var cul = CultureInfo.GetCultureInfo("vi-VN");
+
+}
+<div class="box bestsellers">
+    <div class="box-heading">
+        <h3>Bán chạy</h3>
+    </div>
+    <div class="box-content">
+        <div class="bestseller-slider">
+            @if (bestSellersProductThumbnails != null && bestSellersProductThumbnails.Count > 0)
+            {
+                foreach (var product in productThumbnails)
+                {
+                    <div class="product-layout">
+                        <div class="product-thumb transition .equal-height-767-2">
+                            <div class="image">
+                                <a href="@Url.Action("View", "Product", new {id = product.Id})">
+                                    <img alt="@product.Name" title="@product.Name" class="img-responsive" src="@Url.Action("View", "Image", new {id = product.Cover})" />
+                                </a>
+                            </div>
+                            <div class="caption">
+                                <div class="price">
+                                    @product.Price.ToString("#,###", cul.NumberFormat)
+                                </div>
+                                <h4>
+                                    <a href="@Url.Action("View", "Product", new {id = product.Id})">
+                                        @product.Name
+                                    </a>
+                                </h4>
+                            </div>
+                            <div class="cart-button">
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>

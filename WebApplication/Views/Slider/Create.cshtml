@@ -1,0 +1,136 @@
+﻿@using WebApplication.Models.Category
+@model WebApplication.Models.Slider.SliderModel
+
+@{
+    ViewBag.Title = "Create Slider/Banner";
+    Layout = "~/Views/Shared/AdminCp/_AdminLayout.cshtml";
+
+    var categories = (List<CategoryManageList>)ViewBag.Categories ?? new List<CategoryManageList>();
+}
+
+@section Breadcrumbs
+{
+    <li><a href="@Url.Action("Slider", "Slider")">Slider/Banner</a></li>
+    <li><span>Tạo mới</span></li>
+}
+
+<style>
+    #galleryFieldset {
+        max-height: 200px;
+        overflow: scroll;
+    }
+</style>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Tạo Slider/Banner mới</h4>
+            </div>
+            <div class="panel-body">
+
+                @using (Html.BeginForm("Create", "Slider", FormMethod.Post, new { @class = "form-horizontal", id = "createSliderOrBannerForm", enctype = "multipart/form-data" }))
+                {
+                    <fieldset>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Type, new { @class = "col-sm-2 control-label req", @text = "Loại hiện thị" })
+                            <div class="col-sm-10">
+                                <select name="Type">
+                                    <option value="" disabled selected>Chọn một loại hiển thị</option>
+                                    <option value="Slider">Slider</option>
+                                    <option value="Banner">Banner</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Title, new { @class = "col-sm-2 control-label req" })
+                            <div class="col-sm-10">
+                                @Html.TextBoxFor(m => m.Title, new { Class = "form-control", placeholder = "Tiêu đề", name = "Title" })
+                                <ul id="validator-name-invalid" class="parsley-error-list" style="display: none;">
+                                    <li class="required" style="display: list-item;">
+                                        <span id="validator-name-invalid-message"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Description, new { @class = "col-sm-2 control-label" })
+                            <div class="col-sm-10">
+                                <div class="adjoined-bottom">
+                                    <div class="grid-container">
+                                        <div class="grid-width-100">
+                                            <div id="editor">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @Html.TextAreaFor(m => m.Description, new { style = "display: none", name = "Description" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.GoToLink, new { @class = "col-sm-2 control-label req" })
+                            <div class="col-sm-10">
+                                @Html.TextBoxFor(m => m.GoToLink, new { Class = "form-control", placeholder = "Đường dẫn", name = "GoToLink" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Image, new { @class = "col-sm-2 control-label req" })
+                            <div class="col-sm-10">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="fileupload fileupload-new" data-provides="fileupload">
+                                            <div class="fileupload-preview img-thumbnail" style="width: 180px; height: 120px;"></div>
+                                            <div>
+                                                <span class="btn btn-default btn-file">
+                                                    <span class="fileupload-new">Chọn hình ảnh</span><span class="fileupload-exists">Thay đổi</span>
+                                                    <input type="file" name="Image" />
+                                                </span>
+                                                <a href="#" class="btn btn-default fileupload-exists" data-dismiss="fileupload">Xóa</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-2 control-label"></div>
+                            <div class="col-sm-10">
+                                <button class="btn btn-default pull-right sticky" type="submit" id="btnSubmit" onclick="SliderController.saveSlider('Create')">Lưu</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group"></div>
+                    </fieldset>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section CustomScript
+{
+    <link href="~/Content/admincp/js/lib/Sticky/sticky.css" rel="stylesheet" />
+    <script src="~/Content/admincp/js/lib/Sticky/sticky.js"></script>
+    <script src="~/Scripts/jquery.form.js"></script>
+    <script src="~/Content/admincp/js/lib/bootbox/bootbox.min.js"></script>
+    <script src="~/Content/admincp/js/jquery.sticky.js"></script>
+    <script src="~/Scripts/ckeditor/ckeditor.js"></script>
+    <link rel="stylesheet" href="~/Scripts/ckeditor/samples/toolbarconfigurator/lib/codemirror/neo.css">
+    <script src="~/Scripts/AdminCP/Product/product.js"></script>
+    <script src="~/Scripts/AdminCP/Slider/Slider.js"></script>
+    <script>
+        if ($('select').length) {
+            $('select').select2({
+                allowClear: true,
+                placeholder: "Select..."
+            });
+        }
+
+        initSample();
+    </script>
+}

@@ -1,0 +1,573 @@
+﻿@using System.Globalization
+@using WebApplication.Lib.Bll.Delivery
+@using WebApplication.Lib.Dal.DbContext
+@using WebApplication.Lib.Util.Constant
+@using WebApplication.Models.APIModel.Delivery
+@using WebApplication.Models.Order
+@{
+    Layout = "~/Views/Shared/AdminCp/_AdminLayout.cshtml";
+
+    var order = (Order)ViewBag.Order;
+
+    var cul = CultureInfo.GetCultureInfo("vi-VN");
+
+    var StatusTrackingOrder = ViewBag.StatusTrackingOrder;
+
+    double totalPrice = 0;
+
+    var orderStatisList = OrderStatusModel.GetList();
+    bool? SendMailStatus = null;
+
+    if (ViewBag.SendMailStatus != null)
+    {
+        SendMailStatus = (bool)ViewBag.SendMailStatus;
+    }
+    bool? SendOrderDeliveryIsSuccess = null;
+    if (ViewBag.SendOrderDeliveryIsSuccess != null)
+    {
+        SendOrderDeliveryIsSuccess = (bool)ViewBag.SendOrderDeliveryIsSuccess;
+    }
+    var Message = ViewBag.SendOrderMessage ?? null;
+    var DeliveryTransactionModel = (DeliveryTransactionModel)ViewBag.DeliveryTransactionModel;
+    ViewBag.Title = MessageEnum.GeneratePageTitle(order == null ? MessageEnum.OrderMessage.Save.TitleCreate : MessageEnum.OrderMessage.Save.TitleUpdate);
+}
+
+@section Breadcrumbs
+{
+    <li><a href="@Url.Action("Manage", "Order")">@MessageEnum.Breadcrumbs.Manage(MessageEnum.Breadcrumbs.OrderBreadcrumb.Manage)</a></li>
+    @if (order != null)
+    {
+        <li>
+            <a href="@Url.Action("Update", "Order")">#@order.Code (@order.Account.Firstname @order.Account.Lastname) - @OrderStatusEnum.GetByStatus(order.Status)</a>
+        </li>
+    }
+    else
+    {
+        <li>@MessageEnum.OrderMessage.Save.Create</li>
+    }
+}
+@if (Message != null)
+{
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        @Message
+    </div>
+}
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @if (order != null)
+                {
+                    <h4 class="panel-title">@MessageEnum.OrderMessage.Save.UpdateInfo #<b>@order.Code</b> - @OrderStatusEnum.GetByStatus(order.Status)</h4>
+                }
+                else
+                {
+                    <h4 class="panel-title">@MessageEnum.OrderMessage.Save.Create</h4>
+                }
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <fieldset>
+                            <legend><span>@MessageEnum.OrderMessage.Save.OrderTitle</span></legend>
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">@MessageEnum.OrderMessage.Save.OrderId</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static" id="ClientDetailOrderId">
+                                            <b>@(order != null ? order.Id.ToString() : string.Empty)</b>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">@MessageEnum.OrderMessage.Save.OrderCode</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static" id="ClientDetailOrderCode">
+                                            <b>@(order != null ? order.Code : string.Empty)</b>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">@MessageEnum.OrderMessage.Save.OrderStatus</label>
+                                    <div class="col-sm-8">
+                                        <select id="lblUpdateOrderStatus" class="form-control">
+                                            @foreach (var status in orderStatisList)
+                                            {
+                                                if (order != null && order.Status == status.Value)
+                                                {
+                                                    <option value="@status.Value" selected="selected">@status.Text</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@status.Value">@status.Text</option>
+                                                }
+                                            }
+                                        </select>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <fieldset>
+                            <legend><span>@MessageEnum.OrderMessage.Save.ClientDetail</span></legend>
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">@MessageEnum.OrderMessage.Save.ClientDetailName</label>
+                                    <div class="col-sm-8">
+                                        @if (order != null)
+                                        {
+                                            <p class="form-control-static">
+                                                <b>
+                                                    <a href="@Url.Action("Index", "Authentication", new {id = order.Account.Id})" target="_blank">
+                                                        @order.Account.Firstname @order.Account.Lastname
+                                                    </a>
+                                                </b>
+                                            </p>
+                                        }
+                                        else
+                                        {
+                                            <select id="userSelection"></select>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">@MessageEnum.OrderMessage.Save.ClientDetailEmail</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static">
+                                            <b id="lblClientDetialEmail">
+                                                @if (order != null)
+                                                {
+                                                    <a href="mailto:@order.Account.Email">
+                                                        @order.Account.Email
+                                                    </a>
+                                                }
+                                            </b>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">Điện thoại</label>
+                                    <div class="col-sm-8">
+                                        <p class="form-control-static" id="lblClientDetialPhone">
+                                            @if (order != null)
+                                            {
+                                                <b>@order.Account.Phone</b>
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+
+                <fieldset>
+                    <legend class="row">
+                        <span class="col-sm-4">@MessageEnum.OrderMessage.Save.ClientItems</span>
+                        <span class="col-sm-8">
+                            <span class="pull-right col-sm-3">
+                                <a class="btn btn-default small" data-toggle="modal" href="#addProductModal" onclick="SaveOrderController.openModal()">
+                                    <span class="li_t-shirt"></span> @MessageEnum.OrderMessage.Save.ClientItemsAdd
+                                </a>
+                            </span>
+                            @if (System.Web.Configuration.WebConfigurationManager.AppSettings["ghtk"] == "1")
+                            {
+                                <span class="pull-right">
+                                    <a class="btn btn-default small" data-toggle="modal" href="@Url.Action("CheckStatusOrderDelivery", "Order")">
+                                        <span class="icon-check"></span> Kiểm Tra Trạng Thái Giao Hàng
+                                    </a>
+                                </span>
+                            }
+                        </span>
+
+
+
+                    </legend>
+
+                    <input type="hidden" id="orderInfo" value='{"OrderId": "@(order!= null ? order.Id.ToString() : "-1")"}' />
+
+                    <table class="table table-bordered table-striped table-hover" id="orderItemsTable">
+                        <thead>
+                            <tr>
+                                <td style="width: 25%">@MessageEnum.OrderMessage.Save.ClientItemsProductName</td>
+                                <td style="width: 20%">@MessageEnum.OrderMessage.Save.ClientItemsCategory</td>
+                                <td style="width: 10%">@MessageEnum.OrderMessage.Save.ClientItemsUnitPrice</td>
+                                <td style="width: 10%">@MessageEnum.OrderMessage.Save.ClientItemsQuantity</td>
+                                <td style="width: 10%">@MessageEnum.OrderMessage.Save.ClientItemsDiscount</td>
+                                <td style="width: 10%; text-align: center">@MessageEnum.OrderMessage.Save.ClientItemsAmount</td>
+                                <td style="width: 10%">Trạng Thái</td>
+                                <td style="width: 5%"></td>
+                            </tr>
+                        </thead>
+                        <tbody id="itemsTbody">
+                            @if (order != null)
+                            {
+                                foreach (var orderDetail in order.OrderDetails)
+                                {
+                                    if (orderDetail.Status == StatusEnum.InActive)
+                                    {
+                                        continue;
+                                    }
+
+                                    totalPrice += orderDetail.OriginUnitPrice * orderDetail.Quantity;
+
+                                    <tr id="tr-@orderDetail.ProductId">
+                                        <td>
+                                            <input type="hidden" id="origindata-@orderDetail.ProductId" name="products"
+                                                   value='{"price": "@orderDetail.OriginUnitPrice", "quantity": "@orderDetail.Quantity", "discount": "@orderDetail.Discount", "name": "@orderDetail.Product.Name", "id": "@orderDetail.ProductId"}' />
+                                            <a href="@Url.Action("View", "Product", new {id = orderDetail.Product.Id})" target="_blank">
+                                                @orderDetail.Product.Name
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a href="@Url.Action("View", "Category", new {id = orderDetail.Product.Category.Id})">
+                                                @orderDetail.Product.Category.Name
+                                            </a>
+                                        </td>
+                                        <td style="text-align: right">
+                                            <input type="text" name="prices" data-orderdetailid="@orderDetail.Id" class="form-control auto" id="txtPrice-@orderDetail.Product.Id"
+                                                   data-productid="@orderDetail.ProductId" value="@orderDetail.OriginUnitPrice" style="display: none" data-v-min="0" data-v-max="99999999"
+                                                   onchange="SaveOrderController.updatePrice(this)" />
+                                            <a href="javascript:void(0);" title="Update price" class="admincp-editable" id="aPrice-@orderDetail.Product.Id"
+                                               onclick="SaveOrderController.enableEditPrice(this)" data-productid="@orderDetail.ProductId">
+                                                @orderDetail.OriginUnitPrice.ToString("#,###", cul.NumberFormat) đ
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <input type="number" name="quantities" data-orderdetailid="@orderDetail.Id" class="form-control" id="txtQuantity-@orderDetail.Product.Id"
+                                                   data-productid="@orderDetail.ProductId" value="@orderDetail.Quantity" onchange="SaveOrderController.updatePrice(this)" />
+                                        </td>
+                                        <td>
+                                            <input type="number" name="discounts" data-orderdetailid="@orderDetail.Id" class="form-control" id="txtDiscount-@orderDetail.Product.Id"
+                                                   data-productid="@orderDetail.ProductId" value="@orderDetail.Discount" onchange="SaveOrderController.updatePrice(this)" />
+                                        </td>
+                                        <td style="text-align: right">
+                                            <span id="amount-@orderDetail.ProductId">@((orderDetail.OriginUnitPrice * orderDetail.Quantity).ToString("#,###", cul.NumberFormat)) đ</span>
+                                        </td>
+                                        <td style="text-align: center">
+                                            @if (orderDetail.Status < -1)
+                                            {
+                                                @StatusTrackingOrder
+                                            }
+                                            else
+                                            {
+                                                @DeliveryBll.DeliveryEnum.DeliveryCodeDetail(DeliveryBll.DeliveryEnum.ParseDeliveryCode(orderDetail.Status.ToString()))
+                                            }
+                                        </td>
+                                        <td style="text-align: center">
+                                            <a href="javascript:void(0);" title="@MessageEnum.OrderMessage.Save.ClientItemsRemoveItem @orderDetail.Product.Name"
+                                               data-orderdetailid="@orderDetail.Id" data-productid="@orderDetail.ProductId"
+                                               onclick="SaveOrderController.remove(this)">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </a>
+                                            <a href="javascript:void(0);" title="@MessageEnum.OrderMessage.Save.ClientItemsDiscardChange"
+                                               data-orderdetailid="@orderDetail.Id" data-productid="@orderDetail.ProductId"
+                                               onclick="SaveOrderController.discardChange(this)">
+                                                <span class="glyphicon glyphicon-floppy-remove"></span>
+                                            </a>
+                                        </td>
+                                        <td style="text-align: center">
+                                            <a href="@Url.Action("SendNewOrderNotifyMail", "Order", new {id = orderDetail.Id, orderId = order.Id})" title="Gửi đơn hàng cho đại lý">
+                                                <span class="glyphicon glyphicon-envelope"></span>
+                                            </a>
+                                            @orderDetail.SendmailCounter
+                                        </td>
+
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+
+                        <tfoot>
+                            <tr>
+                                <td colspan="10" style="margin-left: 20px;">
+                                    @if (System.Web.Configuration.WebConfigurationManager.AppSettings["ghtk"] == "1")
+                                    {
+                                        <div class="pull-right col-sm-1">
+                                            <button class="btn btn-primary " onclick="SaveOrderController.submit()">@MessageEnum.OrderMessage.Save.ClientItemsUpdateOrder</button>
+                                        </div>
+
+                                        <div class="pull-right col-sm-2">
+                                            <a class="btn btn-primary" href="@Url.Action("SendNewOrderDelivery", "Order", new { @orderDetails = order.OrderDetails, @orderId = order.Id })"><span class="icon-shopping-cart"></span> Vận Chuyển Đơn Hàng</a>
+                                        </div>
+
+                                        <div class="pull-left col-sm-2">
+                                            <a class="btn btn-primary" id="sendorderdelivery"> Thông Tin Vận Chuyển Đơn Hàng</a>
+                                        </div>
+                                    }
+                                    @*                                    <div class="row">*@
+                                    @*                                        <div class="col-sm-4">*@
+                                    @*                                            <label class="pull-right">Total Price</label>*@
+                                    @*                                        </div>*@
+                                    @*                                        <b class="col-sm-8" id="txtTotalPrice">*@
+                                    @*                                            @(totalPrice.ToString("#,###", cul.NumberFormat)) đ*@
+                                    @*                                        </b>*@
+                                    @*                                    </div>*@
+                                    @**@
+                                    @*<div class="row">*@<div class="row">
+                                        <div class="row">
+                                            <div class="row">
+                                                <div class="row">
+                                                    <div class="row">
+                                                        <div class="row">
+                                                            <div class="row">
+                                                                <div class="row">
+                                                                    <div class="row">
+                                                                        @*                                        <div class="col-sm-4">*@<div class="col-sm-4">
+                                                                            <div class="col-sm-4">
+                                                                                <div class="col-sm-4">
+                                                                                    <div class="col-sm-4">
+                                                                                        <div class="col-sm-4">
+                                                                                            <div class="col-sm-4">
+                                                                                                <div class="col-sm-4">
+                                                                                                    <div class="col-sm-4">
+                                                                                                        <div class="col-sm-4">
+                                                                                                            @*                                            <label class="pull-right">Shipping Price</label>*@<label class="pull-right"></label><label class="pull-right"></label><label class="pull-right"></label><label class="pull-right"></label><label class="pull-right"></label><label class="pull-right"></label><label class="pull-right"></label><label class="pull-right"></label><label class="pull-right"></label>
+                                                                                                            @*                                        </div>*@
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        @*                                        <b class="col-sm-8" id="txtShippingPrice">*@<b class="col-sm-8" id="txtShippingPrice">
+                                                                            <b class="col-sm-8" id="txtShippingPrice">
+                                                                                <b class="col-sm-8" id="txtShippingPrice">
+                                                                                    <b class="col-sm-8" id="txtShippingPrice">
+                                                                                        <b class="col-sm-8" id="txtShippingPrice">
+                                                                                            <b class="col-sm-8" id="txtShippingPrice">
+                                                                                                <b class="col-sm-8" id="txtShippingPrice">
+                                                                                                    <b class="col-sm-8" id="txtShippingPrice">
+                                                                                                        <b class="col-sm-8" id="txtShippingPrice">
+                                                                                                            @*                                            0 đ*@
+                                                                                                            @*                                        </b>*@
+                                                                                                        </b>
+                                                                                                    </b>
+                                                                                                </b>
+                                                                                            </b>
+                                                                                        </b>
+                                                                                    </b>
+                                                                                </b>
+                                                                            </b>
+                                                                        </b>
+                                                                        @*                                    </div>*@
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @**@
+                                    @*                                    <div class="row">*@<div class="row">
+                                        <div class="row">
+                                            <div class="row">
+                                                <div class="row">
+                                                    <div class="row">
+                                                        <div class="row">
+                                                            <div class="row">
+                                                                <div class="row">
+                                                                    <div class="row">
+                                                                        <div class="row">
+                                                                            @*                                        <div class="col-sm-4">*@<div class="col-sm-4">
+                                                                                <div class="col-sm-4">
+                                                                                    <div class="col-sm-4">
+                                                                                        <div class="col-sm-4">
+                                                                                            <div class="col-sm-4">
+                                                                                                <div class="col-sm-4">
+                                                                                                    <div class="col-sm-4">
+                                                                                                        <div class="col-sm-4">
+                                                                                                            <div class="col-sm-4">
+                                                                                                                <div class="col-sm-4">
+                                                                                                                    @*                                            <label class="pull-right">Grand Total</label>*@<label class="pull-right"></label><label class="pull-right"></label><label class="pull-right"></label><label class="pull-right"></label><label class="pull-right"></label><label class="pull-right"></label><label class="pull-right"></label><label class="pull-right"></label><label class="pull-right"></label><label class="pull-right"></label>
+                                                                                                                    @*                                        </div>*@
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            @*                                        <b class="col-sm-8" id="txtGrandTotal">*@<b class="col-sm-8" id="txtGrandTotal">
+                                                                                <b class="col-sm-8" id="txtGrandTotal">
+                                                                                    <b class="col-sm-8" id="txtGrandTotal">
+                                                                                        <b class="col-sm-8" id="txtGrandTotal">
+                                                                                            <b class="col-sm-8" id="txtGrandTotal">
+                                                                                                <b class="col-sm-8" id="txtGrandTotal">
+                                                                                                    <b class="col-sm-8" id="txtGrandTotal">
+                                                                                                        <b class="col-sm-8" id="txtGrandTotal">
+                                                                                                            <b class="col-sm-8" id="txtGrandTotal">
+                                                                                                                <b class="col-sm-8" id="txtGrandTotal">
+                                                                                                                    @*                                            @(totalPrice.ToString("#,###", cul.NumberFormat)) đ*@
+                                                                                                                    @*                                        </b>*@
+                                                                                                                </b>
+                                                                                                            </b>
+                                                                                                        </b>
+                                                                                                    </b>
+                                                                                                </b>
+                                                                                            </b>
+                                                                                        </b>
+                                                                                    </b>
+                                                                                </b>
+                                                                            </b>
+                                                                            @*                                    </div>*@
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="addorderdelivery" class="col-sm-12" hidden>
+
+                                            <table class="table table-bordered table-striped table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <td style="width: 20%">Sản Phẩm</td>
+                                                        <td style="width: 20%">Nhà Cung Cấp</td>
+                                                        <td style="width: 20%">Địa Chỉ Nhà Cung Cấp</td>
+                                                        <td style="width: 20%">Tổng Tiền</td>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        @if (DeliveryTransactionModel != null)
+                                                        {
+                                                            foreach (var items in DeliveryTransactionModel.DeliveryTransactionOrderModels)
+                                                            {
+                                                                <td>
+                                                                    foreach (var item in items.DeliveryTransactionOrderDetailModels)
+                                                                    {
+                                                                    Html.DisplayFor(m => item.ProductName)
+
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    Html.DisplayFor(m => items.SupplierName)
+                                                                </td>
+                                                                <td>
+                                                                    Html.DisplayFor(m => items.SupplierAddress + " " + items.SupplierDistrict + " " + items.SupplierProvince)
+                                                                </td>
+                                                                <td>
+                                                                    Html.DisplayFor(m => items.Price)
+                                                                </td>
+                                                            }
+                                                        }
+
+
+                                                    </tr>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr></tr>
+                                                </tfoot>
+
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .select2-container {
+        padding: 0px 0px;
+        border: 0px;
+    }
+</style>
+
+<div class="modal fade" id="addProductModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">@MessageEnum.OrderMessage.Save.AddProductModalTitle</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label class="pull-right">@MessageEnum.OrderMessage.Save.AddProductModalProduct</label>
+                    </div>
+                    <div class="col-sm-8">
+                        <select id="addProductDropdownList" class="col-sm-8 form-control"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="SaveOrderController.closeModal()">@MessageEnum.OrderMessage.Save.AddProductModalClose</button>
+                <button type="button" class="btn btn-primary" onclick="SaveOrderController.addMoreProduct()">@MessageEnum.OrderMessage.Save.AddProductModalAdd</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section CustomScript
+{
+
+    <script src="~/Scripts/autoNumeric/autoNumeric.js"></script>
+    <script src="~/Scripts/AdminCP/Order/SaveOrderController.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#sendorderdelivery").click(function () {
+                if ($("#addorderdelivery").is(":visible")) {
+                    $("#addorderdelivery").hide();
+                } else {
+                    $("#addorderdelivery").show();
+                }
+                //don't follow the link (optional, seen as the link is just an anchor)
+                return false;
+            });
+        });
+    </script>
+    <script>
+        SaveOrderController.init({
+            url: {
+                findAllByProductName: "@Url.Action("FindAllByProductName", "Product")",
+                view: "@Url.Action("View", "Product")",
+                categoryView: "@Url.Action("View", "Category")",
+                updateOrder: "@Url.Action("Save", "Order")",
+                searchUser: "@Url.Action("SearchUser", "User")",
+                updatePage: "@Url.Action("Update", "Order")"
+            }
+        });
+    </script>
+    <script src="~/Content/admincp/js/lib/bootbox/bootbox.min.js"></script>
+    <script src="~/Scripts/AdminCP/Product/product-controller.js" type="text/javascript" language="JavaScript"></script>
+    @if (SendMailStatus != null)
+    {
+        if (SendMailStatus.Value)
+        {
+            <script>
+                NotificationUtil.successMessage("Gửi mail yêu cầu đơn hàng thành công.");
+            </script>
+        }
+        else
+        {
+            <script>
+                NotificationUtil.warningMessage("Gửi mail yêu cầu đơn hàng thất bại. Vui lòng thử lại sau.");
+            </script>
+        }
+    }
+}

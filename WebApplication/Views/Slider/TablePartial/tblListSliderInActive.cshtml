@@ -1,0 +1,63 @@
+﻿@{
+    ViewBag.Title = "tblListSlider";
+    var resultModelInActive = (WebApplication.Models.User.ResultModel)ViewBag.ResultModelInActive;
+    var inActives = new List<WebApplication.Models.Slider.SliderModel>();
+    if (resultModelInActive != null && resultModelInActive.Code == 0)
+    {
+        inActives = (List<WebApplication.Models.Slider.SliderModel>)resultModelInActive.Data;
+    }
+}
+
+<table class="table table-bordered table-striped" id="table-slider">
+    <thead>
+        <tr>
+            <th width="5%">STT</th>
+            <th width="20%">Tiêu đề</th>
+            <th width="25%">Mô tả</th>
+            <th width="10%%">Đường Dẫn</th>
+            <th width="10%">Loại hiển thị</th>
+            <th width="20%">Hình ảnh</th>
+            <th width="10%"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (inActives.Count > 0)
+        {
+            int count = 0;
+            foreach (var item in inActives)
+            {
+                count = count + 1;
+                <tr>
+                    <td>@count</td>
+                    <td>
+                        <a href="@Url.Action("Update", "Slider", new { id = @item.Id })" title="Chỉnh sửa Slider/Banner này">
+                            @item.Title
+                        </a>
+                    </td>
+                    <td>@Html.Raw(@item.Description)</td>
+                    <td>
+                        <a href="@item.GoToLink" target="_blank">Link</a>
+                    </td>
+                    <td>@item.Type</td>
+                    <td>
+                        <a href="@item.Image_Url" target="_blank">Link</a>
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Update", "Slider", new { id = @item.Id })" title="Chỉnh sửa Slider/Banner này">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+                        <a href="#" title="Kích hoạt Slider/Banner này"
+                           data-status="1"
+                           data-title="@item.Title"
+                           data-id="@item.Id"
+                           onclick="SliderController.activeOrInActive(this)">
+                            <span class="glyphicon glyphicon-ok"></span>
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+

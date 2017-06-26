@@ -1,0 +1,94 @@
+﻿@using WebApplication.Lib.Bll
+@using WebApplication.Lib.Util.Constant
+<nav id="top_navigation">
+    <div class="container">
+        @{
+            var userModel = UserBll.GetUser();
+            if (userModel != null && (userModel.RoleId == RoleEnum.Admin || userModel.RoleId == RoleEnum.Manager))
+            {
+                <ul id="icon_nav_h" class="top_ico_nav clearfix">
+                    <li class="active">
+                        <a href="@Url.Action("Index", "Admin")">
+                            <i class="icon-home icon-2x"></i>
+                            <span class="menu_label">Trang chủ</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="@Url.Action("Index", "Settings")">
+                            <i class="li_settings icon-2x"></i>
+                            <span class="menu_label">Cấu hình chung</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="@Url.Action("Featured", "HomePage")">
+                            <i class="icon-puzzle-piece icon-2x"></i>
+                            <span class="menu_label">Chọn SP trang chủ</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="@Url.Action("ManageAccount", "Admin")">
+                            <i class="li_user icon-2x"></i>
+                            <span class="menu_label">Tài khoản</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="@Url.Action("Manage", "Category")">
+                            <i class="icon-th-list icon-2x"></i>
+                            <span class="menu_label">Quản lí loại SP</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="@Url.Action("Manage", "Product")">
+                            <i class="li_t-shirt icon-2x"></i>
+                            <span class="menu_label">Sản phẩm</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="@Url.Action("Manage", "Order")">
+                            <i class="glyphicon glyphicon-shopping-cart icon-2x"></i>
+                            <span class="menu_label">Đơn hàng</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="@Url.Action("Manage", "Review")">
+                            <i class="li_note icon-2x"></i>
+                            <span class="menu_label">Review</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="@Url.Action("TransactionHistoryForAdmin", "Transaction")">
+                            <i class="li_data icon-2x"></i>
+                            <span class="menu_label">Lịch sử giao dịch</span>
+                        </a>
+                    </li>
+                </ul>
+            }
+        }
+    </div>
+</nav>
+<!-- mobile navigation -->
+<nav id="mobile_navigation"></nav>
+<script src="~/Content/admincp/js/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#icon_nav_h a").each(function () {
+            var action = $(this).attr("href").split("/")[1];
+            var url = window.location.pathname.split("/");
+            var questions = url[1];
+
+            if ($(this).parent().hasClass("active")) {
+                $(this).parent().removeClass("active");
+            }
+            if (action == "Admin") {
+                if ($(this).attr("href") == window.location.pathname) {
+                    $(this).parent().addClass("active");
+                }
+            } else if (action == questions) {
+
+                $(this).parent().addClass("active");
+            }
+        })
+
+    })
+
+</script>

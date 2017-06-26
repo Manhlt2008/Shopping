@@ -1,0 +1,64 @@
+﻿<div class="container">
+    <div class="box-right">
+        <ul class="social-list">
+            @{
+                var user = WebApplication.Lib.Bll.UserBll.GetUser();
+
+                if (user != null)
+                {
+                    <li>
+                        <a href="#">
+                            <span>Xin chào, @user.Email</span>
+                        </a>
+                    </li>
+                }
+            }
+            <li>
+                <a href="#">
+                    <span class="fa fa-facebook"></span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <span class="fa fa-twitter"></span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <span class="fa fa-google-plus"></span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <span class="fa fa-youtube"></span>
+                </a>
+            </li>
+
+
+        </ul>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-4 col-xs-6">
+            <div id="logo" class="logo">
+                <a href="/">
+                    <img src="~/Content/view/image/catalog/logo.png" title="Electronics online store" alt="Phụ Nữ News store" class="img-responsive" />
+                </a>
+            </div>
+        </div>
+        <div class="col-sm-5 col-xs-6">
+            @using (Html.BeginForm("Category", "Product", FormMethod.Get, new { @class = "search", id = "search" }))
+            {
+                <input type="text" name="query" value="" placeholder="Tìm kiếm" />
+                <button type="submit" class="button-search">Tìm kiếm</button>
+                <div class="clear"></div>
+            }
+        </div>
+        <div class="col-sm-3">
+            <div class="phone hidden-xs">
+                <a href="@Url.Action("Index","ContactUs")"><i class="flaticon-phone370"></i></a>
+            </div>
+        </div>
+    </div>
+</div>

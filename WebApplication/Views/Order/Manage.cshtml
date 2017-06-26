@@ -1,0 +1,336 @@
+﻿@using System.Globalization
+@using WebApplication.Lib.Util.Constant
+@using WebApplication.Models.Order
+
+@{
+    ViewBag.Title = "Quản Lý Đơn Hàng";
+    Layout = "~/Views/Shared/AdminCp/_AdminLayout.cshtml";
+
+    var cul = CultureInfo.GetCultureInfo("vi-VN");
+    //
+    //    var pageLimitList = new List<int> { 0, 5, 10, 25, 50, 75, 100, 200, 500 };
+
+    //    var itemLimit = (int)ViewBag.Limit;
+    //    var itemSort = (string)ViewBag.Sort ?? "default";
+    //    var itemOrder = (int)ViewBag.Order;
+    //    var totalReview = (int)ViewBag.TotalReview;
+    //    int totalPage = totalReview / (itemLimit == 0 ? 1 : itemLimit);
+    //    var productId = (int)ViewBag.ProductId;
+
+    //    if (totalPage == 0)
+    //    {
+    //        totalPage = 1;
+    //    }
+    //
+    //    var itemPage = (int)ViewBag.Page;
+    //
+    //    var products = (List<ProductViewModel>)ViewBag.Products ?? new List<ProductViewModel>();
+    //
+    //    var productViewModel = (ProductViewModel)ViewBag.Product ?? new ProductViewModel
+    //    {
+    //        Id = 0,
+    //        Name = string.Empty,
+    //        Cover = 0,
+    //        Gallery = new List<long>()
+    //    };
+    //
+    //    var reviewViewModels = (List<ReviewViewModel>)ViewBag.Reviews;
+
+    var filterOptions = new List<OrderFilterOption>
+    {
+        new OrderFilterOption {Text = "Mới" , Value = StatusEnum.OrderEnum.OrderBySetting.New},
+        new OrderFilterOption {Text = "Đang giao hàng" , Value = StatusEnum.OrderEnum.OrderBySetting.Delevering},
+        new OrderFilterOption {Text = "Đã thanh toán" , Value = StatusEnum.OrderEnum.OrderBySetting.Purchased},
+        new OrderFilterOption {Text = "Hoàn tất" , Value = StatusEnum.OrderEnum.OrderBySetting.Completed},
+        new OrderFilterOption {Text = "Hủy" , Value = StatusEnum.OrderEnum.OrderBySetting.Reject},
+        new OrderFilterOption {Text = "Mã Đặt Hàng" , Value = StatusEnum.OrderEnum.OrderBySetting.OrderCode},
+        new OrderFilterOption {Text = "Tất cả" , Value = StatusEnum.OrderEnum.OrderBySetting.All}
+    };
+
+    var orderStatisList = OrderStatusModel.GetList();
+}
+
+@section Breadcrumbs
+{
+    <li><a href="@Url.Action("Manage", "Order")">Quản Lý</a></li>
+    <li><span>Quản Lý Đơn Hàng</span></li>
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Danh Sách Đơn Hàng</h4>
+            </div>
+            <div class="slick_grid">
+                <div class="panel_controls">
+                    <div class="row">
+                        <form id="search-order-form" onsubmit="return OrderManageController.search();">
+                            <div class="col-sm-4">
+                                <label>Tìm Kiếm</label>
+                                <input class="form-control" placeholder="Tên người dùng hoặc mã đơn hàng" id="queryText" />
+                            </div>
+                            <div class="col-sm-4">
+                                <label>Điều Kiện Lọc</label>
+                                <select class="" id="filterOptionSelect" multiple="multiple">
+                                    @foreach (var filterOption in filterOptions)
+                                    {
+                                        <option value="@filterOption.Value">@filterOption.Text</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-sm-4">
+                                <label>&nbsp;</label>
+                                <button type="submit" class="btn btn-default btn-info">Tìm Kiếm</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- Emty rows for layout -->
+                    <div class="row"></div>
+                    <div class="row"></div>
+                </div>
+
+                <table class="table table-condensed table-bordered table-striped table-hover" id="orderTable">
+                    <thead>
+                        <tr>
+                            <th>Đơn Hàng</th>
+                            <th>Người Tạo</th>
+                            <th>Giá</th>
+                            <th>Ngày Tạo</th>
+                            <th>Trạng Thái</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="orderTbody"></tbody>
+                </table>
+                <div class="modal fade" id="orderDetailModal">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Chi tiết đơn hàngs</h4>
+                            </div>
+                            <div class="modal-body">
+                                <fieldset>
+                                    <legend><span>Chi tiết đơn hàng #<b id="lblOrderCode"></b> - <span id="lblOrderStatus"></span></span></legend>
+                                </fieldset>
+                                <small>Ngày tại đơn hàng: <span id="lblOrderCreatedDate"></span> - Tạo bởi <i><b id="lblOrderAccount"></b></i></small>
+
+                                <table id="tblOrderDetails" class="table table-bordered table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Sản phẩm</th>
+                                            <th>Số lượng</th>
+                                            <th>Giá</th>
+                                            <th>Giảm giá</th>
+                                            <th>Tổng giá</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tblOrderDetailsBody"></tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="4"></td>
+                                            <td style="text-align: right">
+                                                <b id="lblOrderTotalPrice"></b>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal" data-url="" id="btnUpdateOrderDetail">Cập nhật</button>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Đóng</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="updateOrderStatusModal">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Cập nhật trạng thái đơn hàng - #<b id="lblUpdateOrderStatus-Code"></b></h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="form-horizontal">
+                                    <div class="col-sm-5">
+                                        <div class="form-group">
+                                            <label><b>Status</b></label>
+                                            <select id="lblUpdateOrderStatus-Status" class="form-control">
+                                                @foreach (var status in orderStatisList)
+                                                {
+                                                    <option value="@status.Value">@status.Text</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="OrderManageController.updateStatus()">Lưu</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@helper PagingHelper(int productId, int itemPage, string itemSort, int itemOrder, int itemLimit, int totalPage)
+{
+if (itemPage > 1)
+{
+        <span class="slick-item-nav">
+            <a href="@Url.Action("Manage", "Order", new
+                     {
+                         productId = productId,
+                         order = itemOrder,
+                         limit = itemLimit,
+                         page = 1
+                     })">
+                <i class="icon-double-angle-left"></i>
+            </a>
+        </span>
+        <span class="slick-item-nav">
+            <a href="@Url.Action("Manage", "Order", new
+                     {
+                         productId = productId,
+                         order = itemOrder,
+                         limit = itemLimit,
+                         page = (itemPage - 1)
+                     })">
+                <i class="icon-angle-left"></i>
+            </a>
+        </span>
+}
+
+if (totalPage > 6)
+{
+    for (var i = 1; i <= 3; i++)
+    {
+        if (i == itemPage)
+        {
+                <span class="slick-item-nav slick-item-nav-actived"><span>@i</span></span>
+        }
+        else
+        {
+                <span class="slick-item-nav">
+                    <a href="@Url.Action("Manage", "Order", new
+                             {
+                                 productId = productId,
+                                 order = itemOrder,
+                                 limit = itemLimit,
+                                 page = i
+                             })" title="Page @i">
+                        @i
+                    </a>
+                </span>
+        }
+    }
+
+        <span class="slick-item-nav">
+            <a href="javascript:void(0);">...</a>
+        </span>
+
+    for (var i = totalPage - 2; i <= totalPage; i++)
+    {
+        if (i == itemPage)
+        {
+                <span class="slick-item-nav slick-item-nav-actived"><span>@i</span></span>
+        }
+        else
+        {
+                <span class="slick-item-nav">
+                    <a href="@Url.Action("Manage", "Order", new
+                             {
+                                 productId = productId,
+                                 order = itemOrder,
+                                 limit = itemLimit,
+                                 page = i
+                             })" title="Page @i">
+                        @i
+                    </a>
+                </span>
+        }
+    }
+}
+else
+{
+    for (var i = 1; i <= totalPage; i++)
+    {
+        if (i == itemPage)
+        {
+                <span class="slick-item-nav slick-item-nav-actived"><span>@i</span></span>
+        }
+        else
+        {
+                <span class="slick-item-nav">
+                    <a href="@Url.Action("Manage", "Order", new
+                             {
+                                 productId = productId,
+                                 order = itemOrder,
+                                 limit = itemLimit,
+                                 page = i
+                             })" title="Page @i">
+                        @i
+                    </a>
+                </span>
+        }
+    }
+}
+
+if (itemPage < totalPage)
+{
+        <span class="slick-item-nav">
+            <a href="@Url.Action("Manage", "Order", new
+                     {
+                         productId = productId,
+                         order = itemOrder,
+                         limit = itemLimit,
+                         page = (itemPage + 1)
+                     })">
+                <i class="icon-angle-right"></i>
+            </a>
+        </span>
+        <span class="slick-item-nav">
+            <a href="@Url.Action("Manage", "Order", new
+                     {
+                         productId = productId,
+                         order = itemOrder,
+                         limit = itemLimit,
+                         page = totalPage
+                     })">
+                <i class="icon-double-angle-right"></i>
+            </a>
+        </span>
+}
+}
+
+@section CustomScript
+{
+
+    <!-- datatbles -->
+    <link rel="stylesheet" href="~/Content/admincp/js/lib/dataTables/media/DT_bootstrap.css">
+    <link rel="stylesheet" href="~/Content/admincp/js/lib/dataTables/extras/TableTools/media/css/TableTools.css">
+
+    <script src="~/Content/admincp/js/lib/bootbox/bootbox.min.js"></script>
+    <script src="~/Scripts/AdminCP/Order/OrderManageController.js" type="text/javascript" language="JavaScript"></script>
+    <!-- datatables -->
+    <script src="~/Content/admincp/js/lib/dataTables/media/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        OrderManageController.init({
+            url: {
+                findAllByUserNameOrOrderCode: "@Url.Action("FindAllByUserNameOrOrderCode", "Order")",
+                productDetail: "@Url.Action("View", "Product")",
+                orderDetail: "@Url.Action("Detail", "Order")",
+                updateStatus: "@Url.Action("UpdateStatus", "Order")",
+                updateOrder: "@Url.Action("Update", "Order")"
+            }
+        });
+    </script>
+}

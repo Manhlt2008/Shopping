@@ -1,0 +1,429 @@
+﻿@using System.Globalization
+@using WebApplication.Lib.Bll.Lang
+@using WebApplication.Lib.Bll.SystemSetting
+@using WebApplication.Models.Category
+@using WebApplication.Models.Product
+
+@{
+    var lang = new LangValue(LangValue.LangEnum.Vi, LangValue.DictionaryEnum.CmsProductCategory);
+    var cmsLang = new LangValue(LangValue.LangEnum.Vi, LangValue.DictionaryEnum.CmsHomeIndex);
+    var productLang = new LangValue(LangValue.LangEnum.Vi, LangValue.DictionaryEnum.CmsHomeIndex);
+
+    ViewBag.Title = ViewTitleBll.Title(lang.GetValue(LangValue.CmsProduct.Category.Title));
+    Layout = "~/Views/Shared/ShopMain/_ShopMainLayout.cshtml";
+
+    var cul = CultureInfo.GetCultureInfo("vi-VN");
+
+    var displayStyle = (string)ViewBag.DisplayStyle ?? "grid";
+
+    displayStyle = "list";
+
+    var cssClass = displayStyle.ToLower().Trim().Equals("grid") ? "product-grid col-lg-4 col-md-4 col-sm-4 col-xs-12" : "product-list col-xs-12";
+
+    var findAllProductModel = (FindAllProductModel)ViewBag.FindAllProductStand;
+
+    var standInfor = findAllProductModel.StandInfor;
+    var category = findAllProductModel.Category;
+    var products = findAllProductModel.Products;
+
+    var itemLimit = findAllProductModel.Limit;
+    var itemSort = findAllProductModel.Sort ?? "default";
+    var itemOrder = findAllProductModel.Order;
+    var itemTotalProduct = findAllProductModel.TotalProduct;
+    int totalPage = itemTotalProduct / (itemLimit == 0 ? 1 : itemLimit);
+
+    if (((float)itemTotalProduct / (float)(itemLimit == 0 ? 1 : itemLimit)) % 1 != 0)
+    {
+        totalPage++;
+    }
+    var keyword = findAllProductModel.Query;
+
+    if (totalPage == 0)
+    {
+        totalPage = 1;
+    }
+
+    var itemPage = findAllProductModel.Page;
+
+    var pageLimitList = new List<int> { 6, 25, 50, 75, 100 };
+    var sortByModels = new List<SortByModel>
+    {
+        new SortByModel {Label = "Mặc Định", Order = 1, Sort = "default"},
+        new SortByModel {Label = "Tên (A - Z)", Order = 1, Sort = "name"},
+        new SortByModel {Label = "Tên (Z - A)", Order = 0, Sort = "name"},
+        new SortByModel {Label = "Giá (Thấp > Cao)", Order = 1, Sort = "price"},
+        new SortByModel {Label = "Giá (Cao > Thấp)", Order = 0, Sort = "price"},
+        new SortByModel {Label = "Mới Nhất", Order = 1, Sort = "latest"},
+        new SortByModel {Label = "Cũ Nhất", Order = 0, Sort = "latest"}
+    };
+
+    var count = 1;
+
+    var isNewestPage = false;
+
+    if (ViewBag.IsNewestPage != null)
+    {
+        isNewestPage = (bool)ViewBag.IsNewestPage;
+    }
+    
+    var actionName = "Stand";
+    var controllerName = (string)ViewBag.ControllerName ?? "Product";
+}
+
+@section ExtendScript {
+    <script type="text/javascript">
+        $(document)
+            .ready(function () {
+                $('.img-container img').centerImage();
+
+                $('select.j-select').selectmenu('refresh');
+
+                $('select.j-select')
+                    .on('selectmenuchange',
+                        function () {
+                            window.location.href = $(this).val();
+                        });
+            });
+
+        $("#submenu-content-@standInfor.Id").addClass("in");
+        $("#left-menu-category-id-@standInfor.Id").addClass("menu-activated");
+
+    </script>
+
+    @if (category.ParentCategory != null)
+    {
+        <script>
+            $("#left-menu-category-id-@category.ParentCategory.Id").addClass("menu-activated");
+            $("#submenu-content-@category.ParentCategory.Id").addClass("in");
+        </script>
+    }
+}
+<div class="l-main-container">
+    <div class="b-breadcrumbs f-breadcrumbs">
+        <div class="container">
+            <ul>
+                <li>
+                    <a href="@Url.Action("Index", "Home")">
+                        <i class="fa fa-home"></i>@lang.GetValue(LangValue.CmsProduct.Category.Home)
+                    </a>
+                </li>
+                @if (category.ParentCategory != null)
+                {
+                    <li>
+                        <i class="fa fa-angle-right"></i><a href="@Url.Action(actionName, controllerName, new {id = category.ParentCategory.Id})">@category.ParentCategory.Name</a>
+                    </li>
+                }
+                <li>
+                    <i class="fa fa-angle-right"></i><a href="@Url.Action(actionName, controllerName, new {id = category.Id})">@category.Name</a>
+                </li>
+                @if (!string.IsNullOrEmpty(keyword))
+                {
+                    <li>
+                        <i class="fa fa-angle-right"></i>&nbsp;Tìm Kiếm:&nbsp;<strong>@keyword</strong>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+    <section class="b-infoblock">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    @Html.Partial("../Home/ShopMain/ShopMain.CategoryPartial", null)
+                </div>
+                <div class="col-md-9 ">
+                    <div style="width:870px;height:300px;margin-bottom:10px">
+                        <img src="/Content/@standInfor.Banner" />
+                    </div>
+                    <div class="f-primary-b b-title-b-hr f-title-b-hr b-null-top-indent"><div>Gian hàng <span class="stand-title">@standInfor.StandName</span></div></div>
+                    <div class="stand-infor">
+                        <span>Thông tin chi tiết gian hàng</span>
+                        <div class="content">
+                            <div class="row">
+                                <div class="col-letf"><b>Tên gian hàng</b></div>
+                                <div class="col-right">
+                                    @standInfor.StandName
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-letf">
+                                    <b>Địa chỉ</b>
+                                </div>
+                                <div class="col-right">
+                                    @standInfor.Address
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-letf">
+                                    <b>Sđt liên hệ</b>
+                                </div>
+                                <div class="col-right">
+                                    @standInfor.Phone
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-letf">
+                                    <b>Giới thiệu chung</b>
+                                </div>
+                                <div class="col-right">
+                                    @standInfor.Description
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="b-sort-panel dn">
+                        <div class="b-sort-panel__inner">
+                            <div class="b-select b-left">
+                                <label class="b-form-horizontal__label" style="text-align: right; padding-right: 10px;">@lang.GetValue(LangValue.CmsProduct.Category.FilterBy)</label>
+                                <select class="j-select" id="input-sort">
+                                    @foreach (var sortByModel in sortByModels)
+                                    {
+                                        <option value="@Url.Action(actionName, controllerName, new
+                                       {
+                                           standId=standInfor.Id,sort = sortByModel.Sort, order = sortByModel.Order, limit = itemLimit, page = itemPage, query = keyword
+                                       })" @(itemSort.Equals(sortByModel.Sort) && (itemSort.Equals("default") || itemOrder == sortByModel.Order) ? "selected" : "")>
+                                            @sortByModel.Label
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="b-select b-left">
+                                <label class="b-form-horizontal__label" style="text-align: right; padding-right: 10px;">@lang.GetValue(LangValue.CmsProduct.Category.Display)</label>
+                                <select class="j-select" id="input-limit" onchange="location = this.value;">
+                                    @foreach (var l in pageLimitList)
+                                    {
+                                        <option value="@Url.Action(actionName, controllerName, new
+                                                  {
+                                                      standId=standInfor.Id,
+                                                      sort = itemSort,
+                                                      order = itemOrder,
+                                                      limit = l,
+                                                      page = 1,
+                                                      query = keyword
+                                                  })" @(itemLimit == l ? "selected" : "")>
+                                            @l
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="b-view-switcher f-view-switcher b-right" style="display: none;">
+                                <div class="b-view-switcher_column is-view-switcher__item-active fa fa-th-list"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="b-col-default-indent">
+                            @foreach (var product in products)
+                            {
+                                <div class="col-md-4 col-sm-4 col-xs-6 col-mini-12">
+                                    <div class="b-product-preview">
+                                        <div class="b-product-preview__img view view-sixth">
+                                            <a href="@Url.Action("View", "Product", new {id = product.Id})" title="@product.Name">
+                                                <div class="img-container">
+                                                    <img data-retina src="@Url.Action("View", "Image", new {id = product.Cover})" alt="" />
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div class="b-product-preview__content">
+                                            <div class="b-product-preview__content_col">
+                                            </div>
+                                            <div class="b-product-preview__content_col">
+                                                <a href="@Url.Action("View", "Product", new {id = product.Id})" title="@product.Name" class="f-product-preview__content_title product-title">@product.Name</a>
+                                                <div class="f-product-preview__content_category f-primary-b">
+                                                    <a href="@Url.Action("Category", "Product", new {id = product.Category.Id})">@product.Category.Name</a>
+                                                </div>
+                                                <div class="f-product-preview__content_category f-primary-b">
+                                                    <a href="@Url.Action("View", "Product", new {id = product.Id})" class="f-product-preview__content_title product-price">@product.Price.ToString("#,###", cul.NumberFormat) VND</a>
+                                                </div>
+                                                <div class="btn-add-cart">
+                                                    <a title="@cmsLang.GetValue(LangValue.CmsHome.Index.AddToCart)" onclick="CartController.add({id: '@product.Id', quantity: 1, name: '@product.Name'})" href="javascript:void(0);" class="b-btn f-btn b-btn-sm f-btn-sm b-btn-default f-primary-b"><i class="fa fa-shopping-cart"></i>&nbsp;Thêm Vào Giỏ Hàng</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                if (count % 9 == 0)
+                                {
+                                    <div class="clearfix hidden-xs"></div>
+
+                                }
+                                else if (count % 8 == 0)
+                                {
+                                    <div class="clearfix visible-xs-block"></div>
+                                }
+                                else if (count % 6 == 6)
+                                {
+                                    <div class="clearfix hidden-xs"></div>
+                                    <div class="clearfix visible-xs-block"></div>
+                                }
+                                else if (count % 4 == 0)
+                                {
+                                    <div class="clearfix visible-xs-block"></div>
+                                }
+                                else if (count % 3 == 0)
+                                {
+                                    <div class="clearfix hidden-xs"></div>
+
+                                }
+                                else if (count % 2 == 0)
+                                {
+                                    <div class="clearfix visible-xs-block"></div>
+                                }
+
+                                count++;
+                            }
+
+                            <div class="b-pagination f-pagination">
+                                @if (products.Count > 0)
+                                {
+                                    <ul>
+                                        @if (itemPage > 1)
+                                        {
+                                            <li><a href="@Url.Action("Category", "Product", new {standId=standInfor.Id,sort = itemSort, order = itemOrder, limit = itemLimit, page = 1, query = keyword})">Trang Đầu</a></li>
+                                            <li>
+                                                <a class="prev" href="@Url.Action("Category", "Product", new {standId=standInfor.Id,sort = itemSort, order = itemOrder, limit = itemLimit, page = (itemPage - 1), query = keyword})"><i class="fa fa-angle-left"></i></a>
+                                            </li>
+                                        }
+                                        @if (totalPage > 1 && totalPage < 7)
+                                        {
+                                            for (var i = 1; i <= 3 && i <= totalPage; i++)
+                                            {
+                                                if (i == itemPage)
+                                                {
+                                                    <li class="is-active-pagination"><a href="javascript:void(0);">@i</a></li>
+                                                }
+                                                else
+                                                {
+                                                    <li>
+                                                        <a href="@Url.Action(actionName, controllerName, new {standId=standInfor.Id,sort = itemSort, order = itemOrder, limit = itemLimit, page = i, query = keyword})" title="Page @i">
+                                                            @i
+                                                        </a>
+                                                    </li>
+                                                }
+                                            }
+
+                                            if (totalPage > 4)
+                                            {
+                                                <li>
+                                                    <a href="javascript:void(0);">...</a>
+                                                </li>
+                                            }
+
+                                            for (var i = totalPage - 4; i <= totalPage && i > 0; i++)
+                                            {
+                                                if (i == itemPage)
+                                                {
+                                                    <li class="is-active-pagination"><a href="javascript:void(0);">@i</a></li>
+                                                }
+                                                else
+                                                {
+                                                    <li>
+                                                        <a href="@Url.Action(actionName, controllerName, new {standId=standInfor.Id,sort = itemSort, order = itemOrder, limit = itemLimit, page = i, query = keyword})" title="Page @i">
+                                                            @i
+                                                        </a>
+                                                    </li>
+                                                }
+                                            }
+                                        }
+                                        else if (totalPage > 6)
+                                        {
+                                            if (itemPage != 1)
+                                            {
+                                                <li>
+                                                    <a href="javascript:void(0);">...</a>
+                                                </li>
+                                            }
+
+                                            for (int i = ((itemPage - 1) <= 0) ? 1 : itemPage - 1; i < itemPage + 2 && i <= totalPage; i++)
+                                            {
+                                                if (i == itemPage)
+                                                {
+                                                    <li class="is-active-pagination"><a href="javascript:void(0);">@i</a></li>
+                                                }
+                                                else
+                                                {
+                                                    <li>
+                                                        <a href="@Url.Action(actionName, controllerName, new {standId=standInfor.Id,sort = itemSort, order = itemOrder, limit = itemLimit, page = i, query = keyword})" title="Page @i">
+                                                            @i
+                                                        </a>
+                                                    </li>
+                                                }
+                                            }
+
+                                            if (itemPage != totalPage)
+                                            {
+                                                <li>
+                                                    <a href="javascript:void(0);">...</a>
+                                                </li>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            for (var i = 1; i <= totalPage; i++)
+                                            {
+                                                if (i == itemPage)
+                                                {
+                                                    <li class="is-active-pagination"><a>@i</a></li>
+                                                }
+                                                else
+                                                {
+                                                    <li>
+                                                        <a href="@Url.Action(actionName, controllerName, new {standId=standInfor.Id,sort = itemSort, order = itemOrder, limit = itemLimit, page = i, query = keyword})" title="Page @i">
+                                                            @i
+                                                        </a>
+                                                    </li>
+                                                }
+                                            }
+                                        }
+                                        @if (itemPage < totalPage)
+                                        {
+                                            <li>
+                                                <a class="next" href="@Url.Action(actionName, controllerName, new
+                                                                      {
+                                                                          standId=standInfor.Id,
+                                                                          sort = itemSort,
+                                                                          order = itemOrder,
+                                                                          limit = itemLimit,
+                                                                          page = (itemPage + 1),
+                                                                          query = keyword
+                                                                      })">
+                                                    <i class="fa fa-angle-right"></i>
+                                                </a>
+                                            </li>
+
+                                            <li>
+                                                <a href="@Url.Action(actionName, controllerName, new
+                                                         {
+                                                            standId=standInfor.Id,
+                                                             sort = itemSort,
+                                                             order = itemOrder,
+                                                             limit = itemLimit,
+                                                             page = totalPage,
+                                                             query = keyword
+                                                         })">Trang Cuối</a>
+                                            </li>
+
+                                        }
+                                    </ul>
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                    @if (products.Count == 0)
+                    {
+                        <div class="b-alert-info f-alert-info">
+                            <div class="b-remaining">
+                                <i class="fa fa-info-circle"></i> Không có sản phẩm nào trong gian hàng này.
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

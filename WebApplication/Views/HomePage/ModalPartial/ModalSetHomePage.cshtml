@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "modalSetHomePage";
+
+    var resultModel = ViewBag.ResultModel;
+    var homePages = new List<WebApplication.Models.HomPage.HomePageModel>();
+    if (resultModel != null)
+    {
+        homePages = (List<WebApplication.Models.HomPage.HomePageModel>)resultModel.Data;
+    }
+}
+
+<div class="row">
+    @if (@homePages != null && @homePages.Count != 0)
+    {
+        foreach (var item in homePages)
+        {
+            var isChecked = "";
+            var text = "Chưa được chọn";
+            if (@item.Status == 1)
+            {
+                isChecked = "checked";
+                text = "Đã chọn";
+            }
+            <div class="col-sm-12">
+                <fieldset>
+                    <legend data-type-homepage-id="@item.TypeHomePageId">@item.TypeHomePageName</legend>
+                    <input type="hidden" id="homepage-id-@item.TypeHomePageId" value="@item.Id"/>
+                </fieldset>
+                <div class="form-group required">
+                    <label class="col-sm-3 control-label">Trạng thái</label>
+                    <div class="col-sm-7">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" @isChecked id="input-status-@item.TypeHomePageId"> @text
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+    }
+
+</div>

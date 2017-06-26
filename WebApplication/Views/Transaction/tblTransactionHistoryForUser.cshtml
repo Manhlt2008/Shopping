@@ -1,0 +1,58 @@
+﻿@{
+    ViewBag.Title = "tblTransactionHistoryForUser";
+    var resultModel = (WebApplication.Models.User.ResultModel)ViewBag.TransactionHistory;
+    var trans = new List<WebApplication.Models.Transaction.TransactionModel>();
+    if (resultModel != null && resultModel.Code == 0)
+    {
+        trans = (List<WebApplication.Models.Transaction.TransactionModel>)resultModel.Data;
+    }
+}
+
+    <table id="dt_scroll" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Mã GD</th>
+                <th>Tên SP</th>
+                <th>Loại SP</th>
+                <th>Ngày GD</th>
+                <th>Tổng giá</th>
+                <th>Số lượng</th>
+                <th>Loại TT</th>
+                <th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (trans != null)
+            {
+                foreach (var item in trans)
+                {
+                    string statusText = "";
+                    string classText = "";
+                    if (@item.Status == 1)
+                    {
+                        statusText = "Thành công";
+                        classText = "label label-success";
+                    }
+                    else
+                    {
+                        statusText = "Thất bại";
+                        classText = "label label-danger";
+                    }
+                    <tr>
+                        <td>@item.Id</td>
+                        <td></td>
+                        <td></td>
+                        <td>@item.CreatedDate</td>
+                        <td></td>
+                        <td></td>
+                        <td>@item.PaymentType</td>
+                        <td>
+                            <span class="@classText">@statusText</span>
+                        </td>
+                    </tr>
+                }
+            }
+
+        </tbody>
+    </table>
+

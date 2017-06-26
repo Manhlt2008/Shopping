@@ -1,0 +1,25 @@
+﻿{
+  "token": "{token}",
+  "orders": [
+    {
+      "products": [
+        {lstproduct}
+      ]
+    },
+    {
+      "order": {
+        "id": "{id}",
+        "name": "{name}",
+        "address": "{address}",
+        "province": "{province}",
+        "district": "{district}",
+        "ward": "{ward}",
+        "pick_money": "{pick_money}",
+        "pick_name": "{pick_name}",
+        "pick_address": "{pick_address}",
+        "pick_province": "{pick_province}",
+        "pick_district": "{pick_district}"
+      }
+    }
+  ]
+}

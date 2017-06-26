@@ -1,0 +1,89 @@
+﻿@using System.Globalization
+@using WebApplication.Lib.Bll.Lang
+@using WebApplication.Models.Product
+@{
+    var lang = new LangValue(LangValue.LangEnum.Vi, LangValue.DictionaryEnum.CmsHomeIndex);
+
+    var productThumbnails = Enumerable.Empty<ProductThumbnailModel>().ToList();
+
+    var modelList = new ProductThumbnailModelList();
+
+    if (Model != null)
+    {
+        modelList = (ProductThumbnailModelList)Model;
+
+        if (modelList.ProductThumbnailModels != null)
+        {
+            productThumbnails = modelList.ProductThumbnailModels;
+        }
+    }
+
+    var cul = CultureInfo.GetCultureInfo("vi-VN");
+
+    var count = 0;
+}
+
+
+<section class="b-infoblock b-diagonal-line-bg-light">
+    <div class="container">
+        @foreach (var product in productThumbnails)
+        {
+            if (count == 0)
+            {
+                @Html.Raw("<div class=\"row b-col-default-indent\">")
+            }
+            <div class="col-md-6">
+                <div class="b-news-item b-news-item--medium-size f-news-item">
+                    <div class="b-news-item__img view view-sixth">
+                        <img data-retina src="@Url.Action("View", "Image", new {id = product.Cover})" alt="@product.Name" style="max-width: 260px; max-height: 254px; object-fit: contain;" />
+                        <div class="b-item-hover-action f-center mask">
+                            <div class="b-item-hover-action__inner">
+                                <div class="b-item-hover-action__inner-btn_group">
+                                    <a href="#" class="b-btn f-btn b-btn-light f-btn-light info" onclick="CartController.add({ id: '@product.Id', quantity: 1, name: '@product.Name' })"><i class="fa fa-shopping-cart"></i></a>
+                                    <a href="@Url.Action("View", "Product", new {id = product.Id})" class="b-btn f-btn b-btn-light f-btn-light info"><i class="fa fa-link"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="b-news-item__info">
+                        <div class="f-news-item__info_category f-uppercase">
+                            <a href="@Url.Action("Category", "Product", new {id = product.Category.Id})">@product.Category.Name</a>
+                        </div>
+                        <a href="@Url.Action("View", "Product", new {id = product.Id})" class="b-news-item__info_title-big f-news-item__info_title-big f-primary-b">@product.Name</a>
+                        <div class="b-news-item__info_text f-news-item__info_text">
+                            @Html.Raw(product.ShortDescription)
+                        </div>
+                        <div class="b-news-item__article">
+                            <span class="f-news-item__price f-primary-b b-left">@product.Price.ToString("#,###", cul.NumberFormat) VND</span>
+                            <div class="b-btn f-btn b-right b-btn-sm-md f-btn-sm-md f-primary-b">
+                                <i class="fa fa-shopping-cart"></i> @lang.GetValue(LangValue.CmsHome.Index.AddCart)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="b-action-info f-primary-b">
+                        <div class="b-action-info_text f-action-info_text">
+                            @if (modelList.Lable.Equals(ProductThumbnailModelList.Sale))
+                            {
+                                <div class="sale">@lang.GetValue(LangValue.CmsHome.Index.Sale)</div>
+                            }
+                            else if (modelList.Lable.Equals(ProductThumbnailModelList.New))
+                            {
+                                <div class="new_pr">@lang.GetValue(LangValue.CmsHome.Index.New)</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            if (count == 1)
+            {
+                count = 0;
+                @Html.Raw("</div>")
+            }
+            else
+            {
+                count++;
+            }
+        }
+    </div>
+</section>

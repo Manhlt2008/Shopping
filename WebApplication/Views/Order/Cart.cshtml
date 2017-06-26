@@ -1,0 +1,188 @@
+﻿@{
+    ViewBag.Title = "Cart";
+    Layout = "~/Views/Shared/Shop/_ShopLayout.cshtml";
+}
+
+@section MenuSection
+{
+    <style>
+        .header .col-sm-9 {
+            width: 100%;
+        }
+
+        #container .col-sm-9 {
+            width: 100%;
+        }
+
+        .product_page #default_gallery .image {
+            float: left;
+            width: 84%;
+            background: none;
+        }
+
+        #default_gallery .image {
+            background-color: rgb(239, 238, 238);
+            width: 100%;
+            border-image-source: initial;
+            border-image-slice: initial;
+            border-image-width: initial;
+            border-image-outset: initial;
+            border-image-repeat: initial;
+            margin-bottom: 1px;
+            overflow: hidden;
+            border-width: 1px;
+            border-style: solid;
+            border-color: rgb(221, 221, 221);
+        }
+    </style>
+
+    @Html.Partial("../Home/IndexPartialPage/MenuPartial")
+}
+
+<div id="content" class="col-sm-12 product_page">
+    <ul class="breadcrumb">
+        <li>
+            <a href="@Url.Action("Index", "Home")">
+                <i class="fa fa-home"></i>
+            </a>
+        </li>
+
+        <li>
+            <a href="@Url.Action("Cart", "Order")">
+                Shopping Cart
+            </a>
+        </li>
+    </ul>
+
+    <h1>Shopping Cart</h1>
+    <p id="cart-empty">Giỏ hàng của bạn đang trống</p>
+    <div class="shoping_cart" id="cart-table" style="display: none">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <td class="text-center">Hình ảnh</td>
+                        <td class="text-left">Tên sản phẩm</td>
+                        <td class="text-left">Loại sản phẩm</td>
+                        <td class="text-left">Số lượng</td>
+                        <td class="text-right">Giá</td>
+                        <td class="text-right">Tổng cộng</td>
+                    </tr>
+                </thead>
+                <tbody id="cart-table-content">
+                    <tr>
+                        <td class="text-center">
+                            <div class="image">
+                                <a href="http://livedemo00.template-help.com/opencart_52995/index.php?route=product/product&amp;product_id=49"><img src="http://livedemo00.template-help.com/opencart_52995/image/cache/catalog/product-55-47x47.png" alt="Master Iron with Anti-Drip System " title="Master Iron with Anti-Drip System " class="img-thumbnail" kasperskylab_antibanner="on"></a>
+                            </div>
+                        </td>
+                        <td class="text-left">
+                            <a href="http://livedemo00.template-help.com/opencart_52995/index.php?route=product/product&amp;product_id=49">Master Iron with Anti-Drip System </a>
+                            <br>
+                            <small>Reward Points: 1000</small>
+                        </td>
+                        <td class="text-left">Deluxe</td>
+                        <td class="text-left">
+                            <div class="input-group btn-block" style="max-width: 200px;">
+                                <p class="clearfix">
+                                    <input type="text" name="quantity[260]" value="1" size="1" class="form-control cart-q" id="cart-q" vk_1a3d5="subscribed">
+                                </p>
+                                <div>
+                                    <button type="submit" data-toggle="tooltip" title="" class="btn btn-primary" data-original-title="Update"><i class="fa fa-refresh"></i></button>
+                                    <button type="button" data-toggle="tooltip" title="" class="btn btn-danger" onclick="cart.remove('260');" data-original-title="Remove"><i class="fa fa-times-circle"></i></button>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-right">
+                            <div class="price">$40.00</div>
+                        </td>
+                        <td class="text-right">
+                            <div class="price price-total">$40.00</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <td class="text-right"><strong>Sub-Total:</strong></td>
+                            <td class="text-right">
+                                <div class="price">
+                                    <span id="subTotal"></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-right"><strong>Tax (10%):</strong></td>
+                            <td class="text-right">
+                                <div class="price">
+                                    <span id="tax"></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-right"><strong>Total:</strong></td>
+                            <td class="text-right">
+                                <div class="price">
+                                    <span id="total"></span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row">
+            <h3>Thông Tin Nhận Hàng</h3>
+            <div class="col-sm-6">
+                <fieldset id="account">
+                    <legend>Your Personal Details</legend>
+
+                    <div class="checkbox">
+
+                        <label for="chk-default-info">
+                            <input type="checkbox" id="chk-default-info" />
+                            Lấy Thông Tin Mặc Định
+                        </label>
+                    </div>
+                    <div class="form-group required">
+                        <label class="control-label" for="input-payment-firstname">Họ</label>
+                        <input type="text" name="firstname" value="" placeholder="Họ" id="input-payment-firstname" class="form-control">
+                    </div>
+                    <div class="form-group required">
+                        <label class="control-label" for="input-payment-lastname">Tên</label>
+                        <input type="text" name="lastname" value="" placeholder="Tên" id="input-payment-lastname" class="form-control">
+                    </div>
+                    <div class="form-group required">
+                        <label class="control-label" for="input-payment-email">Điện Thoại</label>
+                        <input type="text" name="email" value="" placeholder="Số Điện Thoại" id="input-payment-email" class="form-control">
+                    </div>
+                    <div class="form-group required">
+                        <label class="control-label" for="input-payment-address">Địa Chỉ</label>
+                        <input type="text" name="telephone" value="" placeholder="Địa Chỉ" id="input-payment-address" class="form-control">
+                    </div>
+                </fieldset>
+            </div>
+            <div class="col-sm-6">
+
+            </div>
+        </div>
+
+
+        <div class="buttons">
+            <div class="pull-left"><a href="/" class="btn btn-default">Continue Shopping</a></div>
+            <div class="pull-right"><a href="#" onclick="CartController.checkout()" class="btn btn-primary">Thanh toán</a></div>
+        </div>
+    </div>
+</div>
+
+@section ExtendScript
+{
+    <script>
+        CartController.loadShoppingCartTable(true);
+    </script>
+}

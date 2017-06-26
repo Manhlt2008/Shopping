@@ -1,0 +1,78 @@
+﻿@{
+    var sliders = (List<WebApplication.Models.Slider.SliderModel>)Model;
+
+}
+<script>
+    jQuery(function () {
+        jQuery('#camera_wrap_0')
+            .camera({
+                navigation: true,
+                playPause: false,
+                thumbnails: false,
+                navigationHover: false,
+                barPosition: 'top',
+                loader: false,
+                time: 3000,
+                transPeriod: 800,
+                alignment: 'center',
+                autoAdvance: true,
+                mobileAutoAdvance: true,
+                barDirection: 'leftToRight',
+                barPosition: 'bottom',
+                easing: 'easeInOutExpo',
+                fx: 'simpleFade',
+                height: '39.6551724137931%',
+                minHeight: '250px',
+                hover: true,
+                pagination: false,
+                loaderColor: '#1f1f1f',
+                loaderBgColor: 'transparent',
+                loaderOpacity: 1,
+                loaderPadding: 0,
+                loaderStroke: 3,
+            });
+    });
+</script>
+<div class="fluid_container">
+    <div class="camera_container">
+        <div id="camera_wrap_0">
+            @if (sliders.Count > 0)
+            {
+                int count = 0;
+                foreach (var item in sliders)
+                {
+                    count = count + 1;
+                    <div title="slide-@count" data-thumb="@item.Title" data-src="@item.Image_Url">
+                        <div class="camera_caption fadeIn">
+                            <h2>@item.Title</h2>
+                            @Html.Raw(@item.Description)
+                            <a href="@item.GoToLink">Shop now!</a>
+                        </div>
+                    </div>
+                }
+            }
+            @*<div title="slide-1" data-thumb="http://livedemo00.template-help.com/opencart_52995/image/cache/catalog/slide-1-870x345.jpg" data-src="http://livedemo00.template-help.com/opencart_52995/image/cache/catalog/slide-1-870x345.jpg">
+                    <div class="camera_caption fadeIn">
+                        <h2>iPhone 6</h2>
+                        <p>Comfort is a very important thing nowadays because it is a condition of satisfaction.</p>
+                        <a href="indexb8ca.html?route=product/product&amp;product_id=43">Shop now!</a>
+                    </div>
+                </div>
+                <div title="slide-2" data-thumb="http://livedemo00.template-help.com/opencart_52995/image/cache/catalog/slide-2-870x345.jpg" data-src="http://livedemo00.template-help.com/opencart_52995/image/cache/catalog/slide-2-870x345.jpg">
+                    <div class="camera_caption fadeIn">
+                        <h2>Smart TV</h2>
+                        <p>Comfort is a very important thing nowadays because it is a condition of satisfaction.</p>
+                        <a href="indexb8ca.html?route=product/product&amp;product_id=43">Shop now!</a>
+                    </div>
+                </div>
+                <div title="slide-3" data-thumb="http://livedemo00.template-help.com/opencart_52995/image/cache/catalog/slide-3-870x345.jpg" data-src="http://livedemo00.template-help.com/opencart_52995/image/cache/catalog/slide-3-870x345.jpg">
+                    <div class="camera_caption fadeIn">
+                        <h2>iPad</h2>
+                        <p>Comfort is a very important thing nowadays because it is a condition of satisfaction.</p>
+                        <a href="indexb8ca.html?route=product/product&amp;product_id=43">Shop now!</a>
+                    </div>
+                </div>*@
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>

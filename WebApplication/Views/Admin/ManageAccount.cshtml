@@ -1,0 +1,66 @@
+﻿@{
+    ViewBag.Title = "Manage";
+    Layout = "~/Views/Shared/AdminCp/_AdminLayout.cshtml";
+}
+
+@section Breadcrumbs
+{
+    <li><a href="@Url.Action("ManageAccount", "Admin")">Tài khoản</a></li>
+    <li><span>Quản lí</span></li>
+}
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Danh sách tài khoản</h4>
+            </div>
+            <div class="panel-body">
+                <form action="@Url.Action("LoadAccount", "Admin")" id="form-search" method="post">
+                    <div class="sepH_c">
+                        <div class="col-md-3">
+                            <input class="form-control" placeholder="Tìm kiếm" type="text" name="searchValue" />
+                        </div>
+                        <div class="col-md-3">
+                            <select class="col-md-12 select2" name="searchKey">
+                                <option value="email"> E-mail</option>
+                                <option value="fullname"> Họ và tên</option>
+                                <option value="phone"> Số điện thoại</option>
+                                <option value="address"> Địa chỉ</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="col-md-12 select2" name="status">
+                                <option value="-1"> Tất cả</option>
+                                <option value="1"> Đang hoạt động</option>
+                                <option value="2"> Ngừng hoạt động</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-default sticky" type="submit"><i class="li_search"></i> Tìm kiếm</button>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="panel-body">
+                <div class="sepH_c">
+                    <div class="table-responsive" id="result-search-account">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section CustomScript
+{
+    <link href="~/Content/admincp/js/lib/Sticky/sticky.css" rel="stylesheet" />
+    <script src="~/Content/admincp/js/lib/Sticky/sticky.js"></script>
+    <script src="~/Scripts/jquery.form.js"></script>
+    <script src="~/Content/admincp/js/lib/bootbox/bootbox.min.js"></script>
+    <script src="~/Content/admincp/js/jquery.sticky.js"></script>
+    <link href="~/Content/css/datepicker.css" rel="stylesheet" />
+    <script src="~/Content/js/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/AdminCP/Account/Account.js"></script>
+
+}

@@ -1,0 +1,8 @@
+﻿.admincp-editable {
+    border-bottom: dashed 1px #0088cc;
+    cursor: text;
+}
+
+.top-right {
+    z-index: 9999 !important;
+}

@@ -1,0 +1,45 @@
+﻿@using WebApplication.Models.Category
+@using WebApplication.Models.Product
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/Shop/_ShopLayout.cshtml";
+    var featuredProductThumbnails = (List<ProductThumbnailModel>)ViewBag.FeaturedProduct ?? Enumerable.Empty<ProductThumbnailModel>().ToList();
+    var latestProductThumbnails = (List<ProductThumbnailModel>)ViewBag.LatestProduct ?? Enumerable.Empty<ProductThumbnailModel>().ToList();
+
+    var resultModelSliderBannerActive = (WebApplication.Models.User.ResultModel)ViewBag.BannerActive;
+    var banners = new List<WebApplication.Models.Slider.SliderModel>();
+    if (resultModelSliderBannerActive != null && resultModelSliderBannerActive.Code == 0)
+    {
+        banners = (List<WebApplication.Models.Slider.SliderModel>)resultModelSliderBannerActive.Data;
+    }
+
+    var resultModelSliderActive = (WebApplication.Models.User.ResultModel)ViewBag.SliderActive;
+    var sliders = new List<WebApplication.Models.Slider.SliderModel>();
+    if (resultModelSliderActive != null && resultModelSliderActive.Code == 0)
+    {
+        sliders = (List<WebApplication.Models.Slider.SliderModel>)resultModelSliderActive.Data;
+    }
+
+    var categoryModels = (List<CategoryManageList>)ViewBag.Categories;
+}
+
+<div id="content" class="col-sm-9">
+    @Html.Partial("IndexPartialPage/ProductSliderPartial", sliders)
+
+    @Html.Partial("IndexPartialPage/ProductBannerPartial", banners)
+
+    @Html.Partial("IndexPartialPage/ProductThumbnailPartial", new ProductThumbnailModelList(latestProductThumbnails, ProductThumbnailModelList.New, ProductThumbnailModelList.Latest))
+
+    @Html.Partial("IndexPartialPage/ProductThumbnailPartial", new ProductThumbnailModelList(featuredProductThumbnails, ProductThumbnailModelList.Sale, ProductThumbnailModelList.Featured))
+</div>
+
+@section CategoryColumn
+{
+    @Html.Partial("IndexPartialPage/CategoryListPartial", categoryModels)
+}
+
+@section MenuSection
+{
+    @Html.Partial("IndexPartialPage/MenuPartial")
+}

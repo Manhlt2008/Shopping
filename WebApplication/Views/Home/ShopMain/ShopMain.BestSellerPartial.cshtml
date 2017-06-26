@@ -1,0 +1,81 @@
+﻿@using System.Globalization
+@using WebApplication.Lib.Bll.Lang
+@using WebApplication.Models.Product
+@{
+    var lang = new LangValue(LangValue.LangEnum.Vi, LangValue.DictionaryEnum.CmsHomeIndex);
+
+    var productThumbnails = Enumerable.Empty<ProductThumbnailModel>().ToList();
+
+    var modelList = new ProductThumbnailModelList();
+
+    if (Model != null)
+    {
+        modelList = (ProductThumbnailModelList)Model;
+
+        if (modelList.ProductThumbnailModels != null)
+        {
+            productThumbnails = modelList.ProductThumbnailModels;
+        }
+    }
+
+    var cul = CultureInfo.GetCultureInfo("vi-VN");
+
+    var count = 0;
+}
+<div class="f-primary-b b-title-b-hr f-title-b-hr b-null-top-indent"><a href="javascript:void(0);">@modelList.PanelTitle</a></div>
+@foreach (var product in productThumbnails)
+{
+    <div class="col-md-4 col-sm-4 col-xs-6 col-mini-12">
+        <div class="b-product-preview">
+            <div class="b-product-preview__img view view-sixth">
+                <a href="@Url.Action("View", "Product", new {id = product.Id})" title="@product.Name" class="f-product-preview__content_title product-title">
+                    <div class="img-container">
+                        <img data-retina src="@Url.Action("View", "Image", new {id = product.Cover})" alt="" />
+                    </div>
+                </a>
+            </div>
+            <div class="b-product-preview__content">
+                <div class="b-product-preview__content_col">
+                </div>
+                <div class="b-product-preview__content_col">
+                    <a href="@Url.Action("View", "Product", new {id = product.Id})" title="@product.Name" class="f-product-preview__content_title product-title">@product.Name</a>
+                    <div class="f-product-preview__content_category f-primary-b">
+                        <a href="@Url.Action("Category", "Product", new {id = product.Category.Id})">
+                            @if (product.Category != null && product.Category.Name.Trim().IsEmpty())
+                            {
+                                <span>&nbsp;</span>
+                            }
+                            else
+                            {
+                                <span>@product.Category.Name</span>
+                            }
+                        </a>
+                    </div>
+                    <div class="f-product-preview__content_category f-primary-b">
+                        <a class="f-product-preview__content_title product-price">@product.Price.ToString("#,###", cul.NumberFormat) VND</a>
+                    </div>
+                    <div class="btn-add-cart">
+                        <a title="@lang.GetValue(LangValue.CmsHome.Index.AddToCart)" onclick="CartController.add({id: '@product.Id', quantity: 1, name: '@product.Name'})" href="javascript:void(0);" class="b-btn f-btn b-btn-sm f-btn-sm b-btn-default f-primary-b"><i class="fa fa-shopping-cart"></i>&nbsp;Thêm Vào Giỏ Hàng</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*if (count == 1)
+    {
+        <div class="clearfix visible-xs-block"></div>
+    }
+    else if (count == 2)
+    {
+        <div class="clearfix hidden-xs"></div>
+    }
+    else if (count == 3)
+    {
+        <div class="clearfix visible-xs-block"></div>
+
+        count = -1;
+    }*@
+
+    count++;
+}

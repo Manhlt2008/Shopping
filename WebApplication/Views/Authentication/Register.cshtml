@@ -1,0 +1,90 @@
+﻿@using WebApplication.Models.Category
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/Shop/_ShopLayout.cshtml";
+
+    var categoryModels = (List<CategoryManageList>)ViewBag.Categories;
+
+}
+
+@section MenuSection
+{
+    @Html.Partial("../Home/IndexPartialPage/MenuPartial")
+}
+
+@section CategoryColumn
+{
+    @Html.Partial("../Home/IndexPartialPage/CategoryListPartial", categoryModels)
+}
+
+<div id="content" class="col-sm-9">
+    <ul class="breadcrumb">
+        <li><a href="/"><i class="fa fa-home"></i></a></li>
+        <li><a href="#">Tài Khoản</a></li>
+        <li><a href="@Url.Action("Register", "Authentication")">Đăng Kí</a></li>
+    </ul>
+    <div class="well">
+        <div class="heading" style="border-bottom: 0px;">
+            <i class="fa fa-file-text-o"></i>
+            <h2>Đăng Kí</h2>
+            <strong>Bạn đã có tài khoản của chúng tôi, nhấp vào <a href="@Url.Action("Login", "Authentication")">đây</a> để đăng nhập.</strong>
+        </div>
+        <form action="@Url.Action("Register", "Authentication")" method="post" enctype="multipart/form-data" class="form-horizontal" id="form-register">
+            <fieldset id="account">
+                <legend>Thông Tin Tài Khoản</legend>
+                <div class="form-group required">
+                    <label class="col-sm-3 control-label" for="form-register-input-firstname">Họ</label>
+                    <div class="col-sm-7">
+                        <input type="text" name="firstname" value="" placeholder="Họ" id="form-register-input-firstname" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group required">
+                    <label class="col-sm-3 control-label" for="form-register-input-lastname">Tên</label>
+                    <div class="col-sm-7">
+                        <input type="text" name="lastname" value="" placeholder="Tên" id="form-register-input-lastname" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group required">
+                    <label class="col-sm-3 control-label" for="form-register-input-email">Địa Chỉ E-mail</label>
+                    <div class="col-sm-7">
+                        <input type="email" name="email" value="" placeholder="E-Mail" id="form-register-input-email" class="form-control">
+                    </div>
+                </div>
+
+
+            </fieldset>
+            <fieldset>
+                <legend>Mật Khẩu</legend>
+                <div class="form-group required">
+                    <label class="col-sm-3 control-label" for="form-register-input-password">Mật Khẩu</label>
+                    <div class="col-sm-7">
+                        <input type="password" name="password" value="" placeholder="Mật khẩu" id="form-register-input-password" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group required">
+                    <label class="col-sm-3 control-label" for="form-register-input-password-confirm">Xác Nhận Mật Khẩu</label>
+                    <div class="col-sm-7">
+                        <input type="password" name="confirm" value="" placeholder="Mật khẩu xác nhận" id="form-register-input-password-confirm" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">&nbsp;</label>
+                    <div class="col-sm-7">
+                        <input type="checkbox" name="agree" value="1" id="checkbox-condition">
+                        <span class="condition form-control-static">Tôi đã đọc và đồng ý với <a href="@Url.Action("Index", "TermAndConditions")" target="_blank"><b>Điều khoản và Quy định</b></a></span>
+                    </div>
+                </div>
+            </fieldset>
+            <div class="buttons">
+                <div class="col-sm-10">
+                    <div class="pull-right">
+                        &nbsp;
+                        <input type="submit" onclick="Register(event)" value="Tiếp tục" class="btn btn-primary" id="btnSubmitForm">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="~/Scripts/MainShop/Authentication/AuthenticationController.js" language="JavaScript" type="text/javascript"></script>

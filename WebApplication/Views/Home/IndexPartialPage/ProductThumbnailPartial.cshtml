@@ -1,0 +1,198 @@
+﻿@using System.Globalization
+@using WebApplication.Models.Product
+
+@{
+    var productThumbnails = Enumerable.Empty<ProductThumbnailModel>().ToList();
+
+    var modelList = new ProductThumbnailModelList();
+
+    if (Model != null)
+    {
+        modelList = (ProductThumbnailModelList)Model;
+
+        if (modelList.ProductThumbnailModels != null)
+        {
+            productThumbnails = modelList.ProductThumbnailModels;
+        }
+    }
+
+    var cul = CultureInfo.GetCultureInfo("vi-VN");
+    var count = 1;
+}
+
+@if (modelList.PanelTitle.Equals(ProductThumbnailModelList.Featured) || modelList.PanelTitle.Equals(ProductThumbnailModelList.RelatedProducts))
+{
+    <script>
+
+        $(document)
+            .ready(function () {
+                $('.featured-scroll')
+                    .owlCarousel({
+                        smartSpeed: 450,
+                        dots: false,
+                        nav: true,
+                        loop: true,
+                        navClass: ['owl-prev fa fa-angle-up', 'owl-next fa fa-angle-down'],
+                        responsive: {
+                            0: { items: 1 },
+                            480: { items: 2, margin: 20 },
+                            992: { items: 3, margin: 30 }
+                        }
+                    });
+
+                $(".quickview")
+                    .fancybox({
+                        maxWidth: 800,
+                        maxHeight: 600,
+                        fitToView: false,
+                        width: '70%',
+                        height: '70%',
+                        autoSize: false,
+                        closeClick: false,
+                        openEffect: 'elastic',
+                        closeEffect: 'elastic',
+                    });
+
+            });
+
+    </script>
+}
+else if (modelList.PanelTitle.Equals(ProductThumbnailModelList.Latest))
+{
+    <script>
+        $(document)
+            .ready(function () {
+                $('.latest-scroll')
+                    .owlCarousel({
+                        smartSpeed: 450,
+                        dots: false,
+                        nav: true,
+                        loop: true,
+                        navClass: ['owl-prev fa fa-angle-up', 'owl-next fa fa-angle-down'],
+                        responsive: {
+                            0: { items: 1 },
+                            480: { items: 2, margin: 20 },
+                            992: { items: 3, margin: 30 }
+                        }
+                    });
+
+                $(".quickview")
+                    .fancybox({
+                        maxWidth: 800,
+                        maxHeight: 600,
+                        fitToView: false,
+                        width: '70%',
+                        height: '70%',
+                        autoSize: false,
+                        closeClick: false,
+                        openEffect: 'elastic',
+                        closeEffect: 'elastic',
+                    });
+            });
+    </script>
+}
+
+@{
+    var boxContentClass = "featured-scroll";
+    if (modelList.PanelTitle.Equals(ProductThumbnailModelList.Featured))
+    {
+        boxContentClass = "featured-scroll";
+    }
+    else if (modelList.PanelTitle.Equals(ProductThumbnailModelList.Latest))
+    {
+        boxContentClass = "latest-scroll";
+    }
+}
+<div class="box featured">
+    <div class="box-heading">
+        <h3>@modelList.PanelTitle</h3>
+    </div>
+    <div class="box-content">
+        <div class="@boxContentClass">
+            @foreach (var product in productThumbnails)
+            {
+                <div class="product-thumb transition maxheight2">
+                    <div class="quick_info">
+                        <div id="quickview_@count" class="quickview-style">
+                            <div>
+                                <div class="left col-sm-4">
+                                    <div class="quickview_image image">
+                                        <a href="@Url.Action("View", "Product", new {id = product.Id})">
+                                            
+                                            <img alt="@product.Name" title="@product.Name" class="img-responsive" src="@Url.Action("View", "Image", new {id = product.Cover})" />
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="right col-sm-8">
+                                    <h2>
+                                        <a href="@Url.Action("View", "Product", new {id = product.Id})">
+                                            @product.Name
+                                        </a>
+                                    </h2>
+                                    <div class="inf">
+                                        <p class="product_model model">
+                                            Category: <a href="@Url.Action("Category", "Product", new { id = product.Category.Id })">@product.Category.Name</a>
+                                        </p>
+                                        <div class="price">
+                                            <span class="price-new">@product.Price.ToString("#,###", cul.NumberFormat)</span>
+                                        </div>
+                                    </div>
+                                    <div class="cart-button">
+                                        <button class="btn btn-add" type="button" data-toggle="tooltip" title="Thêm Vào Giỏ Hàng" onclick="CartController.add({id: '@product.Id', quantity: 1, name: '@product.Name'})">
+                                            <i class="flaticon-shopping-cart"></i>
+                                        </button>
+                                        @*<button class="btn btn-icon" type="button" data-toggle="tooltip" title="Add to Wish List">
+                                            <i class="fa fa-heart"></i>
+                                        </button>*@
+                                    </div>
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="quickview_description description">
+                                        @Html.Raw(product.Description)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @if (modelList.Lable.Equals(ProductThumbnailModelList.Sale))
+                    {
+                        <div class="sale">Sale</div>
+                    }
+                    else if (modelList.Lable.Equals(ProductThumbnailModelList.New))
+                    {
+                        <div class="new_pr">New</div>
+                    }
+                    <div class="image">
+                        <a href="@Url.Action("View","Product", new {id = product.Id})">
+                            <img alt="@product.Name" title="@product.Name" class="img-responsive lazy"
+                                 data-src="@Url.Action("View", "Image", new {id = product.Cover})"
+                                 src="~/Content/view/image/catalog/preload.gif"
+                                 style="height: 260px; width: 240px" />
+                        </a>
+                    </div>
+                    <div class="caption">
+                        <div class="price">
+                            <span class="price-new">@product.Price.ToString("#,###", cul.NumberFormat)</span>
+                        </div>
+                        <div class="name">
+                            <a href="@Url.Action("View","Product", new {id = product.Id})">@product.Name</a>
+                        </div>
+                        <div class="description">@(product.ShortDescription != null ? product.ShortDescription.Substring(0, Math.Min(100, product.ShortDescription.Length)) : "")</div>
+                    </div>
+                    <div class="cart-button">
+                        <button class="btn btn-add" type="button" data-toggle="tooltip" title="Thêm Vào Giỏ Hàng" onclick="CartController.add({id: '@product.Id', quantity: 1, name: '@product.Name'})">
+                            <i class="flaticon-shopping-cart"></i>
+                        </button>
+                        @*<button class="btn btn-icon" type="button" data-toggle="tooltip" title="Add to Wish List">
+                            <i class="flaticon-favorite-heart-button"></i>
+                        </button>*@
+                        <a class="quickview quickview-latest btn" data-toggle="tooltip" title="Quick View" rel="group" href="#quickview_@(count++)">
+                            <i class="flaticon-tick-inside-circle"></i>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

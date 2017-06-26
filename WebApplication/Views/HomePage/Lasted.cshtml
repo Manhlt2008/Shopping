@@ -1,0 +1,85 @@
+﻿@using WebApplication.Lib.Util.Constant
+@{
+    ViewBag.Title = "Sản phẩm mới nhất";
+    Layout = "~/Views/Shared/AdminCp/_AdminLayout.cshtml";
+    var resultModel = (WebApplication.Models.User.ResultModel)ViewBag.ResultModel;
+    var homePages = new List<WebApplication.Models.HomPage.HomePageModel>();
+    if (resultModel != null && resultModel.Code == 0)
+    {
+        homePages = (List<WebApplication.Models.HomPage.HomePageModel>)resultModel.Data;
+    }
+}
+@section Breadcrumbs
+{
+    <li><a href="@Url.Action("Manage", "HomePage")">Giao diện trang chủ</a></li>
+    <li><span>Quản lí</span></li>
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">@MessageEnum.Breadcrumbs.SettingBreadcrumb.Index</h4>
+            </div>
+            <div class="panel-body">
+                @Html.Partial("../Settings/SettingSelectionPartial")
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    Sản phẩm mới nhất
+                    <span class="pull-right">
+                        <a class="btn btn-primary btn-sm" data-toggle="modal" href="#addProductModal">
+                            <span class="li_t-shirt"></span> Thêm sản phẩm
+                        </a>
+                    </span>
+                </h4>
+            </div>
+            <div class="panel-body">
+                <div class="sepH_c">
+                    <div class="table-responsive" id="result-search-account">
+                        @Html.Partial("TablePartial/TableListHomePage")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.Partial("ModalPartial/ModalUpdateHomePage")
+@Html.Partial("ModalPartial/ModalAddProduct")
+@section CustomScript
+{
+    <link href="~/Content/admincp/js/lib/Sticky/sticky.css" rel="stylesheet" />
+    <script src="~/Content/admincp/js/lib/Sticky/sticky.js"></script>
+    <script src="~/Scripts/jquery.form.js"></script>
+    <script src="~/Content/admincp/js/lib/bootbox/bootbox.min.js"></script>
+    <script src="~/Content/admincp/js/jquery.sticky.js"></script>
+    <link href="~/Content/css/datepicker.css" rel="stylesheet" />
+    <script src="~/Content/js/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/AdminCP/Account/Account.js"></script>
+    <script src="~/Scripts/AdminCP/Product/product-controller.js"></script>
+    <script src="~/Scripts/autoNumeric/autoNumeric.js"></script>
+    <script src="~/Scripts/AdminCP/HomePage/HomePage.js" type="text/javascript" language="JavaScript"></script>
+    <script>
+        HomePageController.init({
+            url: {
+                findAllByProductName: "@Url.Action("FindAllByProductName", "Product")",
+                findHomePageByTypeIdAndProductId: "@Url.Action("GetHomePageByTypeAndProductId", "HomePage")",
+                saveHomePage: "@Url.Action("SaveHomePage", "HomePage")",
+                increaseIOrder: "@Url.Action("IncreaseIOrder", "HomePage")",
+                decreaseIOrder: "@Url.Action("DecreaseIOrder", "HomePage")"
+            }
+        });
+        $("#button-add-homepage").attr("data-type", "Lasted");
+        $("#button-add-homepage").attr("data-type-id", 3);
+    </script>
+}
+
+

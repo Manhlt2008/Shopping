@@ -1,0 +1,256 @@
+﻿@using WebApplication.Lib.Bll
+@using WebApplication.Lib.Bll.Lang
+@using WebApplication.Lib.Util.Constant
+@using WebApplication.Models.Category
+
+@{
+    var lang = new LangValue(LangValue.LangEnum.Vi, LangValue.DictionaryEnum.MasterPage);
+    var user = UserBll.GetUser();
+}
+
+<div class="container b-header__box b-relative" id="content">
+    <a href="@Url.Action("Index", "Home")" class="b-left b-logo">
+        <img class="color-theme" data-retina src="~/Content/phunumart.png" alt="Logo" />
+    </a>
+    <div class="b-header-r b-right b-header-r--icon">
+        <div class="b-header-ico-group f-header-ico-group b-right"  style="top: -5px">
+            <span class="b-search-box">
+                <i class="fa fa-search"></i>
+                <input class="input-search" type="text" maxlength="50"
+                       placeholder="@lang.GetValue(LangValue.MasterPage.Menu.SearchPlaceHolder)" />
+            </span>
+            <span class="b-header-ico b-header-ico-cart-parent">
+                <a href="@Url.Action("Cart", "Order")" class="b-fa-shopping-cart">
+                    <i class="fa fa-shopping-cart">
+                        <span id="shopping-cart-count" class="shopping-cart-count">0</span>
+                    </i>
+                </a>
+                <div class="b-option-cart__items" id="shopping-cart-detail">
+                    <div class="b-option-cart__items__title f-option-cart__items__title f-default-l">@lang.GetValue(LangValue.MasterPage.Menu.ShoppingCart)</div>
+                    <div class="loading-selector"></div>
+                    <ul class="added-products-cart"></ul>
+                    <div class="b-option-cart__btn">
+                        <ul>
+                            <li><a href="@Url.Action("Cart", "Order")"><i class="fa fa-shopping-cart"></i>@lang.GetValue(LangValue.MasterPage.Menu.ShoppingCartView)</a></li>
+                            <li><a href="@Url.Action("Checkout", "Order")"><i class="fa fa-check"></i>@lang.GetValue(LangValue.MasterPage.Menu.ShoppingCartCheckout)</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </span>
+        </div>
+
+        <div class="b-top-nav-show-slide f-top-nav-show-slide b-right j-top-nav-show-slide">
+            <i class="fa fa-align-justify"></i>
+        </div>
+
+        <nav class="b-top-nav f-top-nav b-right j-top-nav">
+            <ul class="b-top-nav__1level_wrap">
+                <li class="b-top-nav__1level f-top-nav__1level f-primary-b is-active-top-nav__1level">
+                    <a href="@Url.Action("Index", "Home")"><i class="fa fa-home b-menu-1level-ico"></i>@lang.GetValue(LangValue.MasterPage.Menu.Home)</a>
+                </li>
+
+                @{
+                    var categoryMenuSection = CategoryBll.InitCategoryForMenuSection();
+                    if (categoryMenuSection != null)
+                    {
+                        CategoryManageList dealToDayCategoryManageList;
+                        CategoryManageList normalCategoryManageList;
+                        categoryMenuSection.TryGetValue(CategoryBll.CategoryMenuSectionItems.DealToDay, out dealToDayCategoryManageList);
+                        categoryMenuSection.TryGetValue(CategoryBll.CategoryMenuSectionItems.BestSeller, out normalCategoryManageList);
+
+                        if (dealToDayCategoryManageList != null && System.Web.Configuration.WebConfigurationManager.AppSettings["dealtoday"] == "1")
+                        {
+                            <li class="b-top-nav__1level f-top-nav__1level f-primary-b">
+                                <a href="@Url.Action("Category", "Product", new {id = dealToDayCategoryManageList.Id})">
+                                    <i class="fa fa-list b-menu-1level-ico"></i>@dealToDayCategoryManageList.Name <span class="b-ico-dropdown"><i class="fa fa-arrow-circle-down"></i></span>
+                                </a>
+                                <div class="b-top-nav__dropdomn">
+                                    <ul class="b-top-nav__2level_wrap">
+                                        <li class="b-top-nav__2level_title f-top-nav__2level_title">@dealToDayCategoryManageList.Name</li>
+                                        @foreach (var cat in dealToDayCategoryManageList.CategoryManageLists)
+                                        {
+                                            <li class="b-top-nav__2level f-top-nav__2level f-primary">
+                                                <a href="@Url.Action("Category", "Product", new {id = cat.Id})"><i class="fa fa-angle-right"></i>@cat.Name</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </li>
+                        }
+
+                        if (normalCategoryManageList != null)
+                        {
+                            <li class="b-top-nav__1level f-top-nav__1level f-primary-b">
+                                <a href="@Url.Action("Newest", "Product")">
+                                    <i class="fa fa-list b-menu-1level-ico"></i>@lang.GetValue(LangValue.MasterPage.Menu.Newest) <span class="b-ico-dropdown"><i class="fa fa-arrow-circle-down"></i></span>
+                                </a>
+                                <div class="b-top-nav__dropdomn">
+                                    <ul class="b-top-nav__2level_wrap">
+                                        <li class="b-top-nav__2level_title f-top-nav__2level_title">@lang.GetValue(LangValue.MasterPage.Menu.Newest)</li>
+                                        @foreach (var cat in normalCategoryManageList.CategoryManageLists)
+                                        {
+                                            <li class="b-top-nav__2level f-top-nav__2level f-primary">
+                                                <a href="@Url.Action("Newest", "Product", new {id = cat.Id})"><i class="fa fa-angle-right"></i>@cat.Name</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </li>
+
+                            <li class="b-top-nav__1level f-top-nav__1level f-primary-b">
+                                <a href="@Url.Action("BestSeller", "Product")">
+                                    <i class="fa fa-list b-menu-1level-ico"></i>@lang.GetValue(LangValue.MasterPage.Menu.BestSeller) <span class="b-ico-dropdown"><i class="fa fa-arrow-circle-down"></i></span>
+                                </a>
+                                <div class="b-top-nav__dropdomn">
+                                    <ul class="b-top-nav__2level_wrap">
+                                        <li class="b-top-nav__2level_title f-top-nav__2level_title">@lang.GetValue(LangValue.MasterPage.Menu.BestSeller)</li>
+                                        @foreach (var cat in normalCategoryManageList.CategoryManageLists)
+                                        {
+                                            <li class="b-top-nav__2level f-top-nav__2level f-primary">
+                                                <a href="@Url.Action("BestSeller", "Product", new {id = cat.Id})"><i class="fa fa-angle-right"></i>@cat.Name</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="b-top-nav__1level f-top-nav__1level f-primary-b">
+                                <a href="javascript:void(0)">
+                                    <i class="fa fa-list b-menu-1level-ico"></i>@lang.GetValue(LangValue.MasterPage.Menu.Stand) <span class="b-ico-dropdown"><i class="fa fa-arrow-circle-down"></i></span>
+                                </a>
+                                <div class="b-top-nav__dropdomn">
+                                    <ul class="b-top-nav__2level_wrap">
+                                        <li class="b-top-nav__2level_title f-top-nav__2level_title">@lang.GetValue(LangValue.MasterPage.Menu.Stand)</li>
+
+                                        <li class="b-top-nav__2level f-top-nav__2level f-primary">
+                                            <a href="@Url.Action("Stand", "Product", new {standId = 1})"><i class="fa fa-angle-right"></i>Gian hàng Loan vintage</a>
+                                        </li>
+                                        <li class="b-top-nav__2level f-top-nav__2level f-primary">
+                                            <a href="@Url.Action("Stand", "Product", new {standId = 2})"><i class="fa fa-angle-right"></i>Gian hàng 146 Boutique</a>
+                                        </li>
+                                        @if (System.Web.Configuration.WebConfigurationManager.AppSettings["dealtoday"] == "1")
+                                        {
+                                            <li class="b-top-nav__2level f-top-nav__2level f-primary">
+                                                <a href="@Url.Action("Stand", "Product", new {standId = 3})"><i class="fa fa-angle-right"></i>Gian hàng DealToDay</a>
+                                            </li>
+                                        }
+                                        
+                                    </ul>
+                                </div>
+                            </li>
+                        }
+                    }
+                }
+
+                <li class="b-top-nav__1level f-top-nav__1level f-primary-b b-top-nav-big">
+                    <a href="@Url.Action("Info", "User")">
+                        <i class="fa fa-user b-menu-1level-ico"></i>@lang.GetValue(LangValue.MasterPage.Menu.Account)<span class="b-ico-dropdown"><i class="fa fa-arrow-circle-down"></i></span>
+                    </a>
+                    <div class="b-top-nav__dropdomn b-top-nav__account">
+                        <ul class="b-top-nav__2level_wrap">
+                            <li class="b-top-nav__2level_title f-top-nav__2level_title">@lang.GetValue(LangValue.MasterPage.Menu.Account)</li>
+                            @if (user == null)
+                            {
+                                <li class="b-top-nav__2level f-top-nav__2level f-primary">
+                                    <a href="@Url.Action("Login", "Authentication")">
+                                        <i class="fa fa-sign-in" aria-hidden="true"></i>@lang.GetValue(LangValue.MasterPage.Menu.AccountLogin)
+                                    </a>
+                                </li>
+                                <li class="b-top-nav__2level f-top-nav__2level f-primary">
+                                    <a href="@Url.Action("Register", "Authentication")">
+                                        <i class="fa fa-info-circle" aria-hidden="true"></i>@lang.GetValue(LangValue.MasterPage.Menu.AccountRegister)
+                                    </a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="b-top-nav__2level f-top-nav__2level f-primary">
+                                    <a href="@Url.Action("Info", "User")">
+                                        <i class="fa fa-user"></i>Chào, @user.Firstname @user.Lastname
+                                    </a>
+                                </li>
+                                <li class="b-top-nav__2level f-top-nav__2level f-primary">
+                                    <a href="@Url.Action("Logout", "Authentication")">
+                                        <i class="fa fa-sign-out"></i>@lang.GetValue(LangValue.MasterPage.Menu.AccountLogout)
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+
+                        <ul class="b-top-nav__2level_wrap">
+                            <li class="b-top-nav__2level_title f-top-nav__2level_title">Quản Lý</li>
+                            @if (user != null)
+                            {
+                                switch (user.RoleId)
+                                {
+                                    case RoleEnum.Admin:
+                                    case RoleEnum.Manager:
+                                        <li class="b-top-nav__2level f-top-nav__2level f-primary">
+                                            <a href="@Url.Action("Index", "Admin")">
+                                                <i class="fa fa-tachometer"></i>Trang Quản Trị
+                                            </a>
+                                        </li>
+                                        break;
+                                    case RoleEnum.SupplierEmployee:
+                                    case RoleEnum.SupplierManager:
+                                        <li class="b-top-nav__2level f-top-nav__2level f-primary">
+                                            <a href="@Url.Action("Index", "Admin")">
+                                                <i class="fa fa-tachometer"></i>Trang Quản Lý Sản Phẩm
+                                            </a>
+                                        </li>
+                                        break;
+                                    default:
+                                        <li class="b-top-nav__2level f-top-nav__2level f-primary">
+                                            <a href="@Url.Action("Info", "User")">
+                                                <i class="fa fa-tachometer"></i>Trang Cá Nhân
+                                            </a>
+                                        </li>
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                <li class="b-top-nav__2level f-top-nav__2level f-primary">
+                                    <a href="@Url.Action("Login", "Authentication")">
+                                        <i class="fa fa-tachometer"></i>Vui lòng đăng nhập.
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </li>
+                <li class="b-top-nav__1level f-top-nav__1level f-primary-b b-top-nav-big">
+                    <a href="@Url.Action("Cart", "Order")">
+                        <i class="fa fa-shopping-cart b-menu-1level-ico"></i>@lang.GetValue(LangValue.MasterPage.Menu.ShoppingCart)<span class="b-ico-dropdown"><i class="fa fa-arrow-circle-down"></i></span>
+                    </a>
+                    <div class="b-top-nav__dropdomn b-top-nav__cart">
+                        <ul class="b-top-nav__2level_wrap b-top-nav__cart-menu">
+                            <li class="b-top-nav__2level_title f-top-nav__2level_title">Giỏ Hàng</li>
+                            <li class="b-top-nav__2level f-top-nav__2level f-primary">
+                                <a href="@Url.Action("Cart", "Order")">
+                                    <i class="fa fa-shopping-cart" aria-hidden="true"></i>@lang.GetValue(LangValue.MasterPage.Menu.ShoppingCartView)
+                                </a>
+                            </li>
+                            <li class="b-top-nav__2level f-top-nav__2level f-primary">
+                                <a href="@Url.Action("Checkout", "Order")">
+                                    <i class="fa fa-check" aria-hidden="true"></i>@lang.GetValue(LangValue.MasterPage.Menu.ShoppingCartCheckout)
+                                </a>
+                            </li>
+                        </ul>
+
+                        <ul class="b-top-nav__2level_wrap b-top-nav__cart-detail">
+                            <li class="b-top-nav__2level_title f-top-nav__2level_title">Chi Tiết</li>
+
+                            <li class="b-top-nav__2level f-top-nav__2level f-primary">
+                                <div class="loading-selector"></div>
+                                <a href="javasript:void(0);" id="menu-cart-empty" style="display: none;">
+                                    <i class="fa fa-shopping-cart" aria-hidden="true"></i>Không có sản phẩm nào.
+                                </a>
+                                <div class="menu-cart-items" id="menu-cart-items"></div>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

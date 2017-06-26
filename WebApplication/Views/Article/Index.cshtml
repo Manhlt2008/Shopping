@@ -1,0 +1,64 @@
+﻿@using WebApplication.Lib.Dal.DbContext
+@{
+    Layout = "~/Views/Shared/Shop/_ShopLayout.cshtml";
+
+    var url = (string)ViewBag.Url;
+    var page = (StaticPage)ViewBag.Page;
+
+    ViewBag.Title = page.Title;
+}
+
+@section MenuSection
+{
+    <style>
+        .header .col-sm-9 {
+            width: 100%;
+        }
+
+        #container .col-sm-9 {
+            width: 100%;
+        }
+
+        .product_page #default_gallery .image {
+            float: left;
+            width: 84%;
+            background: none;
+        }
+
+        #default_gallery .image {
+            background-color: rgb(239, 238, 238);
+            width: 100%;
+            border-image-source: initial;
+            border-image-slice: initial;
+            border-image-width: initial;
+            border-image-outset: initial;
+            border-image-repeat: initial;
+            margin-bottom: 1px;
+            overflow: hidden;
+            border-width: 1px;
+            border-style: solid;
+            border-color: rgb(221, 221, 221);
+        }
+    </style>
+
+    @Html.Partial("../Home/IndexPartialPage/MenuPartial")
+}
+
+<div id="content" class="col-sm-12 product_page">
+    <ul class="breadcrumb">
+        <li>
+            <a href="@Url.Action("Index", "Home")">
+                <i class="fa fa-home"></i>
+            </a>
+        </li>
+        <li>
+            <a href="@url">
+                @page.Title
+            </a>
+        </li>
+    </ul>
+
+    <h1>@page.Title</h1>
+
+    @Html.Raw(page.Content)
+</div>

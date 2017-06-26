@@ -1,0 +1,231 @@
+﻿@using WebApplication.Lib.Bll
+@using WebApplication.Lib.Dal.DbContext
+@using WebApplication.Lib.Util.Constant
+
+@model WebApplication.Models.Product.ProductModel
+
+@{
+    ViewBag.Title = "Footer";
+    Layout = "~/Views/Shared/AdminCp/_AdminLayout.cshtml";
+
+    bool? isSaveSuccess = null;
+
+    if (ViewBag.IsSaveSuccess != null)
+    {
+        isSaveSuccess = (bool)ViewBag.IsSaveSuccess;
+    }
+
+    var settings = (Dictionary<string, string>)ViewBag.Settings;
+
+    string aboutSetting;
+    string copyrightSetting;
+    string facebookUrl;
+    string facebookTab;
+    string facebookWidth;
+    string facebookHeight;
+    string facebookTitle;
+    string followUsFacebook;
+    string followUsGooglePlus;
+    string followUsYouTube;
+    string followUsTwitter;
+
+    settings.TryGetValue(SettingsBll.SettingNames.FooterAbout, out aboutSetting);
+    settings.TryGetValue(SettingsBll.SettingNames.FooterCopyright, out copyrightSetting);
+    settings.TryGetValue(SettingsBll.SettingNames.FooterFacebookPagePluginUrl, out facebookUrl);
+    settings.TryGetValue(SettingsBll.SettingNames.FooterFacebookPagePluginTabs, out facebookTab);
+    settings.TryGetValue(SettingsBll.SettingNames.FooterFacebookPagePluginWidth, out facebookWidth);
+    settings.TryGetValue(SettingsBll.SettingNames.FooterFacebookPagePluginHeight, out facebookHeight);
+    settings.TryGetValue(SettingsBll.SettingNames.FooterFacebookPagePluginTitle, out facebookTitle);
+    settings.TryGetValue(SettingsBll.SettingNames.FooterFollowUsFacebook, out followUsFacebook);
+    settings.TryGetValue(SettingsBll.SettingNames.FollowUsGooglePlus, out followUsGooglePlus);
+    settings.TryGetValue(SettingsBll.SettingNames.FollowUsYouTube, out followUsYouTube);
+    settings.TryGetValue(SettingsBll.SettingNames.FooterFollowUsTwitter, out followUsTwitter);
+}
+
+@section breadcrumbs
+          {
+    <li><a href="@Url.Action("Index", "Settings" )">@MessageEnum.Breadcrumbs.SettingBreadcrumb.Setting</a></li>
+    <li><span>@MessageEnum.Breadcrumbs.SettingBreadcrumb.Footer</span></li>
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">@MessageEnum.Breadcrumbs.SettingBreadcrumb.Index</h4>
+            </div>
+            <div class="panel-body">
+                @Html.Partial("SettingSelectionPartial")
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Cấu Hình Footer</h4>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    @using (Html.BeginForm("Footer", "Settings", FormMethod.Post))
+                    {
+                        <div class="col-sm-9">
+                            <fieldset>
+                                <legend id="legendAbout"><span>About</span></legend>
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <textarea name="About" class="form-control" rows="10">@aboutSetting</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <legend id="legendCopyRight"><span>Copyright</span></legend>
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <div class="col-sm-12">
+                                            <textarea name="Copyright" class="form-control" rows="10">@copyrightSetting</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <legend id="legendFacebook"><span>Facebook Page Plugin</span></legend>
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Facebook Page URL</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="FacebookUrl" class="form-control" value="@facebookUrl"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Tabs</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="FacebookTabs" class="form-control" value="@facebookTab"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Height</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="FacebookHeight" class="form-control" value="@facebookHeight"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Width</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="FacebookWidth" class="form-control" value="@facebookWidth"/>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Title</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="FacebookTitle" class="form-control" value="@facebookTitle"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <legend id="legendFollowUs"><span>Follow Us</span></legend>
+                                <div class="form-horizontal">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Facebook</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="FollowUsFacebook" class="form-control" value="@followUsFacebook" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Twitter</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="FollowUsTwitter" class="form-control" value="@followUsTwitter" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Google+</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="FollowUsGooglePlus" class="form-control" value="@followUsGooglePlus" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">YouTube</label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="FollowUsYouTube" class="form-control" value="@followUsYouTube" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div class="col-sm-3">
+                            <div style="position: fixed">
+                                <fieldset>
+                                    <legend>Cấu Hình Footer</legend>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <ul class="form-control-static">
+                                                <li>
+                                                    <a href="#legendAbout">About</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#legendCopyRight">Copyright</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#legendFacebook">Facebook Page Plugin</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#legendFollowUs">Follow Us</a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset>
+                                    <legend>&nbsp;</legend>
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <input type="submit" value="Lưu" class="btn btn-default" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section CustomScript
+{
+    <script src="~/Scripts/ckeditor/ckeditor.js"></script>
+    <link rel="stylesheet" href="~/Scripts/ckeditor/samples/toolbarconfigurator/lib/codemirror/neo.css">
+    <script src="~/Scripts/AdminCP/Settings/SettingFooterController.js"></script>
+
+    <script>
+        SettingFooterController.init();
+    </script>
+
+    @if (isSaveSuccess != null)
+    {
+        if (isSaveSuccess.Value)
+        {
+            <script>
+                NotificationUtil.successMessage("Cập nhật thành công.")
+            </script>
+        }
+        else
+        {
+            <script>
+                NotificationUtil.warningMessage(ShopMessage.error.connectionFail);
+            </script>
+        }
+    }
+}

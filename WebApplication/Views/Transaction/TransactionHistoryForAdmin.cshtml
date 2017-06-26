@@ -1,0 +1,113 @@
+﻿@{
+    ViewBag.Title = "TransactionHistoryForAdmin";
+    Layout = "~/Views/Shared/AdminCp/_AdminLayout.cshtml";
+}
+
+@section Breadcrumbs
+{
+    <li><a href="@Url.Action("TransactionHistoryForAdmin", "Transaction")">Lịch sử giao dịch</a></li>
+}
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Lịch sử giao dịch</h4>
+            </div>
+            <div class="panel-body">
+                <fieldset>
+                    <legend><span>Tìm kiếm</span></legend>
+                </fieldset>
+                <form id="form-search" action="@Url.Action("GetTransactionHistoryForAdmin", "Transaction")" method="post">
+                    <div class="row">
+                        <div class="col-sm-2"></div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="reg_input">Ngày bắt đầu</label>
+                                <input class="form-control" type="text" placeholder="Ngày bắt đầu" id="dpStart" name="beginDate" data-date-format="dd-mm-yyyy" data-date-autoclose="true">
+                            </div>
+                            <div class="form-group">
+                                <label for="reg_textarea">Mã GD/Mã HĐ</label>
+                                <input class="form-control" type="text" placeholder="Mã GD / Mã HĐ" name="searchValue">
+                            </div>
+                            <div class="form-group">
+                                <label for="reg_input">Trạng thái</label>
+                                <select name="status">
+                                    <option value="-1">Tất cả</option>
+                                    <option value="1">Thành công</option>
+                                    <option value="0">Thất bại</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="reg_select">Ngày kết thúc</label>
+                                <input class="form-control" type="text" placeholder="Ngày kết thúc" id="dpEnd" name="endDate" data-date-format="dd-mm-yyyy" data-date-autoclose="true">
+                            </div>
+                            <div class="form-group">
+                                <label for="reg_select_multiple">Loại</label>
+                                <select name="searchType">
+                                    <option value="ALL">Tất cả</option>
+                                    <option value="TID">Mã giao dịch</option>
+                                    <option value="ORDERID">Mã hóa đơn</option>
+                                </select>
+                            </div>
+                            <div class="form-group pull-right">
+                                <label for="reg_textarea">&nbsp;</label>
+                                <button class="btn btn-default" type="submit"><i class="li_search"></i> Tìm kiếm</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Kết quả tìm kiếm</h4>
+            </div>
+            <div id="result-search">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">Chi tiết giao dịch [<span id="span-tid"></span>]</h4>
+            </div>
+            <div id="result-transaction-detail">
+
+            </div>
+        </div>
+    </div>
+</div>
+@section CustomScript
+{
+
+    <link href="~/Content/admincp/js/lib/Sticky/sticky.css" rel="stylesheet" />
+    <script src="~/Content/admincp/js/lib/Sticky/sticky.js"></script>
+    <script src="~/Scripts/jquery.form.js"></script>
+    <script src="~/Content/admincp/js/lib/bootbox/bootbox.min.js"></script>
+    <script src="~/Content/admincp/js/jquery.sticky.js"></script>
+
+    <!-- DataTable-->
+    <script src="~/Content/admincp/js/lib/dataTables/media/js/jquery.dataTables.min.js"></script>
+    <script src="~/Content/admincp/js/lib/dataTables/extras/ColVis/media/js/ColVis.min.js"></script>
+    <script src="~/Content/admincp/js/lib/dataTables/extras/FixedColumns/media/js/FixedColumns.min.js"></script>
+    <link href="~/Content/admincp/js/lib/dataTables/media/DT_bootstrap.css" rel="stylesheet" />
+    <script src="~/Content/admincp/js/lib/dataTables/media/DT_bootstrap.js"></script>
+    <!-- Date picker-->
+    <link href="~/Content/admincp/js/lib/datepicker/css/datepicker.css" rel="stylesheet" />
+    <script src="~/Content/admincp/js/lib/datepicker/js/bootstrap-datepicker.js"></script>
+
+    <script src="~/Scripts/jquery-scrollto.js"></script>
+    <script src="~/Scripts/AdminCP/Transaction/transaction.js" type="text/javascript" language="JavaScript"></script>
+}

@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "tblTransactionDetail";
+    var resultModel = (WebApplication.Models.User.ResultModel)ViewBag.TransactionHistoryDetails;
+    var orderDetails = new List<WebApplication.Models.OrderDetail.OrderDetailModel>();
+    if (resultModel != null && resultModel.Code == 0)
+    {
+        orderDetails = (List<WebApplication.Models.OrderDetail.OrderDetailModel>)resultModel.Data;
+    }
+}
+
+<table id="dt_scroll" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>STT</th>
+            <th>Tên SP</th>
+            <th>Loại SP</th>
+            <th>Mã HĐ</th>
+            <th>Tổng giá</th>
+            <th>Số lượng</th>
+            <th>Giảm giá</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (orderDetails != null)
+        {
+            int count = 0;
+            foreach (var item in orderDetails)
+            {
+                count = count + 1;
+
+                <tr>
+                    <td>@count</td>
+                    <td>@item.ProductName</td>
+                    <td>@item.CategoryName</td>
+                    <td>@item.OrderId</td>
+                    <td style="text-align:right">@string.Format("{0:n0}", @item.OriginUnitPrice) đ</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.Discount %</td>
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>

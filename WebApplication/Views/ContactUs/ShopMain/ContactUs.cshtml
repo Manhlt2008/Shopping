@@ -1,0 +1,165 @@
+﻿@using WebApplication.Lib.Bll
+@using WebApplication.Lib.Util.Constant
+@model WebApplication.Models.Product.ProductModel
+@{
+    ViewBag.Title = "ContactUs";
+    Layout = "~/Views/Shared/ShopMain/_ShopMainLayout.cshtml";
+
+    bool? isSaveSuccess = null;
+
+    if (ViewBag.IsSaveSuccess != null)
+    {
+        isSaveSuccess = (bool)ViewBag.IsSaveSuccess;
+    }
+
+    var settings = (Dictionary<string, string>)ViewBag.Settings;
+
+    string address;
+    string comments;
+    string commingTime;
+    string email;
+    string fax;
+    string telephone;
+    string viewGoogleMap;
+
+    settings.TryGetValue(SettingsBll.SettingNames.ContactUsAddress, out address);
+    settings.TryGetValue(SettingsBll.SettingNames.ContactUsComments, out comments);
+    settings.TryGetValue(SettingsBll.SettingNames.ContactUsCommingTime, out commingTime);
+    settings.TryGetValue(SettingsBll.SettingNames.ContactUsEmail, out email);
+    settings.TryGetValue(SettingsBll.SettingNames.ContactUsFax, out fax);
+    settings.TryGetValue(SettingsBll.SettingNames.ContactUsTelephone, out telephone);
+    settings.TryGetValue(SettingsBll.SettingNames.ContactUsViewGoogleMap, out viewGoogleMap);
+}
+
+<div class="l-main-container">
+    <div class="b-breadcrumbs f-breadcrumbs">
+        <div class="container">
+            <ul>
+                <li><a href="@Url.Action("Index", "Home" )">Trang chủ</a></li>
+                <li><span>Liên hệ</span></li>
+            </ul>
+        </div>
+    </div>
+    <section class="b-google-map map-theme b-bord-box" data-location-set="contact-us">
+        <div class="b-google-map__map-view b-google-map__map-height">
+            <!-- Google map load -->
+        </div>
+        <img data-retina src="img/google-map-marker-default.png" data-label="" class="marker-template hidden" />
+        <div class="b-google-map__info-window-template hidden"
+             data-selected-marker="0"
+             data-width="250">
+            <div class="b-google-map__info-window f-center b-google-map__info-office f-google-map__info-office">
+                <h4 class="f-primary-b">Phụ Nữ Smart</h4>
+                <small>Heading Office</small>
+            </div>
+        </div>
+    </section>
+    <div class="b-desc-section-container">
+        <section class="container b-welcome-box">
+            <div class="row">
+                <div class="col-md-offset-2 col-md-8">
+                    <h1 class="is-global-title f-center">We’d love to hear from you!</h1>ss
+                    <p class="f-center">@comments </p>
+                </div>
+            </div>
+        </section>
+        <section class="container">
+            <div class="row">
+                <div class="col-sm-6 b-contact-form-box">
+                    <h3 class="f-primary-b b-title-description f-title-description">
+                        Đưa ra ý kiến
+                        <div class="b-title-description__comment f-title-description__comment f-primary-l">
+                            Mọi ý kiến của khách hàng đều rất quý giá với Website chúng tôi 
+                        </div>
+                    </h3>
+                    <div class="row">
+                        @using (Html.BeginForm("SendMailToCompany", "ContactUs", FormMethod.Post))
+                        {
+                            <div class="col-md-6">
+                                <div class="b-form-row">
+                                    <label class="b-form-vertical__label" for="name">Tên của bạn</label>
+                                    <div class="b-form-vertical__input">
+                                        <input type="text" name="name" class="form-control" value="" />
+                                    </div>
+                                </div>
+                                <div class="b-form-row">
+                                    <label class="b-form-vertical__label" for="email">Địa chỉ Email</label>
+                                    <div class="b-form-vertical__input">
+                                        <input type="text" name="email" class="form-control" value="" />
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <div class="col-md-6">
+                                <div class="b-form-row b-form--contact-size">
+                                    <label class="b-form-vertical__label">Nội dung tin nhắn</label>
+                                    <textarea class="form-control" rows="5" name="enquiry"></textarea>
+                                </div>
+                                <div class="b-form-row">
+                                    <button class="b-btn f-btn b-btn-md b-btn-default f-primary-b b-btn__w100" type="submit">
+                                        Gửi liên lạc
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="col-sm-6 b-contact-form-box">
+                    <h3 class="f-primary-b b-title-description f-title-description">
+                        Thông tin liên lạc
+                        <div class="b-title-description__comment f-title-description__comment f-primary-l">Hãy gửi tin nhắn phản hồi cho chúng tôi</div>
+                    </h3>
+                    <div class="row b-google-map__info-window-address">
+                        <ul class="list-unstyled">
+                            <li class="col-xs-12">
+                                <div class="b-google-map__info-window-address-icon f-center pull-left">
+                                    <i class="fa fa-home"></i>
+                                </div>
+                                <div>
+                                    <div class="b-google-map__info-window-address-title f-google-map__info-window-address-title">
+                                       Phụ Nữ Smart
+                                    </div>
+                                    <div class="desc">@address</div>
+                                </div>
+                            </li>
+                            <li class="col-xs-12">
+                                <div class="b-google-map__info-window-address-icon f-center pull-left">
+                                    <i class="fa fa-globe"></i>
+                                </div>
+                                <div>
+                                    <div class="b-google-map__info-window-address-title f-google-map__info-window-address-title">
+                                       Trang chủ
+                                    </div>
+                                    <div class="desc">http://yoursite.com</div>
+                                </div>
+                            </li>
+                            <li class="col-xs-12">
+                                <div class="b-google-map__info-window-address-icon f-center pull-left">
+                                    <i class="fa fa-clock-o"></i>
+                                </div>
+                                <div>
+                                    <div class="b-google-map__info-window-address-title f-google-map__info-window-address-title">
+                                        Thời gian mở cửa
+                                    </div>
+                                    <div class="desc">@commingTime</div>
+                                </div>
+                            </li>
+                            <li class="col-xs-12">
+                                <div class="b-google-map__info-window-address-icon f-center pull-left">
+                                    <i class="fa fa-envelope"></i>
+                                </div>
+                                <div>
+                                    <div class="b-google-map__info-window-address-title f-google-map__info-window-address-title">
+                                        email
+                                    </div>
+                                    <div class="desc">mail@example.com</div>
+                                </div>
+                            </li>
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

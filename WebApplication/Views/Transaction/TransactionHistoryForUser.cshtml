@@ -1,0 +1,127 @@
+﻿@using WebApplication.Models.Category;
+@{
+    ViewBag.Title = "Transaction History";
+    Layout = "~/Views/Shared/Shop/_ShopLayout.cshtml";
+
+    var categoryModels = (List<CategoryManageList>)ViewBag.Categories;
+    var user = (WebApplication.Models.User.UserModel)ViewBag.User;
+
+    var resultModel = (WebApplication.Models.User.ResultModel)ViewBag.TransactionHistory;
+    var trans = new List<WebApplication.Models.Transaction.TransactionModel>();
+    if (resultModel != null && resultModel.Code == 0)
+    {
+        trans = (List<WebApplication.Models.Transaction.TransactionModel>)resultModel.Data;
+    }
+}
+
+@section MenuSection
+{
+    @Html.Partial("../Home/IndexPartialPage/MenuPartial")
+}
+
+@section CategoryColumn
+{
+    @Html.Partial("../Home/IndexPartialPage/CategoryListPartial", categoryModels)
+}
+
+<div id="content" class="col-sm-9">
+    <ul class="breadcrumb">
+        <li><a href="/"><i class="fa fa-home"></i></a></li>
+        <li><a href="@Url.Action("User", "Info")">Tài khoản</a></li>
+        <li><a href="@Url.Action("TransactionHistoryForUser", "Transaction")">Lịch sử giao dịch</a></li>
+    </ul>
+    <div class="well">
+        <div class="heading" style="border-bottom: 0px;">
+            <i class="fa fa-star"></i>
+            <h2>Lịch sử giao dịch</h2>
+            <strong>Cập nhật những giao dịch của bạn</strong>
+        </div>
+        @if (user != null)
+        {
+            <fieldset>
+                <legend>Giao dịch</legend>
+            </fieldset>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+
+                        <div id="result-search">
+
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Mã GD</th>
+                                        <th>Mã HĐ</th>
+                                        <th>Ngày GD</th>
+                                        <th>Tổng giá</th>
+                                        <th>Mô tả</th>
+                                        <th>Loại TT</th>
+                                        <th width="5%">Trạng thái</th>
+                                        <th width="10%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (trans != null)
+                                    {
+                                        foreach (var item in trans)
+                                        {
+                                            string statusText = "";
+                                            string classText = "";
+                                            if (@item.Status == 1)
+                                            {
+                                                statusText = "Thành công";
+                                                classText = "label label-success";
+                                            }
+                                            else
+                                            {
+                                                statusText = "Thất bại";
+                                                classText = "label label-danger";
+                                            }
+                                            <tr>
+                                                <td>@item.Id</td>
+                                                <td>@item.OrderCode</td>
+                                                <td>@item.CreatedDate</td>
+                                                <td>@string.Format("{0:n0}", @item.TotalPrice) đ</td>
+                                                <td>@item.ExtraInfo</td>
+                                                <td>@item.PaymentType</td>
+                                                <td>
+                                                    <span class="@classText">@statusText</span>
+                                                </td>
+                                                <td>
+                                                    <a href="#" title="Xem chi tiết giao dịch"
+                                                       data-id="@item.Id"
+                                                       data-order-id="@item.OrderId"
+                                                       data-order-code="@item.OrderCode" onclick="getTransactionHistoryDetail(this)">
+                                                        Chi tiết
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <fieldset>
+                <legend>Chi tiết giao dịch [<span id="span-tid"></span>]</legend>
+            </fieldset>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                        <div id="result-transaction-detail">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script src="~/Scripts/jquery-scrollto.js"></script>
+<script src="~/Scripts/Shop/Transaction/transaction.js" type="text/javascript" language="JavaScript"></script>

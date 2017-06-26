@@ -1,0 +1,393 @@
+﻿@using System.Globalization
+@using WebApplication.Lib.Dal.DbContext
+@using WebApplication.Models.Category
+@using WebApplication.Models.Product
+@{
+    ViewBag.Title = "Category";
+    Layout = "~/Views/Shared/Shop/_ShopLayout.cshtml";
+
+
+    var cul = CultureInfo.GetCultureInfo("vi-VN");
+
+    var displayStyle = (string)ViewBag.DisplayStyle ?? "grid";
+
+    displayStyle = "list";
+
+    var cssClass = displayStyle.ToLower().Trim().Equals("grid") ? "product-grid col-lg-4 col-md-4 col-sm-4 col-xs-12" : "product-list col-xs-12";
+
+    var findAllProductModel = (FindAllProductModel)ViewBag.FindAllProductModel;
+
+    var categoryModels = findAllProductModel.Categories;
+    var category = findAllProductModel.Category;
+    var products = findAllProductModel.Products;
+
+    var itemLimit = findAllProductModel.Limit;
+    var itemSort = findAllProductModel.Sort ?? "default";
+    var itemOrder = findAllProductModel.Order;
+    var itemTotalProduct = findAllProductModel.TotalProduct;
+    int totalPage = itemTotalProduct / (itemLimit == 0 ? 1 : itemLimit);
+    var query = findAllProductModel.Query;
+
+    if (totalPage == 0)
+    {
+        totalPage = 1;
+    }
+
+    var itemPage = findAllProductModel.Page;
+
+    var pageLimitList = new List<int> { 6, 25, 50, 75, 100 };
+    var sortByModels = new List<SortByModel>
+    {
+        new SortByModel {Label = "Default", Order = 1, Sort = "default"},
+        new SortByModel {Label = "Name (A - Z)", Order = 1, Sort = "name"},
+        new SortByModel {Label = "Name (Z - A)", Order = 0, Sort = "name"},
+        new SortByModel {Label = "Price (Low > High)", Order = 1, Sort = "price"},
+        new SortByModel {Label = "Price (High > Low)", Order = 0, Sort = "price"},
+        new SortByModel {Label = "Mới nhất", Order = 1, Sort = "latest"},
+        new SortByModel {Label = "Cũ nhất", Order = 0, Sort = "latest"}
+    };
+}
+
+@section CategoryColumn
+{
+    @Html.Partial("../Home/IndexPartialPage/CategoryListPartial", categoryModels)
+}
+
+@helper PagingHelper(int itemPage, string itemSort, int itemOrder, int itemLimit, int totalPage, string keyword)
+{
+    <ul class="pagination">
+        @if (itemPage > 1)
+        {
+            <li>
+                <a href="@Url.Action("Category", "Product", new
+                         {
+                             sort = itemSort, order = itemOrder, limit = itemLimit, page = 1, query = keyword
+                         })">
+                    |&lt;
+                </a>
+            </li>
+            <li>
+                <a href="@Url.Action("Category", "Product", new
+                         {
+                             sort = itemSort,
+                             order = itemOrder,
+                             limit = itemLimit,
+                             page = (itemPage - 1),
+                             query = keyword
+                         })">
+                    &lt;
+                </a>
+            </li>
+        }
+
+        @if (totalPage > 6)
+        {
+            for (var i = 1; i <= 3; i++)
+            {
+                if (i == itemPage)
+                {
+                    <li class="active"><span>@i</span></li>
+                }
+                else
+                {
+                    <li>
+                        <a href="@Url.Action("Category", "Product", new
+                                 {
+                                     sort = itemSort,
+                                     order = itemOrder,
+                                     limit = itemLimit,
+                                     page = i,
+                                     query = keyword
+                                 })" title="Page @i">
+                            @i
+                        </a>
+                    </li>
+                }
+            }
+
+            <li>
+                <a href="javascript:void(0);">...</a>
+            </li>
+
+            for (var i = totalPage - 2; i <= totalPage; i++)
+            {
+                if (i == itemPage)
+                {
+                    <li class="active"><span>@i</span></li>
+                }
+                else
+                {
+                    <li>
+                        <a href="@Url.Action("Category", "Product", new
+                                  {
+                                      sort = itemSort,
+                                      order = itemOrder,
+                                      limit = itemLimit,
+                                      page = i,
+                                      query = keyword
+                                  })" title="Page @i">
+                            @i
+                        </a>
+                    </li>
+                }
+            }
+        }
+        else
+        {
+            for (var i = 1; i <= totalPage; i++)
+            {
+                if (i == itemPage)
+                {
+                    <li class="active"><span>@i</span></li>
+                }
+                else
+                {
+                    <li>
+                        <a href="@Url.Action("Category", "Product", new
+                                 {
+                                     sort = itemSort,
+                                     order = itemOrder,
+                                     limit = itemLimit,
+                                     page = i,
+                                     query = keyword
+                                 })" title="Page @i">
+                            @i
+                        </a>
+                    </li>
+                }
+            }
+        }
+
+        @if (itemPage < totalPage)
+        {
+            <li>
+                <a href="@Url.Action("Category", "Product", new
+                         {
+                             sort = itemSort,
+                             order = itemOrder,
+                             limit = itemLimit,
+                             page = (itemPage + 1),
+                             query = keyword
+                         })">
+                    &gt;
+                </a>
+            </li>
+            <li>
+                <a href="@Url.Action("Category", "Product", new
+                         {
+                             sort = itemSort,
+                             order = itemOrder,
+                             limit = itemLimit,
+                             page = totalPage,
+                             query = keyword
+                         })">
+                    &gt;|
+                </a>
+            </li>
+        }
+    </ul>
+}
+
+@helper PagingInfo(int itemPage, int itemLimit, int itemTotalProduct, int totalPage)
+{
+    var from = (itemPage - 1) * itemLimit + 1;
+    var to = itemPage * itemLimit;
+    if (to > itemTotalProduct)
+    {
+        to = itemTotalProduct;
+    }
+
+    <span>@from - @to / @itemTotalProduct (@totalPage trang)</span>
+}
+<div id="content" class="col-sm-9">
+    <ul class="breadcrumb">
+        <li>
+            <a href="@Url.Action("Index", "Home")"><i class="fa fa-home"></i></a>
+        </li>
+
+        @if (category.ParentCategory != null)
+        {
+            <li>
+                <a href="@Url.Action("Category", "Product", new {id = category.ParentCategory.Id})">@category.ParentCategory.Name</a>
+            </li>
+        }
+
+        <li>
+            <a href="@Url.Action("Category", "Product", new {id = category.Id})">@category.Name</a>
+        </li>
+
+        @if (!query.Equals(string.Empty))
+        {
+            <li>
+                Tìm kiếm: <strong>@query</strong>
+            </li>
+        }
+    </ul>
+
+    @if (category.ParentCategory != null)
+    {
+        <h2>
+            <a href="@Url.Action("Category", "Product", new {id = category.Id})">@category.Name</a>
+            <small>
+                <span>- <a href="@Url.Action("Category", "Product", new {id = category.ParentCategory.Id})">@category.ParentCategory.Name</a></span>
+                @if (!query.Equals(string.Empty))
+                {
+                    <span> - Tìm kiếm: <strong>@query</strong></span>
+                }
+            </small>
+        </h2>
+    }
+    else
+    {
+        <h2>
+            <a href="@Url.Action("Category", "Product", new {id = category.Id})">@category.Name</a>
+            @if (!query.Equals(string.Empty))
+            {
+                <span> - Tìm kiếm: <strong>@query</strong></span>
+            }
+        </h2>
+    }
+
+    @if (category.CategoryManageLists != null && category.CategoryManageLists.Count > 0)
+    {
+        <p>
+            <h3 class="subcategory">
+                @foreach (var item in category.CategoryManageLists)
+                {
+
+                    <span class="label label-default"><a href="@Url.Action("Category", "Product", new {id = item.Id})">@item.Name</a></span>
+                    <span>&nbsp; &nbsp;</span>
+
+                }
+            </h3>
+        </p>
+    }
+
+    <hr />
+
+    @if (products.Count == 0)
+    {
+        <p>Không có sản phẩm nào trong loại này.</p>
+
+        <div class="buttons">
+            <div class="pull-right">
+                <a href="@Url.Action("Index", "Home")" class="btn">Tiếp tục</a>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="product-filter clearfix">
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="control-label" for="input-sort">Tìm Kiếm Bởi</label>
+                </div>
+                <div class="col-md-3">
+                    <select id="input-sort" class="form-control" onchange="location = this.value;">
+                        @foreach (var sortByModel in sortByModels)
+                        {
+                            <option value="@Url.Action("Category", "Product", new
+                                           {
+                                               sort = sortByModel.Sort, order = sortByModel.Order, limit = itemLimit, page = itemPage, query = query
+                                           })" @(itemSort.Equals(sortByModel.Sort) && (itemSort.Equals("default") || itemOrder == sortByModel.Order) ? "selected" : "")>
+                                @sortByModel.Label
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label" for="input-limit">Hiển thị:</label>
+                </div>
+                <div class="col-md-2">
+                    <select id="input-limit" class="form-control" onchange="location = this.value;">
+                        @foreach (var l in pageLimitList)
+                        {
+
+                            <option value="@Url.Action("Category", "Product", new
+                                           {
+                                               sort = itemSort,
+                                               order = itemOrder,
+                                               limit = l,
+                                               page = itemPage,
+                                               query = query
+                                           })"
+                                    @(itemLimit == l ? "selected" : "")>
+                                @l
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3 text-right">
+                    <div class="button-view">
+                        <button type="button" id="list-view" class="btn btn-default" data-toggle="tooltip" title="" data-original-title="List"><i class="fa fa-th-list"></i></button>
+                        <button type="button" id="grid-view" class="btn btn-default active" data-toggle="tooltip" title="" data-original-title="Grid"><i class="fa fa-th"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="nav-cat clearfix">
+            <div class="pull-left">
+                <ul class="pagination">
+                    @PagingHelper(itemPage, itemSort, itemOrder, itemLimit, totalPage, query)
+                </ul>
+            </div>
+            <div class="pull-left nam-page">
+                @PagingInfo(itemPage, itemLimit, itemTotalProduct, totalPage)
+            </div>
+        </div>
+    }
+
+    <div class="row">
+        @foreach (var product in products)
+        {
+            <div class="product-layout @cssClass ">
+                <div class="product-thumb maxheight1" style="height: 429px;">
+                    <div class="image">
+                        <a href="@Url.Action("View", "Product", new {id = product.Id})">
+                            <img src="/Image/View/@product.Cover"
+                                 alt="@product.Name"
+                                 title="@product.Name"
+                                 class="img-responsive"
+                                 style="height: 260px; width: 240px; object-fit: contain; " />
+                        </a>
+                    </div>
+                    <div>
+                        <div class="caption">
+                            <div class="price price-product">
+                                @product.Price.ToString("#,###", cul.NumberFormat)
+                            </div>
+                            <div class="name name-product">
+                                <a href="@Url.Action("View", "Product", new {id = product.Id})" title="@product.Name">@product.Name</a>
+                            </div>
+                            <div class="description" title="@product.ShortDescription">@(product.ShortDescription != null ? product.ShortDescription.Substring(0, Math.Min(100, product.ShortDescription.Length)) : "")</div>
+
+                        </div>
+                        <div class="cart-button">
+                            <button class="btn btn-add" type="button" data-toggle="tooltip" title="" data-original-title="Thêm Vào Giỏ Hàng" onclick="CartController.add({id: '@product.Id', quantity: 1, name: '@product.Name'})">
+                                <i class="flaticon-shopping-cart"></i>
+                            </button>
+                            @*<button class="btn btn-icon" type="button" data-toggle="tooltip" title="" data-original-title="Add to Wish List">
+                                <i class="flaticon-favorite-heart-button"></i>
+                            </button>*@
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (products.Count != 0)
+    {
+        <div class="row">
+            <div class="col-sm-6 text-left">
+                @PagingHelper(itemPage, itemSort, itemOrder, itemLimit, totalPage, query)
+            </div>
+            @PagingInfo(itemPage, itemLimit, itemTotalProduct, totalPage)
+        </div>
+    }
+</div>
+@section MenuSection
+{
+    @Html.Partial("../Home/IndexPartialPage/MenuPartial")
+}
